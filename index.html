@@ -120,6 +120,44 @@ section { padding: 6rem 2rem; }
   line-height: 1.7; max-width: 480px; margin: 0 auto 4rem;
 }
 
+/* ── IMPACT QUIZ ── */
+.quiz-section { background: rgba(166,61,83,0.05); padding: 3.5rem 2rem; position: relative; overflow: hidden; }
+.quiz-card {
+  max-width: 620px; margin: 0 auto; background: rgba(255,255,255,0.045);
+  border: 1.5px solid rgba(200,160,64,0.35); border-radius: 22px;
+  padding: 2.75rem 2rem; text-align: center;
+  box-shadow: 0 12px 40px rgba(166,61,83,0.12);
+}
+.quiz-eyebrow { font-size: 0.7rem; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; margin-bottom: 1rem; font-weight: 600; }
+.quiz-question { font-family: 'Playfair Display', serif; font-size: clamp(1.2rem, 3vw, 1.6rem); color: var(--cream); line-height: 1.4; margin-bottom: 2rem; }
+.quiz-options { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem; }
+.quiz-option {
+  background: rgba(255,255,255,0.03); border: 1.5px solid rgba(196,112,138,0.25);
+  color: var(--cream); padding: 0.95rem 1.25rem; border-radius: 14px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.9rem; text-align: left;
+  cursor: pointer; transition: all 0.2s;
+}
+.quiz-option:hover { border-color: var(--gold); background: rgba(200,160,64,0.1); transform: translateX(2px); }
+.quiz-option.correct { border-color: #4CA36A; background: rgba(76,163,106,0.15); transform: scale(1.02); }
+.quiz-option.incorrect { border-color: #A63D53; background: rgba(166,61,83,0.12); opacity: 0.55; }
+.quiz-option:disabled { cursor: default; }
+.quiz-option:disabled:hover { transform: none; }
+.quiz-reveal { display: none; text-align: left; margin-top: 1.25rem; }
+.quiz-reveal.show { display: block; animation: quizPop 0.45s cubic-bezier(.34,1.56,.64,1); }
+@keyframes quizPop { 0% { opacity: 0; transform: translateY(10px) scale(0.97); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+.quiz-result-badge { display: inline-block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 12px; border-radius: 12px; margin-bottom: 0.85rem; }
+.quiz-result-badge.hit { background: rgba(76,163,106,0.18); color: #7BC79A; }
+.quiz-result-badge.miss { background: rgba(200,160,64,0.18); color: var(--gold); }
+.quiz-reveal-fact { font-size: 0.9rem; color: var(--mgray); line-height: 1.7; margin-bottom: 1.25rem; }
+.quiz-reveal-fact strong { color: var(--blush); }
+.quiz-reveal-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: var(--gold); font-size: 0.85rem; font-weight: 600; text-decoration: none;
+}
+.quiz-reveal-link:hover { text-decoration: underline; }
+.quiz-next { margin-top: 1.5rem; background: none; border: none; color: var(--rose); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; font-weight: 600; }
+.quiz-next:hover { color: var(--gold); }
+
 /* ── HOW IT WORKS ── */
 .how { background: rgba(255,255,255,0.02); }
 .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 2rem; max-width: 900px; margin: 0 auto; }
@@ -481,16 +519,107 @@ footer {
   <div class="hero-scroll">Scroll</div>
 </section>
 
+<!-- IMPACT QUIZ -->
+<section class="quiz-section" id="impact-quiz">
+  <div class="section-tag">Before you shop</div>
+  <h2 class="section-title" style="margin-bottom:0.5rem;">Know her story.</h2>
+  <p class="section-sub" style="margin-bottom:2.5rem;">Meet the women YOU LOOP was built for.</p>
+  <div class="quiz-card">
+    <div class="quiz-eyebrow" id="quiz-eyebrow">Question</div>
+    <div class="quiz-question" id="quiz-question"></div>
+    <div class="quiz-options" id="quiz-options"></div>
+    <div class="quiz-reveal" id="quiz-reveal">
+      <div class="quiz-result-badge" id="quiz-result-badge"></div>
+      <div class="quiz-reveal-fact" id="quiz-reveal-fact"></div>
+      <a class="quiz-reveal-link" id="quiz-reveal-link" href="#" target="_self">Read the full story →</a>
+      <br>
+      <button class="quiz-next" onclick="loadRandomQuiz()">✦ Ask me another →</button>
+    </div>
+  </div>
+</section>
+
+<script>
+const impactQuiz = [
+  {
+    question: "A woman fleeing Myanmar was a tailor, a teacher, or a nurse back home. In Thailand, which job is she most likely to end up in?",
+    options: ["The same profession", "Manual or domestic labor", "A government office job"],
+    correct: 1,
+    fact: "<strong>Manual or domestic labor.</strong> Over 4 million Myanmar migrants now live in Thailand, most sorted into the same few labor categories — regardless of the skills they actually have.",
+    slug: "skilled-women-someone-elses-job"
+  },
+  {
+    question: "An NGO in Chiang Mai trains a Myanmar migrant woman in professional crochet and tailoring. What stops her from opening her own shop afterward?",
+    options: ["Nothing — she just opens one", "Thai law restricts foreign nationals from independently running most retail businesses", "She'd need a university degree"],
+    correct: 1,
+    fact: "<strong>Thai law.</strong> The Foreign Business Act generally caps non-Thai ownership of retail/service businesses at 49% — so a trained artisan has real skill, but no simple legal path to sell it herself.",
+    slug: "bridge-thats-missing"
+  },
+  {
+    question: "How many Myanmar migrants are currently estimated to live in Thailand?",
+    options: ["About 500,000", "About 1.5 million", "Over 4 million"],
+    correct: 2,
+    fact: "<strong>Over 4 million</strong> — the largest migrant community in the country, and the group our artisan network is built with.",
+    slug: "skilled-women-someone-elses-job"
+  }
+];
+
+let currentQuizIdx = null;
+
+function loadRandomQuiz() {
+  let idx;
+  do { idx = Math.floor(Math.random() * impactQuiz.length); } while (idx === currentQuizIdx && impactQuiz.length > 1);
+  currentQuizIdx = idx;
+  const q = impactQuiz[idx];
+
+  document.getElementById('quiz-question').textContent = q.question;
+  document.getElementById('quiz-reveal').classList.remove('show');
+
+  const optionsWrap = document.getElementById('quiz-options');
+  optionsWrap.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option';
+    btn.textContent = opt;
+    btn.onclick = () => answerQuiz(i);
+    optionsWrap.appendChild(btn);
+  });
+}
+
+function answerQuiz(selectedIdx) {
+  const q = impactQuiz[currentQuizIdx];
+  const buttons = document.querySelectorAll('#quiz-options .quiz-option');
+  const isCorrect = selectedIdx === q.correct;
+  buttons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.correct) btn.classList.add('correct');
+    else if (i === selectedIdx) btn.classList.add('incorrect');
+  });
+  const badge = document.getElementById('quiz-result-badge');
+  if (isCorrect) {
+    badge.textContent = '✓ You knew it';
+    badge.className = 'quiz-result-badge hit';
+  } else {
+    badge.textContent = '✦ Now you know';
+    badge.className = 'quiz-result-badge miss';
+  }
+  document.getElementById('quiz-reveal-fact').innerHTML = q.fact;
+  document.getElementById('quiz-reveal-link').href = 'youloop_blog.html?post=' + q.slug;
+  document.getElementById('quiz-reveal').classList.add('show');
+}
+
+loadRandomQuiz();
+</script>
+
 <!-- HOW IT WORKS -->
-<section class="how" id="how">
-  <div class="section-tag">The process</div>
+<section class="how" id="how" style="padding-top:3.5rem; padding-bottom:3.5rem;">
+  <div class="section-tag">So here's You Loop.</div>
   <h2 class="section-title">Made for you.<br>Made once.</h2>
-  <p class="section-sub">Every YOU LOOP piece starts with your intention and ends in your hands — made by a skilled local artisan, never a factory.</p>
+  <p class="section-sub">Every YOU LOOP piece starts with your intention and ends in your hands — made by a skilled Myanmar artisan, never a factory.</p>
   <div class="steps">
     <div class="step">
       <div class="step-num">1</div>
       <h3>Choose your mood</h3>
-      <p>Pick a colour set that matches how you want to feel. Soft Riot, Golden Hour, Midnight, or Garden.</p>
+      <p>Pick a set from our collection that matches how you want to feel — or start with your own inspiration.</p>
     </div>
     <div class="step">
       <div class="step-num">2</div>
@@ -505,7 +634,7 @@ footer {
     <div class="step">
       <div class="step-num">4</div>
       <h3>Wear your intention</h3>
-      <p>This was made for your moment. Your birthday. Your graduation. Your first date. Your spotlight. Your main character era.</p>
+      <p>This was made for your moment. Your birthday. Your graduation. Your first date. Your spotlight. Your main character moment.</p>
     </div>
   </div>
 </section>
@@ -622,6 +751,9 @@ footer {
     </div>
 
     <p style="font-size:0.72rem; color:var(--mgray); margin-top:1rem; line-height:1.6;">We'll reach out on WhatsApp within 24 hours with a quote and timeline. 🙏</p>
+    <p style="text-align:center; margin-top:2.5rem; font-size:0.78rem; color:var(--mgray);">
+    Ordering for your brand or team? <a href="youloop_bulk_inquiry.html" style="color:var(--rose); text-decoration:underline;">Bulk & partnership inquiries →</a>
+  </p>
   </div>
 </section>
 
