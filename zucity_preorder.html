@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZUCITY × YOU LOOP — Forearm Warmer Pre-Order</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF5F1;
+    --plum: #3D1F2E;
+    --dusty-rose: #C9848C;
+    --purple: #6B4270;
+    --thread-red: #A6293D;
+    --ink: #2B1B24;
+    --line: #E5D8D3;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    padding: 0;
+  }
+
+  .stitch-rule {
+    height: 2px;
+    width: 100%;
+    background-image: repeating-linear-gradient(90deg, var(--thread-red) 0 10px, transparent 10px 18px);
+    margin: 0;
+  }
+
+  .wrap {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  header {
+    padding: 20px 0 8px;
+  }
+
+  .back-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: var(--plum);
+    text-decoration: none;
+    padding-bottom: 28px;
+  }
+
+  .back-nav:hover { color: var(--thread-red); }
+
+  .hero-block {
+    text-align: center;
+  }
+
+  .eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--thread-red);
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 40px;
+    font-weight: 500;
+    color: var(--plum);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+
+  .sub {
+    margin-top: 14px;
+    font-size: 15px;
+    color: #6b5560;
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .photo-gallery {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 28px;
+  }
+
+  .photo-gallery img {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid var(--line);
+  }
+
+  .card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 28px;
+    margin-top: 32px;
+  }
+
+  .product-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+  }
+
+  .product-name {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    color: var(--plum);
+  }
+
+  .price {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    color: var(--thread-red);
+    font-weight: 500;
+  }
+
+  .price-unit {
+    font-size: 13px;
+    color: #8a7680;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .specs {
+    list-style: none;
+    margin-top: 18px;
+    display: grid;
+    gap: 9px;
+  }
+
+  .specs li {
+    font-size: 13.5px;
+    color: #5a4750;
+    padding-left: 16px;
+    position: relative;
+  }
+
+  .specs li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--dusty-rose);
+  }
+
+  .note {
+    margin-top: 18px;
+    font-size: 12.5px;
+    color: #8a7680;
+    font-style: italic;
+    border-top: 1px dashed var(--line);
+    padding-top: 14px;
+  }
+
+  form {
+    margin-top: 32px;
+    display: grid;
+    gap: 18px;
+  }
+
+  .field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--plum);
+    margin-bottom: 6px;
+  }
+
+  .field input, .field select, .field textarea {
+    width: 100%;
+    padding: 11px 13px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14.5px;
+    color: var(--ink);
+    background: var(--cream);
+  }
+
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: 2px solid var(--purple);
+    outline-offset: 1px;
+  }
+
+  .row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .total-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    color: var(--plum);
+  }
+
+  #total-amount { color: var(--thread-red); }
+
+  button[type="submit"] {
+    background: var(--plum);
+    color: var(--cream);
+    border: none;
+    padding: 15px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14.5px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  button[type="submit"]:hover { background: var(--thread-red); }
+  button[type="submit"]:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
+
+  .hidden { display: none; }
+
+  .payment-card {
+    background: var(--plum);
+    color: var(--cream);
+    border-radius: 4px;
+    padding: 28px;
+  }
+
+  .payment-card h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+
+  .payment-card .sub-light {
+    font-size: 13.5px;
+    color: #d9c3cb;
+    margin-bottom: 22px;
+  }
+
+  .pay-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+  }
+
+  .pay-row:last-of-type { border-bottom: none; }
+
+  .pay-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #d9c3cb;
+  }
+
+  .pay-value {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    word-break: break-all;
+    text-align: right;
+    max-width: 65%;
+  }
+
+  .wallet-box {
+    margin-top: 18px;
+    background: rgba(255,255,255,0.08);
+    border: 1px dashed rgba(255,255,255,0.3);
+    border-radius: 3px;
+    padding: 16px;
+    font-family: 'Inter', monospace;
+    font-size: 13px;
+    word-break: break-all;
+  }
+
+  .steps {
+    margin-top: 22px;
+    display: grid;
+    gap: 10px;
+  }
+
+  .steps li {
+    font-size: 13.5px;
+    color: #ecdfe3;
+    padding-left: 22px;
+    position: relative;
+  }
+
+  .steps li::before {
+    content: attr(data-n);
+    position: absolute;
+    left: 0;
+    top: -1px;
+    font-family: 'Fraunces', serif;
+    color: var(--dusty-rose);
+    font-size: 13px;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 12px;
+    color: #a08a94;
+  }
+</style>
+</head>
+<body>
+
+<div class="stitch-rule"></div>
+
+<div class="wrap">
+  <header>
+    <a class="back-nav" href="https://youloopcustomization.netlify.app">← Back to YOU LOOP</a>
+    <div class="hero-block">
+      <div class="eyebrow">ZUCITY × YOU LOOP</div>
+      <h1>Forearm Warmers<br>Pre-Order</h1>
+      <p class="sub">Hand-crocheted, made to order. Black DK milk cotton with red cross-stitch ZUCITY lettering — the piece straight from the collab.</p>
+    </div>
+  </header>
+
+  <div class="photo-gallery">
+    <img src="images/zucity/zucity-model-1.png" alt="ZUCITY forearm warmers, front view">
+    <img src="images/zucity/zucity-model-2.png" alt="ZUCITY forearm warmers, detail view">
+  </div>
+
+  <div class="card">
+    <div class="product-row">
+      <span class="product-name">ZUCITY Forearm Warmers</span>
+      <span class="price">$25<span class="price-unit"> / pair</span></span>
+    </div>
+    <ul class="specs">
+      <li>One-size, fits all builds — 28cm relaxed circumference with adjustable tie-end</li>
+      <li>Wrist-end grip keeps them from sliding down</li>
+      <li>Black DK milk cotton, red cross-stitch ZUCITY lettering, thumb hole</li>
+      <li>Standard colorway only for this pre-order round</li>
+    </ul>
+    <div class="note">Each pair is made by hand to order — please allow production time before shipping. You'll get a shipping estimate once your order is confirmed.</div>
+  </div>
+
+  <form id="preorder-form" name="zucity-preorder" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+    <input type="hidden" name="form-name" value="zucity-preorder">
+    <p class="hidden"><label>Don't fill this out: <input name="bot-field"></label></p>
+
+    <div class="field">
+      <label for="qty">Quantity (pairs)</label>
+      <select id="qty" name="quantity" required>
+        <option value="1">1 pair</option>
+        <option value="2">2 pairs</option>
+        <option value="3">3 pairs</option>
+        <option value="4">4 pairs</option>
+        <option value="5">5 pairs</option>
+      </select>
+    </div>
+
+    <div class="row-2">
+      <div class="field">
+        <label for="name">Full name</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="delivery-method">Delivery method</label>
+      <select id="delivery-method" name="delivery_method" required>
+        <option value="Pop City">Collect at Pop City venue (Sep 4 – Oct 5)</option>
+        <option value="Ship">Ship to my address</option>
+      </select>
+    </div>
+
+    <div class="field" id="popcity-note-field">
+      <div class="note" style="margin-top:0; border-top:none; padding-top:0;">We'll ship your order to the Pop City venue ahead of the event. Bring your order reference to collect any time between Sep 4 and Oct 5.</div>
+    </div>
+
+    <div class="field">
+      <label for="address" id="address-label">Backup shipping address (in case you can't collect at Pop City)</label>
+      <textarea id="address" name="address" rows="3"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="telegram">Telegram username or number</label>
+      <input type="text" id="telegram" name="telegram" placeholder="@yourusername or +66..." required>
+    </div>
+
+    <div class="total-line">
+      <span>Total due</span>
+      <span id="total-amount">$25.00 USDC</span>
+    </div>
+
+    <button type="submit">Reserve my pre-order</button>
+  </form>
+
+  <div id="payment-section" class="payment-card hidden">
+    <h2>Almost there</h2>
+    <p class="sub-light">Your pre-order is reserved. Send payment below to confirm production.</p>
+
+    <div class="pay-row">
+      <span class="pay-label">Order reference</span>
+      <span class="pay-value" id="order-ref">—</span>
+    </div>
+    <div class="pay-row">
+      <span class="pay-label">Amount due</span>
+      <span class="pay-value" id="pay-amount">$25.00 USDC</span>
+    </div>
+    <div class="pay-row">
+      <span class="pay-label">Network</span>
+      <span class="pay-value">USDC — Base or Ethereum</span>
+    </div>
+
+    <div class="wallet-box">
+      <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:#d9c3cb; margin-bottom:6px;">0xec2757F903DFFb8a868fD19C60d5449c63a87363</div>
+      0xYOUR_WALLET_ADDRESS_HERE
+    </div>
+
+    <ul class="steps">
+      <li data-n="1">Send the exact USDC amount above to the wallet address, on Base or Ethereum only.</li>
+      <li data-n="2">Message your order reference + transaction hash to the contact you provided above.</li>
+      <li data-n="3">You'll get production confirmation and a ship-date estimate once payment is verified.</li>
+    </ul>
+  </div>
+
+  <footer>YOU LOOP × ZUCITY — made to order, by hand.</footer>
+</div>
+
+<div class="stitch-rule"></div>
+
+<script>
+  const form = document.getElementById('preorder-form');
+  const qtySelect = document.getElementById('qty');
+  const totalAmountEl = document.getElementById('total-amount');
+  const paymentSection = document.getElementById('payment-section');
+  const orderRefEl = document.getElementById('order-ref');
+  const payAmountEl = document.getElementById('pay-amount');
+  const deliveryMethod = document.getElementById('delivery-method');
+  const popCityNoteField = document.getElementById('popcity-note-field');
+  const addressField = document.getElementById('address');
+  const addressLabel = document.getElementById('address-label');
+  const UNIT_PRICE = 25;
+
+  function updateDeliveryFields() {
+    if (deliveryMethod.value === 'Pop City') {
+      popCityNoteField.classList.remove('hidden');
+      addressLabel.textContent = "Backup shipping address (in case you can't collect at Pop City)";
+      addressField.required = false;
+    } else {
+      popCityNoteField.classList.add('hidden');
+      addressLabel.textContent = "Shipping address";
+      addressField.required = true;
+    }
+  }
+  deliveryMethod.addEventListener('change', updateDeliveryFields);
+  updateDeliveryFields();
+
+  function updateTotal() {
+    const qty = parseInt(qtySelect.value, 10);
+    const total = (qty * UNIT_PRICE).toFixed(2);
+    totalAmountEl.textContent = `$${total} USDC`;
+  }
+  qtySelect.addEventListener('change', updateTotal);
+  updateTotal();
+
+  function generateOrderRef() {
+    const now = new Date();
+    const stamp = now.toISOString().replace(/[-:T.]/g, '').slice(0, 12);
+    const rand = Math.floor(Math.random() * 900 + 100);
+    return `ZC-${stamp}-${rand}`;
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const formData = new FormData(form);
+
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(formData).toString()
+    })
+      .then(() => {
+        const qty = parseInt(qtySelect.value, 10);
+        const total = (qty * UNIT_PRICE).toFixed(2);
+        orderRefEl.textContent = generateOrderRef();
+        payAmountEl.textContent = `$${total} USDC`;
+        form.classList.add('hidden');
+        paymentSection.classList.remove('hidden');
+        paymentSection.scrollIntoView({ behavior: 'smooth' });
+      })
+      .catch(() => {
+        alert('Something went wrong submitting your order — please try again or message us directly.');
+      });
+  });
+</script>
+
+</body>
+</html>
