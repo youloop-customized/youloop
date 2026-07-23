@@ -435,15 +435,40 @@
 
     <div class="wallet-box">
       <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:#d9c3cb; margin-bottom:6px;">0xec2757F903DFFb8a868fD19C60d5449c63a87363</div>
-      0xYOUR_WALLET_ADDRESS_HERE
     </div>
 
     <ul class="steps">
       <li data-n="1">Send the exact USDC amount above to the wallet address, on Base or Ethereum only.</li>
-      <li data-n="2">Message your order reference + transaction hash to the contact you provided above.</li>
+      <li data-n="2">Come back here and confirm below once you've sent it.</li>
       <li data-n="3">You'll get production confirmation and a ship-date estimate once payment is verified.</li>
     </ul>
+
+    <form id="payment-confirm-form" name="zucity-payment-confirmation" method="POST" data-netlify="true" netlify-honeypot="bot-field-2" style="margin-top:26px; border-top:1px solid rgba(255,255,255,0.15); padding-top:22px;">
+      <input type="hidden" name="form-name" value="zucity-payment-confirmation">
+      <p class="hidden"><label>Don't fill this out: <input name="bot-field-2"></label></p>
+      <input type="hidden" id="confirm-order-ref" name="order_reference">
+      <input type="hidden" id="confirm-telegram" name="telegram">
+      <input type="hidden" id="confirm-quantity" name="quantity">
+      <input type="hidden" id="confirm-amount" name="amount_due">
+
+      <div class="field" style="margin-bottom:14px;">
+        <label for="tx-hash" style="color:#d9c3cb;">Transaction hash</label>
+        <input type="text" id="tx-hash" name="transaction_hash" placeholder="Paste your tx hash here" required style="background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.25); color:#fff;">
+      </div>
+
+      <div class="field" style="margin-bottom:18px; display:flex; align-items:flex-start; gap:8px;">
+        <input type="checkbox" id="paid-checkbox" name="confirmed_paid" required style="width:auto; margin-top:3px;">
+        <label for="paid-checkbox" style="text-transform:none; font-weight:400; font-size:13px; color:#ecdfe3; margin-bottom:0;">I've sent the payment above</label>
+      </div>
+
+      <button type="submit" style="background: var(--dusty-rose); color: var(--plum);">Confirm my payment</button>
+    </form>
   </div>
+
+  <div id="confirm-thanks" class="payment-card hidden" style="text-align:center;">
+    <h2>Got it</h2>
+    <p class="sub-light">We'll verify your transaction and confirm production over Telegram shortly.</p>
+    <a href="https://youloopcustomization.netlify.app" style="display:inline-block; margin-top:8px; color: var(--dusty-rose); font-size:13.5px; font-weight:600;">Continue to YOU LOOP →</a>
 
   <footer>YOU LOOP × ZUCITY — made to order, by hand.</footer>
 </div>
@@ -504,14 +529,44 @@
       .then(() => {
         const qty = parseInt(qtySelect.value, 10);
         const total = (qty * UNIT_PRICE).toFixed(2);
-        orderRefEl.textContent = generateOrderRef();
+        const orderRef = generateOrderRef();
+        orderRefEl.textContent = orderRef;
         payAmountEl.textContent = `$${total} USDC`;
+
+        // carry order details into the payment confirmation form
+        document.getElementById('confirm-order-ref').value = orderRef;
+        document.getElementById('confirm-telegram').value = document.getElementById('telegram').value;
+        document.getElementById('confirm-quantity').value = qty;
+        document.getElementById('confirm-amount').value = `$${total} USDC`;
+
         form.classList.add('hidden');
         paymentSection.classList.remove('hidden');
         paymentSection.scrollIntoView({ behavior: 'smooth' });
       })
       .catch(() => {
         alert('Something went wrong submitting your order — please try again or message us directly.');
+      });
+  });
+
+  const paymentConfirmForm = document.getElementById('payment-confirm-form');
+  const confirmThanks = document.getElementById('confirm-thanks');
+
+  paymentConfirmForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const confirmData = new FormData(paymentConfirmForm);
+
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(confirmData).toString()
+    })
+      .then(() => {
+        paymentSection.classList.add('hidden');
+        confirmThanks.classList.remove('hidden');
+        confirmThanks.scrollIntoView({ behavior: 'smooth' });
+      })
+      .catch(() => {
+        alert('Something went wrong confirming your payment — please try again or message us directly on Telegram.');
       });
   });
 </script>
