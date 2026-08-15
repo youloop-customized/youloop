@@ -35,6 +35,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content
 
 /* SECTIONS */
 section{padding:5rem 2rem;}
+#story,#problem,#solution,#values,#founder,#soft-riot,#manifesto,#cta{scroll-margin-top:90px;}
+
+/* SECTION JUMP NAV */
+.section-nav{border-bottom:1px solid rgba(196,112,138,0.1);background:rgba(255,255,255,0.02);}
+.section-nav-inner{max-width:900px;margin:0 auto;padding:1rem 2rem;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;}
+.section-nav-inner::-webkit-scrollbar{display:none;}
+.section-nav-inner a{flex:0 0 auto;padding:6px 14px;border-radius:16px;font-size:0.72rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--mgray);text-decoration:none;border:1.5px solid rgba(196,112,138,0.2);white-space:nowrap;transition:all 0.2s;}
+.section-nav-inner a:hover{color:var(--cream);border-color:var(--rose);background:rgba(196,112,138,0.1);}
+@media(max-width:768px){.section-nav-inner{padding:1rem 1.25rem;}}
 .container{max-width:800px;margin:0 auto;}
 .container-wide{max-width:1100px;margin:0 auto;}
 
@@ -203,6 +212,20 @@ footer{padding:2.5rem 2rem;border-top:1px solid rgba(196,112,138,0.1);display:fl
   <p class="hero-values">"A custom fashion platform for women who know that real power is soft and riot at the same time."</p>
 </div>
 
+<!-- SECTION JUMP NAV -->
+<div class="section-nav">
+  <div class="section-nav-inner">
+    <a href="#story">The Story</a>
+    <a href="#problem">The Problem</a>
+    <a href="#solution">The Solution</a>
+    <a href="#values">Values</a>
+    <a href="#founder">Founder</a>
+    <a href="#soft-riot">Soft Riot</a>
+    <a href="#manifesto">Manifesto</a>
+    <a href="#cta">Get Started</a>
+  </div>
+</div>
+
 <!-- ORIGIN STORY -->
 <section id="story">
   <div class="container">
@@ -236,7 +259,7 @@ footer{padding:2.5rem 2rem;border-top:1px solid rgba(196,112,138,0.1);display:fl
 </section>
 
 <!-- THE PROBLEM -->
-<section>
+<section id="problem">
   <div class="container">
     <div class="section-eyebrow">The problem we're solving</div>
     <h2 class="section-title">Fashion became fast.<br><em>We made it intentional.</em></h2>
@@ -261,7 +284,7 @@ footer{padding:2.5rem 2rem;border-top:1px solid rgba(196,112,138,0.1);display:fl
 </section>
 
 <!-- THESIS BLOCKS -->
-<section style="padding-top:0;">
+<section id="solution" style="padding-top:0;">
   <div class="container">
     <div class="thesis-grid">
 
@@ -290,7 +313,7 @@ footer{padding:2.5rem 2rem;border-top:1px solid rgba(196,112,138,0.1);display:fl
 </section>
 
 <!-- VALUES -->
-<div class="values-strip">
+<div class="values-strip" id="values">
   <div class="container-">
     <div style="text-align:center;margin-bottom:3rem;">
       <div class="section-eyebrow" style="text-align:center;">What we stand for</div>
@@ -332,7 +355,7 @@ footer{padding:2.5rem 2rem;border-top:1px solid rgba(196,112,138,0.1);display:fl
 </div>
 
 <!-- FOUNDER -->
-<section class="founder-section">
+<section class="founder-section" id="founder">
   <div class="container">
     <div class="section-eyebrow">The founder</div>
     <h2 class="section-title">Born from <em>experience.</em><br>Built with intention.</h2>
@@ -362,7 +385,7 @@ footer{padding:2.5rem 2rem;border-top:1px solid rgba(196,112,138,0.1);display:fl
 </section>
 
 <!-- SOFT RIOT EXPLAINED -->
-<section>
+<section id="soft-riot">
   <div class="container">
     <div class="section-eyebrow">What is Soft Riot</div>
     <h2 class="section-title">Soft but not passive.<br><em>Sharp when it counts.</em></h2>
@@ -380,13 +403,13 @@ footer{padding:2.5rem 2rem;border-top:1px solid rgba(196,112,138,0.1);display:fl
 </section>
 
 <!-- MANIFESTO -->
-<div class="manifesto-section">
+<div class="manifesto-section" id="manifesto">
   <div class="manifesto-line" style="font-size:clamp(1rem,2vw,1.4rem);color:var(--mgray);">Your main character era starts here.</div>
   <div class="manifesto-sub">Keep it Soft Riot.</div>
 </div>
 
 <!-- CTA -->
-<div class="cta-section">
+<div class="cta-section" id="cta">
   <h2 class="cta-title">Ready for your moment?</h2>
   <p class="cta-sub">Custom crochet, made to order, delivered in 10–14 days.<br>Four mood palettes. Your size. Your intention.</p>
   <div class="cta-btns">

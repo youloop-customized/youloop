@@ -6,6 +6,7 @@
 <title>YOU LOOP Blog — Soft Riot · Slow Fashion · Main Character Energy</title>
 <meta name="description" content="YOU LOOP Blog — sustainable fashion 2026, crochet trends, main character energy outfit ideas, slow fashion stories and handmade fashion from Thailand.">
 <meta name="keywords" content="sustainable fashion 2026, crochet fashion Thailand 2026, slow fashion movement, handmade crochet dress, main character energy outfit, custom birthday outfit women, made to order crochet set, crochet co-ord set, intentional fashion">
+<link rel="canonical" id="canonical-link" href="https://youloop.co/youloop_blog.html">
 <link rel="icon" href="images/favicon/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32.png">
 <link rel="icon" type="image/png" sizes="48x48" href="images/favicon/favicon-48.png">
@@ -542,7 +543,13 @@ function filterCat(cat, btn) {
   renderGrid();
 }
 
-function openArticle(b) {
+const BLOG_BASE_URL = 'https://youloop.co/youloop_blog.html';
+
+function setCanonical(url) {
+  document.getElementById('canonical-link').setAttribute('href', url);
+}
+
+function openArticle(b, pushHistory) {
   document.getElementById('art-cat').textContent = b.category;
   document.getElementById('art-cat').style.background = b.tagColor;
   document.getElementById('art-title').textContent = b.title;
@@ -555,14 +562,34 @@ function openArticle(b) {
   overlay.classList.add('open');
   overlay.scrollTop = 0;
   document.body.style.overflow = 'hidden';
+
+  const postUrl = `${BLOG_BASE_URL}?post=${b.slug}`;
+  setCanonical(postUrl);
+  if (pushHistory !== false) {
+    history.pushState({ post: b.slug }, '', `?post=${b.slug}`);
+  }
 }
 
-function closeArticle() {
+function closeArticle(pushHistory) {
   document.getElementById('article-overlay').classList.remove('open');
   document.body.style.overflow = '';
+  setCanonical(BLOG_BASE_URL);
+  if (pushHistory !== false) {
+    history.pushState({}, '', BLOG_BASE_URL.replace('https://youloop.co', ''));
+  }
 }
 
 document.addEventListener('keydown', e => { if(e.key==='Escape') closeArticle(); });
+
+window.addEventListener('popstate', e => {
+  const slug = e.state && e.state.post;
+  const match = slug && blogs.find(b => b.slug === slug);
+  if (match) {
+    openArticle(match, false);
+  } else {
+    closeArticle(false);
+  }
+});
 
 renderGrid();
 
@@ -576,7 +603,8 @@ renderGrid();
       // Reflect the right category filter state, then open the article
       currentCat = 'all';
       renderGrid();
-      openArticle(match);
+      openArticle(match, false);
+      history.replaceState({ post: slug }, '', `?post=${slug}`);
     }
   }
 })();
