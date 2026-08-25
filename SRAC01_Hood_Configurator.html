@@ -129,6 +129,19 @@ h1{font-family:'Playfair Display',serif;font-size:36px;font-weight:400;line-heig
 .order-total-row{background:rgba(196,112,138,.06);}
 .order-total-label{font-size:13px;color:var(--cream);font-weight:600;}
 .order-total-val{font-size:22px;color:var(--rose);font-weight:700;}
+/* PROMO CODE */
+.promo-row{display:block;padding:12px 18px;}
+.promo-input-wrap{display:flex;gap:8px;}
+.promo-input{flex:1;min-width:0;background:rgba(42,26,46,.6);border:1px solid rgba(196,112,138,.2);border-radius:6px;padding:9px 12px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;outline:none;transition:border-color .2s;}
+.promo-input:focus{border-color:var(--rose);}
+.promo-input::placeholder{color:var(--dgray);opacity:.6;text-transform:none;letter-spacing:normal;}
+.promo-apply{background:transparent;border:1px solid var(--rose);color:var(--rose);border-radius:6px;padding:9px 16px;font-size:11px;letter-spacing:1px;text-transform:uppercase;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.promo-apply:hover{background:rgba(196,112,138,.1);}
+.promo-msg{font-size:11px;margin-top:7px;min-height:14px;}
+.promo-msg.ok{color:#8FBC5A;}
+.promo-msg.err{color:var(--rose);}
+.discount-row{display:none;}
+.discount-row .order-val{color:#8FBC5A;font-weight:600;}
 /* INTL NOTE */
 .intl-note{background:rgba(212,168,83,.07);border:1px solid rgba(212,168,83,.18);border-radius:6px;padding:11px 15px;margin-bottom:16px;font-size:12px;color:var(--dgray);line-height:1.65;}
 .intl-note strong{color:var(--gold);}
@@ -391,6 +404,14 @@ footer p{font-size:11px;color:var(--dgray);letter-spacing:1px;}
         <div class="order-row" id="yarnRow" style="display:none;"><span class="order-label">Yarn</span><span class="order-val" id="sumYarnVal">-</span></div>
         <div class="order-row" id="momentRow" style="display:none;"><span class="order-label">Moment</span><span class="order-val" id="sumMoment">-</span></div>
         <div class="order-row"><span class="order-label">Lead time</span><span class="order-val">7-10 days</span></div>
+        <div class="order-row promo-row">
+          <div class="promo-input-wrap">
+            <input type="text" class="promo-input" id="promoInput" placeholder="Promo code" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter'){event.preventDefault();applyPromo();}">
+            <button type="button" class="promo-apply" onclick="applyPromo()">Apply</button>
+          </div>
+          <div class="promo-msg" id="promoMsg"></div>
+        </div>
+        <div class="order-row discount-row" id="discountRow"><span class="order-label">Discount</span><span class="order-val" id="sumDiscount">-&#3647;0</span></div>
         <div class="order-row order-total-row"><span class="order-total-label">Total</span><span class="order-total-val" id="sumTotal">&#3647;990</span></div>
       </div>
     </div>
@@ -423,6 +444,7 @@ footer p{font-size:11px;color:var(--dgray);letter-spacing:1px;}
       <div class="modal-row"><span class="modal-row-label">Product</span><span class="modal-row-val">The Soft Riot Hood</span></div>
       <div class="modal-row"><span class="modal-row-label">Colour</span><span class="modal-row-val" id="modalColour">-</span></div>
       <div class="modal-row" id="modalYarnRow" style="display:none;"><span class="modal-row-label">Yarn</span><span class="modal-row-val" id="modalYarn">-</span></div>
+      <div class="modal-row" id="modalDiscountRow" style="display:none;"><span class="modal-row-label">Discount</span><span class="modal-row-val" id="modalDiscount">-</span></div>
       <div class="modal-row"><span class="modal-row-label">Total</span><span class="modal-row-val" id="modalTotal">-</span></div>
       <div class="modal-row"><span class="modal-row-label">Name</span><span class="modal-row-val" id="modalName">-</span></div>
       <div class="modal-row"><span class="modal-row-label">Contact</span><span class="modal-row-val" id="modalContact">-</span></div>
@@ -573,6 +595,45 @@ function genOrderNumber() {
   return 'YL-' + Math.floor(100000 + Math.random() * 900000);
 }
 
+let curPrice = 990;
+const PROMO_CODES = {
+  WELCOME10: { percent: 0.10, label: '10% off' },
+  SOFTRIOT15: { percent: 0.15, label: '15% off' }
+};
+let appliedPromoCode = null;
+let curDiscount = 0;
+
+function recalcTotal() {
+  curDiscount = appliedPromoCode ? Math.round(curPrice * PROMO_CODES[appliedPromoCode].percent) : 0;
+  var finalTotal = Math.max(curPrice - curDiscount, 0);
+  document.getElementById('sumTotal').textContent = '฿' + finalTotal.toLocaleString();
+  var discRow = document.getElementById('discountRow');
+  if (curDiscount > 0) {
+    document.getElementById('sumDiscount').textContent = '-฿' + curDiscount.toLocaleString();
+    discRow.style.display = 'flex';
+  } else {
+    discRow.style.display = 'none';
+  }
+}
+
+function applyPromo() {
+  var input = document.getElementById('promoInput');
+  var msg = document.getElementById('promoMsg');
+  var code = input.value.trim().toUpperCase();
+  if (!code) { return; }
+  var promo = PROMO_CODES[code];
+  if (promo) {
+    appliedPromoCode = code;
+    msg.textContent = 'Code applied — ' + promo.label + ' ✓';
+    msg.className = 'promo-msg ok';
+  } else {
+    appliedPromoCode = null;
+    msg.textContent = 'Invalid promo code';
+    msg.className = 'promo-msg err';
+  }
+  recalcTotal();
+}
+
 function setMode(mode) {
   curMode = mode;
   document.getElementById('modeMood').classList.toggle('active', mode === 'colourway');
@@ -686,6 +747,8 @@ function submitOrder() {
     colour: mood,
     yarn: yarn || '',
     moment: moment || '',
+    promo_code: appliedPromoCode || '',
+    discount: curDiscount ? ('฿' + curDiscount.toLocaleString()) : '',
     total: total,
     name: name,
     contact: contact,
@@ -703,6 +766,12 @@ function submitOrder() {
     statusEl.textContent = '';
     document.getElementById('modalOrderNum').textContent = orderNum;
     document.getElementById('modalColour').textContent   = mood;
+    if (curDiscount > 0) {
+      document.getElementById('modalDiscount').textContent = '-฿' + curDiscount.toLocaleString() + ' (' + appliedPromoCode + ')';
+      document.getElementById('modalDiscountRow').style.display = 'flex';
+    } else {
+      document.getElementById('modalDiscountRow').style.display = 'none';
+    }
     document.getElementById('modalTotal').textContent    = total;
     document.getElementById('modalName').textContent     = name;
     document.getElementById('modalContact').textContent  = contact;
@@ -723,8 +792,8 @@ document.addEventListener('click', function(e) {
 });
 window.addEventListener('load', function() {
   updatePhoto();
-  document.getElementById('sumTotal').textContent     = '฿990';
   document.getElementById('displayPrice').textContent = '฿990';
+  recalcTotal();
   buildYarnGrid(YARNS);
   setMode('colourway');
 });
