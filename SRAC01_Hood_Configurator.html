@@ -16,10 +16,15 @@
 body{background:var(--plum);font-family:'DM Sans',sans-serif;color:var(--cream);min-height:100vh;}
 nav{display:flex;align-items:center;justify-content:space-between;padding:14px 40px;border-bottom:1px solid rgba(196,112,138,0.2);position:sticky;top:0;z-index:100;background:rgba(42,26,46,0.96);backdrop-filter:blur(12px);}
 .nav-logo{font-family:'Playfair Display',serif;font-size:20px;color:var(--rose);letter-spacing:2px;text-decoration:none;}
+.nav-logo-img{height:26px;width:auto;display:block;}
 .nav-links{display:flex;gap:24px;}
 .nav-links a{font-size:11px;color:var(--dgray);text-decoration:none;letter-spacing:2px;text-transform:uppercase;transition:color .2s;}
 .nav-links a:hover{color:var(--rose);}
 .nav-pill{font-size:10px;padding:4px 14px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;font-weight:600;}
+.nav-back{display:flex;align-items:center;gap:6px;color:var(--rose);text-decoration:none;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap;flex:0 0 auto;}
+.nav-back:hover{color:var(--cream);}
+.nav-back-arrow{font-size:15px;line-height:1;}
+.nav-right{display:flex;align-items:center;gap:14px;flex:0 0 auto;}
 .hero-band{text-align:center;padding:11px;background:linear-gradient(135deg,rgba(196,112,138,.1),rgba(212,168,83,.07));border-bottom:1px solid rgba(196,112,138,.12);}
 .hero-band span{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--rose);font-weight:600;}
 .hero-band .sep{color:var(--dgray);margin:0 10px;}
@@ -27,9 +32,18 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:14px 4
 .page{max-width:1200px;margin:0 auto;padding:0 24px 60px;display:grid;grid-template-columns:1fr 520px;gap:48px;align-items:start;}
 /* PHOTO COL */
 .photo-col{position:sticky;top:72px;}
-.photo-wrap{position:relative;border-radius:4px;overflow:hidden;background:var(--dark);line-height:0;}
-.photo-wrap img{width:100%;height:auto;display:block;transition:opacity .35s ease;object-fit:contain;}
-.photo-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(42,26,46,.9));padding:20px 18px 14px;pointer-events:none;}
+.photo-wrap{position:relative;border-radius:4px;overflow:hidden;background:var(--dark);aspect-ratio:4/5;touch-action:pan-y;-webkit-user-select:none;user-select:none;}
+.photo-track{display:flex;height:100%;width:100%;will-change:transform;}
+.photo-slide{flex:0 0 100%;height:100%;}
+.photo-slide img{width:100%;height:100%;display:block;object-fit:cover;pointer-events:none;-webkit-user-drag:none;}
+.photo-nav-btn{position:absolute;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;background:rgba(20,10,25,.45);color:#fff;border:none;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;z-index:6;backdrop-filter:blur(4px);transition:background .2s;}
+.photo-nav-btn:hover{background:rgba(20,10,25,.7);}
+.photo-prev{left:10px;}
+.photo-next{right:10px;}
+.photo-dots{position:absolute;top:12px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:6;}
+.photo-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.45);cursor:pointer;transition:all .2s;border:none;padding:0;}
+.photo-dot.active{background:#fff;width:18px;border-radius:3px;}
+.photo-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(42,26,46,.9));padding:20px 18px 14px;pointer-events:none;z-index:5;}
 .photo-colour-name{font-family:'Playfair Display',serif;font-size:18px;color:var(--cream);}
 .photo-colour-sub{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--rose);margin-top:3px;}
 .photo-meta{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding:0 2px;}
@@ -192,7 +206,6 @@ footer p{font-size:11px;color:var(--dgray);letter-spacing:1px;}
   .size-btns{gap:6px;}
   .size-btn{padding:10px 14px;min-height:44px;font-size:10px;}
   .yarn-grid{grid-template-columns:repeat(5,1fr);}
-  .photo-wrap img{max-height:75vw;object-fit:cover;object-position:top center;}
 }
 @media(max-width:400px){
   .swatches{grid-template-columns:repeat(3,1fr);}
@@ -286,6 +299,17 @@ footer p{font-size:11px;color:var(--dgray);letter-spacing:1px;}
 @media(max-width:600px){.page{padding:0;}.config-col{padding:16px 14px 40px;}h1{font-size:22px;}.swatches,.swatches-8{grid-template-columns:repeat(4,1fr);gap:6px;}.swatch-dot{height:28px;}.size-btns{gap:6px;}.size-btn{padding:10px 14px;min-height:44px;font-size:10px;}.yarn-grid{grid-template-columns:repeat(5,1fr);}}
 @media(max-width:400px){.swatches,.swatches-8{grid-template-columns:repeat(3,1fr);}.yarn-grid{grid-template-columns:repeat(4,1fr);}}
 
+/* ── PHOTO-FIRST MOBILE LAYOUT ── */
+@media(max-width:768px){
+  .nav-back span{display:none;}
+  .nav-pill{display:none;}
+}
+@media(max-width:900px){
+  .photo-meta{display:none;}
+  .handmade-note{display:none;}
+  .config-col{padding-top:16px;}
+}
+
 </style>
 </head>
 <body>
@@ -303,12 +327,12 @@ footer p{font-size:11px;color:var(--dgray);letter-spacing:1px;}
   <input type="hidden" name="address">
 </form>
 <nav>
-  <a href="index.html" class="nav-logo">✦ YOU LOOP</a>
-  <div class="nav-links">
-    <a href="index.html#collection">← Collection</a>
+  <a href="index.html#collection" class="nav-back"><span class="nav-back-arrow">&#8592;</span><span>Collection</span></a>
+  <a href="index.html" class="nav-logo" style="display:flex;align-items:center;"><img src="images/logo/youloop-logo.png" alt="YOU LOOP" class="nav-logo-img"></a>
+  <div class="nav-right">
+    <span class="nav-pill" style="background:#D4A853;color:#2A1A2E;">Unisex</span>
+    <button class="nav-hamburger" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
-  <span class="nav-pill" style="background:#D4A853;color:#2A1A2E;">Unisex</span>
-  <button class="nav-hamburger" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
 <div class="mobile-nav" id="mobileNav">
   <a href="index.html#collection" onclick="toggleMobileNav()">Back to Collection</a>
@@ -330,8 +354,11 @@ footer p{font-size:11px;color:var(--dgray);letter-spacing:1px;}
       <button class="model-btn active" onclick="setModel('female')" id="btn-f">Her ✦</button>
       <button class="model-btn" onclick="setModel('male')" id="btn-m">Him ✦</button>
     </div>
-    <div class="photo-wrap">
-      <img id="mainPhoto" src="" alt="The Soft Riot Hood"/>
+    <div class="photo-wrap" id="photoWrap">
+      <div class="photo-track" id="photoTrack"></div>
+      <button class="photo-nav-btn photo-prev" onclick="photoCarousel.prev()" aria-label="Previous colour">&#8592;</button>
+      <button class="photo-nav-btn photo-next" onclick="photoCarousel.next()" aria-label="Next colour">&#8594;</button>
+      <div class="photo-dots" id="photoDots"></div>
       <div class="photo-overlay">
         <div class="photo-colour-name" id="colourName">Dusty Rose</div>
         <div class="photo-colour-sub" id="colourSub">Soft Riot colourway</div>
@@ -634,6 +661,77 @@ function applyPromo() {
   recalcTotal();
 }
 
+/* ── SWIPEABLE PHOTO CAROUSEL (touch + mouse, Instagram-style) ── */
+function initPhotoSwipe(slideImgs, onIndexChange) {
+  var wrap  = document.getElementById('photoWrap');
+  var track = document.getElementById('photoTrack');
+  var dotsEl = document.getElementById('photoDots');
+  var idx = 0, startX = 0, deltaX = 0, dragging = false, wrapW = 0;
+
+  function render() {
+    track.innerHTML = slideImgs.map(function(src) {
+      return '<div class="photo-slide"><img src="' + src + '" alt=""></div>';
+    }).join('');
+    dotsEl.innerHTML = slideImgs.map(function(_, i) {
+      return '<button type="button" class="photo-dot' + (i === idx ? ' active' : '') + '" onclick="photoCarousel.goTo(' + i + ')" aria-label="View colour ' + (i + 1) + '"></button>';
+    }).join('');
+  }
+  function setTransform(px, animate) {
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.2,.7,.3,1)' : 'none';
+    track.style.transform = 'translateX(' + px + 'px)';
+  }
+  function goTo(i, silent) {
+    idx = Math.max(0, Math.min(slideImgs.length - 1, i));
+    wrapW = wrap.getBoundingClientRect().width;
+    setTransform(-idx * wrapW, true);
+    Array.prototype.forEach.call(dotsEl.children, function(d, j) { d.classList.toggle('active', j === idx); });
+    if (!silent && typeof onIndexChange === 'function') onIndexChange(idx);
+  }
+  function setSlides(newImgs) {
+    slideImgs = newImgs;
+    render();
+    wrapW = wrap.getBoundingClientRect().width;
+    setTransform(-idx * wrapW, false);
+  }
+
+  render();
+
+  wrap.addEventListener('pointerdown', function(e) {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    dragging = true; startX = e.clientX; deltaX = 0;
+    wrapW = wrap.getBoundingClientRect().width;
+    track.style.transition = 'none';
+    try { wrap.setPointerCapture(e.pointerId); } catch (err) {}
+  });
+  wrap.addEventListener('pointermove', function(e) {
+    if (!dragging) return;
+    deltaX = e.clientX - startX;
+    setTransform(-idx * wrapW + deltaX, false);
+  });
+  function endDrag() {
+    if (!dragging) return;
+    dragging = false;
+    if (Math.abs(deltaX) > wrapW * 0.16) {
+      goTo(idx + (deltaX < 0 ? 1 : -1));
+    } else {
+      goTo(idx);
+    }
+    deltaX = 0;
+  }
+  wrap.addEventListener('pointerup', endDrag);
+  wrap.addEventListener('pointercancel', endDrag);
+  wrap.addEventListener('pointerleave', function() { if (dragging) endDrag(); });
+  window.addEventListener('resize', function() { wrapW = wrap.getBoundingClientRect().width; setTransform(-idx * wrapW, false); });
+
+  return {
+    goTo: goTo,
+    next: function() { goTo(idx + 1); },
+    prev: function() { goTo(idx - 1); },
+    setSlides: setSlides,
+    currentIndex: function() { return idx; }
+  };
+}
+
 function setMode(mode) {
   curMode = mode;
   document.getElementById('modeMood').classList.toggle('active', mode === 'colourway');
@@ -649,7 +747,7 @@ function setMode(mode) {
   }
 }
 
-function pickHood(el) {
+function applyHoodSelection(el) {
   document.querySelectorAll('.swatch').forEach(function(s) { s.classList.remove('active'); });
   el.classList.add('active');
   curF = el.dataset.f; curM = el.dataset.m !== 'null' ? el.dataset.m : null;
@@ -657,21 +755,28 @@ function pickHood(el) {
   document.getElementById('colourSub').textContent  = el.dataset.sub;
   document.getElementById('sumMood').textContent    = el.dataset.name;
   document.getElementById('pairingText').textContent = el.dataset.set;
-  updatePhoto();
 }
 
+function pickHood(el) {
+  applyHoodSelection(el);
+  var swatches = Array.prototype.slice.call(document.querySelectorAll('.swatch'));
+  if (window.photoCarousel) photoCarousel.goTo(swatches.indexOf(el), true);
+}
+
+function slideSrcFor(el) {
+  return (curModel === 'male' && el.dataset.m !== 'null' && MP[el.dataset.m]) ? MP[el.dataset.m] : (FP[el.dataset.f] || FP.dusty_rose);
+}
+
+function rebuildHoodSlides() {
+  var swatches = Array.prototype.slice.call(document.querySelectorAll('.swatch'));
+  if (window.photoCarousel) photoCarousel.setSlides(swatches.map(slideSrcFor));
+}
 
 function setModel(m) {
   curModel = m;
   document.getElementById('btn-f').classList.toggle('active', m === 'female');
   document.getElementById('btn-m').classList.toggle('active', m === 'male');
-  updatePhoto();
-}
-function updatePhoto() {
-  var src = (curModel === 'male' && curM && MP[curM]) ? MP[curM] : FP[curF] || FP.dusty_rose;
-  var img = document.getElementById('mainPhoto');
-  img.style.opacity = '0';
-  setTimeout(function() { img.src = src; img.style.opacity = '1'; }, 220);
+  rebuildHoodSlides();
 }
 
 function buildYarnGrid(yarns) {
@@ -790,8 +895,13 @@ document.addEventListener('click', function(e) {
   var nav = document.getElementById('mobileNav'), btn = document.querySelector('.nav-hamburger');
   if (nav && btn && !nav.contains(e.target) && !btn.contains(e.target)) nav.classList.remove('open');
 });
+var photoCarousel;
 window.addEventListener('load', function() {
-  updatePhoto();
+  var swatches = Array.prototype.slice.call(document.querySelectorAll('.swatch'));
+  photoCarousel = initPhotoSwipe(
+    swatches.map(slideSrcFor),
+    function(idx) { applyHoodSelection(swatches[idx]); }
+  );
   document.getElementById('displayPrice').textContent = '฿990';
   recalcTotal();
   buildYarnGrid(YARNS);

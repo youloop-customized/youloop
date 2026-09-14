@@ -6,6 +6,7 @@
 <meta name="description" content="YOU LOOP — Your main character era starts here. Custom crochet fashion made to order, guided by Soft Riot energy. Fast fashion fills wardrobes. Custom fashion fills moments. Custom fashion for your most intentional moment. Keep it Soft Riot. Made by creators, for you, once.">
 <meta name="keywords" content="custom crochet fashion Thailand, made to order crochet dress, crochet co-ord set, handmade fashion Bangkok, Soft Riot, YOU LOOP, custom birthday outfit, intentional fashion, slow fashion Thailand 2026">
 <title>YOU LOOP — Your Main Character Era Starts Here · Custom Crochet Fashion</title>
+<link rel="canonical" href="https://youloop.co/">
 <link rel="icon" href="images/favicon/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32.png">
 <link rel="icon" type="image/png" sizes="48x48" href="images/favicon/favicon-48.png">
@@ -45,6 +46,7 @@ nav {
   border-bottom: 1px solid rgba(196,112,138,0.15);
 }
 .nav-brand { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--rose); letter-spacing: 2px; }
+.nav-logo-img { height: 30px; width: auto; display: block; }
 .nav-links { display: flex; gap: 2rem; }
 .nav-links a { font-size: 0.8rem; color: var(--mgray); text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s; }
 .nav-links a:hover { color: var(--cream); }
@@ -478,14 +480,51 @@ footer {
   .nav-cta { display: none; }
 }
 
+/* NATIVE FORMS */
+.yl-field{margin-bottom:1.1rem;text-align:left;}
+.yl-label{display:block;font-size:0.8rem;color:var(--cream);margin-bottom:0.4rem;font-weight:500;}
+.yl-input{width:100%;padding:0.7rem 0.9rem;border-radius:10px;border:1px solid rgba(196,112,138,0.3);background:rgba(255,255,255,0.04);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:0.9rem;}
+.yl-input:focus{outline:none;border-color:var(--rose);}
+.yl-textarea{resize:vertical;min-height:100px;}
+.yl-help{font-size:0.72rem;color:var(--mgray);margin-top:0.35rem;}
+.yl-submit{width:100%;background:var(--rose);color:#fff;border:none;padding:0.85rem;border-radius:24px;font-size:0.9rem;font-weight:500;cursor:pointer;margin-top:0.5rem;transition:background 0.2s;}
+.yl-submit:hover{background:var(--blush);}
+.yl-submit:disabled{opacity:0.6;cursor:not-allowed;}
+.yl-success{text-align:center;padding:1rem 0;}
+.yl-hidden{display:none!important;}
+.yl-chips{display:flex;flex-wrap:wrap;gap:8px;}
+.yl-chip{padding:8px 14px;border-radius:20px;border:1px solid rgba(196,112,138,0.3);background:rgba(255,255,255,0.03);color:var(--mgray);font-size:0.8rem;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;-webkit-user-select:none;user-select:none;}
+.yl-chip:hover{border-color:var(--rose);color:var(--cream);}
+.yl-chip.active{background:var(--rose);border-color:var(--rose);color:#fff;}
+.yl-example{background:rgba(255,255,255,0.03);border-left:2px solid var(--rose);padding:0.7rem 0.9rem;border-radius:0 8px 8px 0;font-size:0.78rem;color:var(--mgray);font-style:italic;line-height:1.6;margin-top:0.6rem;}
+.yl-checkline{display:flex;align-items:center;gap:8px;font-size:0.8rem;color:var(--mgray);cursor:pointer;}
+.yl-checkline input{accent-color:var(--rose);}
+.yl-measure-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.9rem 0.9rem;margin-top:0.6rem;}
+@media(max-width:480px){.yl-measure-grid{grid-template-columns:1fr;}}
+.yl-measure-field label{display:block;font-size:0.78rem;color:var(--cream);margin-bottom:0.25rem;font-weight:500;}
+.yl-measure-help{font-size:0.68rem;color:var(--mgray);margin-bottom:0.35rem;line-height:1.4;}
+.yl-measure-field .yl-input{padding:0.55rem 0.7rem;font-size:0.85rem;}
+.yl-guide-btn{display:inline-flex;align-items:center;gap:5px;background:rgba(196,112,138,0.12);border:1px solid rgba(196,112,138,0.35);color:var(--rose);font-family:'DM Sans',sans-serif;font-size:0.74rem;font-weight:500;padding:5px 11px;border-radius:14px;cursor:pointer;margin-top:0.5rem;transition:all 0.2s;}
+.yl-guide-btn:hover{background:rgba(196,112,138,0.2);}
+.yl-guide-btn .circ{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:var(--rose);color:#fff;font-size:0.62rem;font-style:italic;font-weight:700;line-height:1;}
+.yl-lightbox{display:none;position:fixed;inset:0;z-index:500;background:rgba(20,10,20,0.85);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1.25rem;}
+.yl-lightbox.open{display:flex;}
+.yl-lightbox-card{background:var(--cream);border-radius:16px;max-width:900px;width:100%;max-height:92vh;overflow-y:auto;position:relative;padding:0.75rem;}
+.yl-lightbox-card img{width:100%;height:auto;display:block;border-radius:10px;}
+.yl-lightbox-close{position:sticky;top:0;left:100%;margin-left:auto;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,0.55);color:#fff;border:none;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;float:right;z-index:2;}
+.yl-lightbox-actions{text-align:center;padding:0.9rem 0.5rem 0.3rem;}
+.yl-lightbox-actions a{display:inline-block;background:var(--rose);color:#fff;text-decoration:none;font-size:0.8rem;font-weight:500;padding:0.6rem 1.3rem;border-radius:20px;transition:background 0.2s;}
+.yl-lightbox-actions a:hover{background:var(--midrose,#A45070);}
+.yl-lightbox-hint{font-size:0.68rem;color:#8a7080;margin-top:0.5rem;}
+
 </style>
 </head>
 <body>
 
 <!-- NAV -->
 <nav>
-  <a href="index.html" class="nav-brand" style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:#C4708A;letter-spacing:3px;display:flex;align-items:center;gap:4px;text-decoration:none;">
-    <span style="color:#C4708A;font-size:0.9rem;">✦</span>YOU LOOP
+  <a href="index.html" class="nav-brand" style="display:flex;align-items:center;text-decoration:none;">
+    <img src="images/logo/youloop-logo.png" alt="YOU LOOP" class="nav-logo-img">
   </a>
   <div class="nav-links">
     <a href="#how">How it works</a>
@@ -509,10 +548,8 @@ footer {
 
 <!-- HERO -->
 <section class="hero">
-  <div style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:center;gap:8px;">
-    <span style="color:#C4708A;font-size:1.2rem;opacity:0.7;">✦</span>
-    <span style="font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3rem);font-weight:700;color:#C4708A;letter-spacing:4px;">YOU LOOP</span>
-    <span style="color:#C4708A;font-size:1.2rem;opacity:0.7;">✦</span>
+  <div style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:center;">
+    <img src="images/logo/youloop-logo.png" alt="YOU LOOP" style="height:clamp(32px,6vw,52px);width:auto;">
   </div><div class="hero-tag">Keep it Soft Riot.</div>
   <h1>Your main character<br><em>era starts here.</em></h1>
   <p class="hero-sub">Custom fashion for your most intentional moment.</p>
@@ -652,12 +689,12 @@ loadRandomQuiz();
   <div class="products-grid">
 
     <!-- SR-01 -->
-    <div class="product-card">
+    <div class="product-card" onclick="window.location.href='SR01_Colour_Configurator.html'" style="cursor:pointer;">
       <div class="carousel-wrap" id="c-sr01">
         <div class="carousel-track" id="t-sr01"></div>
         <span class="carousel-badge" style="background:var(--rose);color:white;">New Design</span>
-        <button class="carousel-prev" onclick="cPrev('sr01')">&#8592;</button>
-        <button class="carousel-next" onclick="cNext('sr01')">&#8594;</button>
+        <button class="carousel-prev" onclick="event.stopPropagation(); cPrev('sr01')">&#8592;</button>
+        <button class="carousel-next" onclick="event.stopPropagation(); cNext('sr01')">&#8594;</button>
         <div class="carousel-dots" id="d-sr01"></div>
       </div>
       <div class="product-body">
@@ -678,12 +715,12 @@ loadRandomQuiz();
     </div>
 
     <!-- SR-02 -->
-    <div class="product-card">
+    <div class="product-card" onclick="window.location.href='SR02_Colour_Configurator.html'" style="cursor:pointer;">
       <div class="carousel-wrap" id="c-sr02">
         <div class="carousel-track" id="t-sr02"></div>
         <span class="carousel-badge" style="background:var(--rose);color:white;">New Design</span>
-        <button class="carousel-prev" onclick="cPrev('sr02')">&#8592;</button>
-        <button class="carousel-next" onclick="cNext('sr02')">&#8594;</button>
+        <button class="carousel-prev" onclick="event.stopPropagation(); cPrev('sr02')">&#8592;</button>
+        <button class="carousel-next" onclick="event.stopPropagation(); cNext('sr02')">&#8594;</button>
         <div class="carousel-dots" id="d-sr02"></div>
       </div>
       <div class="product-body">
@@ -704,12 +741,12 @@ loadRandomQuiz();
     </div>
 
     <!-- SR-AC01 -->
-    <div class="product-card">
+    <div class="product-card" onclick="window.location.href='SRAC01_Hood_Configurator.html'" style="cursor:pointer;">
       <div class="carousel-wrap" id="c-hood">
         <div class="carousel-track" id="t-hood"></div>
         <span class="carousel-badge" style="background:var(--gold);color:#2A1A2E;">Unisex</span>
-        <button class="carousel-prev" onclick="cPrev('hood')">&#8592;</button>
-        <button class="carousel-next" onclick="cNext('hood')">&#8594;</button>
+        <button class="carousel-prev" onclick="event.stopPropagation(); cPrev('hood')">&#8592;</button>
+        <button class="carousel-next" onclick="event.stopPropagation(); cNext('hood')">&#8594;</button>
         <div class="carousel-dots" id="d-hood"></div>
       </div>
       <div class="product-body">
@@ -734,30 +771,191 @@ loadRandomQuiz();
 
 <!-- CUSTOM REQUEST -->
 <section id="custom-request" style="background:rgba(255,255,255,0.01); padding: 5rem 2rem;">
-  <div style="max-width:700px; margin:0 auto; text-align:center;">
+  <div style="max-width:600px; margin:0 auto; text-align:center;">
     <div class="section-tag">Something else in mind?</div>
-    <h2 class="section-title" style="margin-bottom:1rem;">Have a vision?<br>We make it.</h2>
-    <p class="section-sub" style="margin-bottom:2.5rem;">Not finding exactly what you want in the SR series? Upload a reference photo and tell us your vision — our artisans can bring almost anything to life in crochet.</p>
+    <h2 class="section-title" style="margin-bottom:0.6rem;">Create Your Look ✨</h2>
+    <p class="section-sub" style="margin-bottom:2rem;">Tell us your moment, share your inspo, and we'll help make it yours.</p>
 
-    <!-- Tally embed wrapper -->
-    <div style="background:rgba(196,112,138,0.05); border:1px solid rgba(196,112,138,0.2); border-radius:20px; overflow:hidden; padding: 1.5rem 0.5rem;">
-      <iframe
-        data-tally-src="https://tally.so/embed/NpOv1l?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
-        loading="lazy"
-        width="100%"
-        height="400"
-        frameborder="0"
-        marginheight="0"
-        marginwidth="0"
-        title="YOU LOOP Custom Order Request"
-        style="display:block; border:none; min-height:400px;"
-      ></iframe>
+    <!-- Native Netlify form -->
+    <div style="background:rgba(196,112,138,0.05); border:1px solid rgba(196,112,138,0.2); border-radius:20px; padding: 2rem 1.5rem; text-align:left;">
+      <form name="custom-request" method="POST" data-netlify="true" netlify-honeypot="bot-field" enctype="multipart/form-data" id="customRequestForm">
+        <input type="hidden" name="form-name" value="custom-request">
+        <p style="display:none;"><label>Don't fill this out: <input name="bot-field"></label></p>
+        <input type="hidden" name="request_id" id="cr-request-id">
+        <input type="hidden" name="request_status" value="Needs Review">
+        <input type="hidden" name="fit_status" value="Fit Check Required">
+        <input type="hidden" name="submitted_at" id="cr-submitted-at">
+        <input type="hidden" name="sizing_method" id="cr-sizing-method-val">
+        <input type="hidden" name="measurement_source" id="cr-measure-source-val">
+        <input type="hidden" name="outfit_types" id="cr-outfit-types-val">
+        <input type="hidden" name="moment" id="cr-moment-val">
+        <input type="hidden" name="standard_size" id="cr-size-val">
+        <input type="hidden" name="preferred_contact" id="cr-contact-method-val">
+
+        <!-- NAME -->
+        <div class="yl-field">
+          <label class="yl-label" for="cr-name">Your name *</label>
+          <input class="yl-input" type="text" id="cr-name" name="name" required>
+        </div>
+
+        <!-- MOMENT -->
+        <div class="yl-field">
+          <label class="yl-label">What's your moment? ✨</label>
+          <div class="yl-chips" id="cr-moment-chips">
+            <button type="button" class="yl-chip" data-value="Birthday 🎂">Birthday 🎂</button>
+            <button type="button" class="yl-chip" data-value="Graduation 🎓">Graduation 🎓</button>
+            <button type="button" class="yl-chip" data-value="Concert / Festival 🎧">Concert / Festival 🎧</button>
+            <button type="button" class="yl-chip" data-value="Photoshoot 📸">Photoshoot 📸</button>
+            <button type="button" class="yl-chip" data-value="Anime / Character-inspired 🎀">Anime / Character-inspired 🎀</button>
+            <button type="button" class="yl-chip" data-value="Vacation / Beach 🏖️">Vacation / Beach 🏖️</button>
+            <button type="button" class="yl-chip" data-value="Something else ✨">Something else ✨</button>
+          </div>
+          <div class="yl-hidden" id="cr-moment-other-wrap" style="margin-top:0.6rem;">
+            <input class="yl-input" type="text" id="cr-moment-other" placeholder="Tell us your moment">
+          </div>
+        </div>
+
+        <!-- OUTFIT TYPE -->
+        <div class="yl-field">
+          <label class="yl-label">What are we making? 🧶</label>
+          <div class="yl-chips" id="cr-outfit-chips">
+            <button type="button" class="yl-chip" data-value="dress" data-label="Dress">Dress</button>
+            <button type="button" class="yl-chip" data-value="bodycon" data-label="Bodycon Dress">Bodycon Dress</button>
+            <button type="button" class="yl-chip" data-value="top" data-label="Top / Crop Top">Top / Crop Top</button>
+            <button type="button" class="yl-chip" data-value="bralette" data-label="Bralette / Cup Top">Bralette / Cup Top</button>
+            <button type="button" class="yl-chip" data-value="skirt" data-label="Skirt">Skirt</button>
+            <button type="button" class="yl-chip" data-value="pants" data-label="Pants / Shorts">Pants / Shorts</button>
+            <button type="button" class="yl-chip" data-value="sleeves" data-label="Sleeves / Arm Warmers">Sleeves / Arm Warmers</button>
+            <button type="button" class="yl-chip" data-value="other" data-label="Other">Other</button>
+          </div>
+          <div class="yl-hidden" id="cr-outfit-other-wrap" style="margin-top:0.6rem;">
+            <input class="yl-input" type="text" id="cr-outfit-other" name="outfit_other" placeholder="Tell us what you'd like made">
+          </div>
+          <div class="yl-hidden" id="cr-sleeve-toggle-wrap" style="margin-top:0.7rem;">
+            <label class="yl-checkline"><input type="checkbox" id="cr-fitted-sleeves" name="includes_fitted_sleeves"> This includes fitted or long sleeves</label>
+          </div>
+          <div class="yl-hidden" id="cr-armhole-toggle-wrap" style="margin-top:0.7rem;">
+            <label class="yl-checkline"><input type="checkbox" id="cr-attaches-armhole" name="attaches_at_armhole"> This attaches around the shoulder/armhole</label>
+          </div>
+        </div>
+
+        <!-- INSPIRATION -->
+        <div class="yl-field">
+          <label class="yl-label" for="cr-inspo">Show us your inspo 📌</label>
+          <input class="yl-input" type="file" id="cr-inspo" name="inspiration" accept="image/*" multiple>
+          <div class="yl-help">Upload as many reference photos as you like (max 10MB each)</div>
+        </div>
+
+        <!-- CUSTOMIZATION -->
+        <div class="yl-field">
+          <label class="yl-label" for="cr-notes">What would you change? 🎨</label>
+          <div class="yl-help" style="margin-bottom:0.5rem;">Tell us what you want to keep, change or add. You don't need fashion words — just tell us how you want it.</div>
+          <textarea class="yl-input yl-textarea" id="cr-notes" name="customization_notes" rows="4"></textarea>
+          <div class="yl-example">"I want it about 90% like my inspo. Make the V-neck wider but not too deep. Keep the sleeves, but make them slightly flared. Make the dress shorter, above my knees. Replace the front knot with a small bow. Keep the same colors."</div>
+          <div class="yl-help" style="margin-top:0.4rem;">You can change as much or as little as you want. ✨</div>
+        </div>
+
+        <!-- SIZING METHOD -->
+        <div class="yl-field">
+          <label class="yl-label">How would you like us to size it? 📏</label>
+          <div class="yl-chips" id="cr-sizing-chips">
+            <button type="button" class="yl-chip" data-value="standard">My usual size</button>
+            <button type="button" class="yl-chip" data-value="body">Measure my body</button>
+            <button type="button" class="yl-chip" data-value="garment">Measure an outfit that fits me well</button>
+          </div>
+
+          <!-- Standard size panel -->
+          <div class="yl-hidden" id="cr-standard-panel" style="margin-top:0.9rem;">
+            <div class="yl-chips" id="cr-size-chips">
+              <button type="button" class="yl-chip" data-value="XS">XS</button>
+              <button type="button" class="yl-chip" data-value="S">S</button>
+              <button type="button" class="yl-chip" data-value="M">M</button>
+              <button type="button" class="yl-chip" data-value="L">L</button>
+              <button type="button" class="yl-chip" data-value="XL">XL</button>
+              <button type="button" class="yl-chip" data-value="XXL">XXL</button>
+            </div>
+            <div class="yl-help" style="margin-top:0.5rem;">We'll review the design and let you know if we need any extra measurements.</div>
+          </div>
+
+          <!-- Measurement panel (shared for body + garment, copy swaps by method) -->
+          <div class="yl-hidden" id="cr-measure-panel" style="margin-top:0.9rem;">
+            <div class="yl-help" id="cr-measure-intro" style="margin-bottom:0.2rem;"></div>
+            <button type="button" class="yl-guide-btn" id="cr-guide-btn"><span class="circ">i</span> View measurement guide</button>
+            <div class="yl-measure-grid" id="cr-measure-grid">
+              <div class="yl-measure-field yl-hidden" id="mf-bust"><label for="ms-bust">Bust</label><div class="yl-measure-help" id="mf-bust-help"></div><input class="yl-input" type="text" inputmode="decimal" id="ms-bust" name="measure_bust" placeholder="cm"></div>
+              <div class="yl-measure-field yl-hidden" id="mf-underbust"><label for="ms-underbust">Underbust</label><div class="yl-measure-help" id="mf-underbust-help"></div><input class="yl-input" type="text" inputmode="decimal" id="ms-underbust" name="measure_underbust" placeholder="cm"></div>
+              <div class="yl-measure-field yl-hidden" id="mf-bra_size"><label for="ms-bra_size">Usual Bra Size</label><div class="yl-measure-help" id="mf-bra_size-help"></div><input class="yl-input" type="text" id="ms-bra_size" name="measure_bra_size" placeholder="e.g. 34B"></div>
+              <div class="yl-measure-field yl-hidden" id="mf-waist"><label for="ms-waist">Waist</label><div class="yl-measure-help" id="mf-waist-help"></div><input class="yl-input" type="text" inputmode="decimal" id="ms-waist" name="measure_waist" placeholder="cm"></div>
+              <div class="yl-measure-field yl-hidden" id="mf-hips"><label for="ms-hips">Hips</label><div class="yl-measure-help" id="mf-hips-help"></div><input class="yl-input" type="text" inputmode="decimal" id="ms-hips" name="measure_hips" placeholder="cm"></div>
+              <div class="yl-measure-field yl-hidden" id="mf-shoulder_width"><label for="ms-shoulder_width">Shoulder Width</label><div class="yl-measure-help" id="mf-shoulder_width-help"></div><input class="yl-input" type="text" inputmode="decimal" id="ms-shoulder_width" name="measure_shoulder_width" placeholder="cm"></div>
+              <div class="yl-measure-field yl-hidden" id="mf-shoulder_to_waist"><label for="ms-shoulder_to_waist">Shoulder to Waist</label><div class="yl-measure-help" id="mf-shoulder_to_waist-help"></div><input class="yl-input" type="text" inputmode="decimal" id="ms-shoulder_to_waist" name="measure_shoulder_to_waist" placeholder="cm"></div>
+              <div class="yl-measure-field yl-hidden" id="mf-armhole"><label for="ms-armhole">Armhole</label><div class="yl-measure-help" id="mf-armhole-help"></div><input class="yl-input" type="text" inputmode="decimal" id="ms-armhole" name="measure_armhole" placeholder="cm"></div>
+              <div class="yl-measure-field yl-hidden" id="mf-upper_arm"><label for="ms-upper_arm">Upper Arm</label><div class="yl-measure-help" id="mf-upper_arm-help"></div><input class="yl-input" type="text" inputmode="decimal" id="ms-upper_arm" name="measure_upper_arm" placeholder="cm"></div>
+              <div class="yl-measure-field yl-hidden" id="mf-sleeve_length"><label for="ms-sleeve_length">Arm / Sleeve Length</label><div class="yl-measure-help" id="mf-sleeve_length-help"></div><input class="yl-input" type="text" inputmode="decimal" id="ms-sleeve_length" name="measure_sleeve_length" placeholder="cm"></div>
+              <div class="yl-measure-field yl-hidden" id="mf-wrist"><label for="ms-wrist">Wrist</label><div class="yl-measure-help" id="mf-wrist-help"></div><input class="yl-input" type="text" inputmode="decimal" id="ms-wrist" name="measure_wrist" placeholder="cm"></div>
+              <div class="yl-measure-field yl-hidden" id="mf-top_length"><label for="ms-top_length">Desired Top Length</label><div class="yl-measure-help" id="mf-top_length-help"></div><input class="yl-input" type="text" inputmode="decimal" id="ms-top_length" name="measure_top_length" placeholder="cm"></div>
+              <div class="yl-measure-field yl-hidden" id="mf-dress_length"><label for="ms-dress_length">Desired Dress Length</label><div class="yl-measure-help" id="mf-dress_length-help"></div><input class="yl-input" type="text" inputmode="decimal" id="ms-dress_length" name="measure_dress_length" placeholder="cm"></div>
+              <div class="yl-measure-field yl-hidden" id="mf-skirt_length"><label for="ms-skirt_length">Desired Skirt Length</label><div class="yl-measure-help" id="mf-skirt_length-help"></div><input class="yl-input" type="text" inputmode="decimal" id="ms-skirt_length" name="measure_skirt_length" placeholder="cm"></div>
+              <div class="yl-measure-field yl-hidden" id="mf-rise"><label for="ms-rise">Rise</label><div class="yl-measure-help" id="mf-rise-help"></div><input class="yl-input" type="text" inputmode="decimal" id="ms-rise" name="measure_rise" placeholder="cm"></div>
+              <div class="yl-measure-field yl-hidden" id="mf-inseam"><label for="ms-inseam">Inseam / Desired Bottom Length</label><div class="yl-measure-help" id="mf-inseam-help"></div><input class="yl-input" type="text" inputmode="decimal" id="ms-inseam" name="measure_inseam" placeholder="cm"></div>
+            </div>
+            <div class="yl-help yl-hidden" id="cr-garment-note" style="margin-top:0.5rem;font-style:italic;">For best results, choose a piece with a similar fit and stretch.</div>
+          </div>
+        </div>
+
+        <!-- REQUIRED BY -->
+        <div class="yl-field">
+          <label class="yl-label" for="cr-date">When would you like your outfit ready? 🗓️</label>
+          <input class="yl-input" type="date" id="cr-date" name="required_by">
+          <div class="yl-help">We'll confirm what's possible after reviewing your request.</div>
+        </div>
+
+        <!-- CONTACT -->
+        <div class="yl-field" style="margin-bottom:0.5rem;">
+          <label class="yl-label">How should we contact you? 💌</label>
+          <div class="yl-chips" id="cr-contact-chips">
+            <button type="button" class="yl-chip" data-value="instagram">Instagram DM</button>
+            <button type="button" class="yl-chip" data-value="facebook">Facebook Messenger</button>
+            <button type="button" class="yl-chip" data-value="whatsapp">WhatsApp</button>
+            <button type="button" class="yl-chip" data-value="telegram">Telegram</button>
+            <button type="button" class="yl-chip" data-value="viber">Viber</button>
+            <button type="button" class="yl-chip" data-value="email">Email</button>
+          </div>
+          <div class="yl-hidden" id="cr-contact-detail-wrap" style="margin-top:0.7rem;">
+            <label class="yl-label" id="cr-contact-detail-label" for="cr-contact-detail"></label>
+            <input class="yl-input" type="text" id="cr-contact-detail" name="contact_detail">
+          </div>
+          <div class="yl-hidden" id="cr-email-optional-wrap" style="margin-top:0.7rem;">
+            <label class="yl-label" for="cr-email-optional">Email (optional)</label>
+            <input class="yl-input" type="email" id="cr-email-optional" name="email_optional">
+          </div>
+        </div>
+
+        <button type="submit" class="yl-submit">Send My Idea ✨</button>
+      </form>
+
+      <div class="yl-success" id="customRequestSuccess" style="display:none;">
+        <p style="font-size:1.05rem;color:var(--cream);margin-bottom:0.6rem;">Got it! Your idea is with YOU LOOP. ✨</p>
+        <p style="font-size:0.85rem;color:var(--mgray);line-height:1.7;">We'll review your design, fit and measurements, then reach out through your preferred contact if we need to confirm anything.</p>
+        <p style="font-size:0.85rem;color:var(--mgray);margin-top:0.6rem;">See you in your moment. 🌸🗡️</p>
+        <p style="font-size:0.78rem;color:var(--rose);margin-top:1rem;letter-spacing:0.05em;" id="cr-request-id-display"></p>
+      </div>
     </div>
-
-    <p style="font-size:0.72rem; color:var(--mgray); margin-top:1rem; line-height:1.6;">We'll reach out on WhatsApp within 24 hours with a quote and timeline. 🙏</p>
     <p style="text-align:center; margin-top:2.5rem; font-size:0.78rem; color:var(--mgray);">
     Ordering for your brand or team? <a href="youloop_bulk_inquiry.html" style="color:var(--rose); text-decoration:underline;">Bulk & partnership inquiries →</a>
   </p>
+  </div>
+
+  <!-- Measurement guide lightbox -->
+  <div class="yl-lightbox" id="crGuideLightbox">
+    <div class="yl-lightbox-card">
+      <button type="button" class="yl-lightbox-close" id="crGuideClose" aria-label="Close">&#10005;</button>
+      <img id="crGuideImg" alt="YOU LOOP measurement guide — how to measure your body and how to measure a garment that fits you well" style="clear:both;">
+      <div class="yl-lightbox-actions">
+        <a href="images/guide/measurement-guide.png" download="YOU-LOOP-Measurement-Guide.png">Save guide to my phone</a>
+        <div class="yl-lightbox-hint">Tip: you can also press and hold the image to save it.</div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1261,7 +1459,7 @@ function buildCarousel(id) {
     const dot = document.createElement('button');
     dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
     dot.style.background = i === 0 ? s.dot : 'rgba(196,112,138,0.35)';
-    dot.onclick = () => goTo(id, i);
+    dot.onclick = (e) => { e.stopPropagation(); goTo(id, i); };
     dotsEl.appendChild(dot);
   });
 }
@@ -1309,8 +1507,243 @@ document.addEventListener('click', function(e) {
 
 </script>
 
-<!-- Tally embed script — loads form dynamically and handles height -->
-<script async src="https://tally.so/widgets/embed.js"></script>
+<script>
+(function(){
+  var form = document.getElementById('customRequestForm');
+  var success = document.getElementById('customRequestSuccess');
+  if (!form) return;
+
+  /* ── DATA: measurement definitions, per-outfit requirements, contact fields ── */
+  var MEASURE_DEFS = {
+    bust:               { label:'Bust',                    body:'Around the fullest part of your bust.',                                               garment:'Lay the piece flat and measure straight across, underarm to underarm, then double it.' },
+    underbust:          { label:'Underbust',                body:'Around your ribcage directly below your bust.',                                       garment:'Lay flat and measure straight across just under the bust line, then double it.' },
+    bra_size:           { label:'Usual Bra Size',            body:'Your everyday bra size, e.g. 34B.',                                                   garment:'Your everyday bra size, e.g. 34B.' },
+    waist:              { label:'Waist',                    body:'Around your natural waist.',                                                          garment:'Lay flat and measure straight across the narrowest point of the waistband, then double it.' },
+    hips:                { label:'Hips',                     body:'Around the fullest part of your hips/bottom.',                                        garment:'Lay flat and measure straight across the fullest part, then double it.' },
+    shoulder_width:      { label:'Shoulder Width',            body:'From one shoulder point to the other.',                                               garment:'Lay flat and measure straight across from one shoulder seam to the other.' },
+    shoulder_to_waist:   { label:'Shoulder to Waist',         body:'From the top of your shoulder to your natural waist.',                                garment:'Lay flat and measure from the shoulder seam straight down to where the waist shaping sits.' },
+    armhole:             { label:'Armhole',                   body:'Around the base of your arm, where it meets your shoulder.',                          garment:'Lay flat and measure around the seam where the sleeve meets the body.' },
+    upper_arm:           { label:'Upper Arm',                 body:'Around the fullest part of your upper arm.',                                          garment:'Lay the sleeve flat and measure straight across the fullest part, then double it.' },
+    sleeve_length:       { label:'Arm / Sleeve Length',        body:'From your shoulder point to where you want the sleeve to end.',                       garment:'Lay flat and measure from the shoulder seam to where the sleeve ends.' },
+    wrist:               { label:'Wrist',                     body:'Around your wrist.',                                                                  garment:'Lay the sleeve flat and measure straight across the cuff opening, then double it.' },
+    top_length:          { label:'Desired Top Length',         body:'From the top of your shoulder to where you want the top to end.',                     garment:'Lay flat and measure from the shoulder seam straight down to the hem.' },
+    dress_length:        { label:'Desired Dress Length',       body:'From the top of your shoulder to where you want the dress to end.',                   garment:'Lay flat and measure from the shoulder seam straight down to the hem.' },
+    skirt_length:        { label:'Desired Skirt Length',       body:'From where you want the skirt waistband to sit to where you want the skirt to end.',  garment:'Lay flat and measure from the waistband straight down to the hem.' },
+    rise:                { label:'Rise',                       body:'How high or low you like your waistband to sit — from the waistband down through the legs to the back waistband.', garment:'Lay flat and measure from the top of the waistband straight down to the crotch seam.' },
+    inseam:              { label:'Inseam / Desired Bottom Length', body:'From the crotch seam down the inside of your leg to where you want the hem to end.', garment:'Lay flat and measure from the crotch seam down to the hem, along the inside leg.' }
+  };
+  var MEASURE_ORDER = ['bust','underbust','bra_size','waist','hips','shoulder_width','shoulder_to_waist','armhole','upper_arm','sleeve_length','wrist','top_length','dress_length','skirt_length','rise','inseam'];
+  var OUTFIT_LABELS = { dress:'Dress', bodycon:'Bodycon Dress', top:'Top / Crop Top', bralette:'Bralette / Cup Top', skirt:'Skirt', pants:'Pants / Shorts', sleeves:'Sleeves / Arm Warmers', other:'Other' };
+  var OUTFIT_MEASURES = {
+    top:      ['bust','underbust','shoulder_width','armhole','shoulder_to_waist','top_length'],
+    bralette: ['bust','underbust','bra_size','top_length'],
+    skirt:    ['waist','hips','skirt_length'],
+    dress:    ['bust','underbust','waist','hips','shoulder_width','armhole','shoulder_to_waist','dress_length'],
+    bodycon:  ['bust','underbust','waist','hips','shoulder_width','armhole','shoulder_to_waist','dress_length'],
+    pants:    ['waist','hips','rise','inseam'],
+    sleeves:  ['upper_arm','sleeve_length','wrist'],
+    other:    []
+  };
+  var SLEEVE_EXTRA = ['upper_arm','sleeve_length','wrist'];
+  var FITTED_SLEEVE_TYPES = ['top','dress','bodycon'];
+  var CONTACT_FIELDS = {
+    instagram: { label:'Your Instagram @',                        type:'text' },
+    facebook:  { label:'Your Facebook profile / Messenger link',   type:'text' },
+    whatsapp:  { label:'Your WhatsApp number',                     type:'tel'  },
+    telegram:  { label:'Your Telegram username or number',         type:'text' },
+    viber:     { label:'Your Viber number',                        type:'tel'  },
+    email:     { label:'Your email address',                       type:'email'}
+  };
+
+  var state = { moment:'', outfitTypes:[], sizingMethod:'', contactMethod:'' };
+
+  /* ── CHIP HELPER ── */
+  function initChips(containerId, opts) {
+    var el = document.getElementById(containerId);
+    if (!el) return;
+    opts = opts || {};
+    el.querySelectorAll('.yl-chip').forEach(function(chip) {
+      chip.addEventListener('click', function() {
+        if (opts.multi) {
+          chip.classList.toggle('active');
+        } else {
+          el.querySelectorAll('.yl-chip').forEach(function(c) { c.classList.remove('active'); });
+          chip.classList.add('active');
+        }
+        if (typeof opts.onChange === 'function') opts.onChange();
+      });
+    });
+  }
+  function activeChipValues(containerId) {
+    var el = document.getElementById(containerId);
+    return Array.prototype.slice.call(el.querySelectorAll('.yl-chip.active')).map(function(c) { return c.dataset.value; });
+  }
+
+  /* ── MOMENT ── */
+  initChips('cr-moment-chips', { onChange: function() {
+    var vals = activeChipValues('cr-moment-chips');
+    var chosen = vals[0] || '';
+    document.getElementById('cr-moment-other-wrap').classList.toggle('yl-hidden', chosen !== 'Something else ✨');
+    updateMomentValue();
+  }});
+  document.getElementById('cr-moment-other').addEventListener('input', updateMomentValue);
+  function updateMomentValue() {
+    var vals = activeChipValues('cr-moment-chips');
+    var chosen = vals[0] || '';
+    var custom = document.getElementById('cr-moment-other').value.trim();
+    document.getElementById('cr-moment-val').value = (chosen === 'Something else ✨' && custom) ? custom : chosen;
+  }
+
+  /* ── OUTFIT TYPE (multi) ── */
+  initChips('cr-outfit-chips', { multi: true, onChange: function() {
+    state.outfitTypes = activeChipValues('cr-outfit-chips');
+    document.getElementById('cr-outfit-other-wrap').classList.toggle('yl-hidden', state.outfitTypes.indexOf('other') === -1);
+    var showSleeveToggle = state.outfitTypes.some(function(t) { return FITTED_SLEEVE_TYPES.indexOf(t) > -1; });
+    document.getElementById('cr-sleeve-toggle-wrap').classList.toggle('yl-hidden', !showSleeveToggle);
+    if (!showSleeveToggle) document.getElementById('cr-fitted-sleeves').checked = false;
+    var showArmholeToggle = state.outfitTypes.indexOf('sleeves') > -1;
+    document.getElementById('cr-armhole-toggle-wrap').classList.toggle('yl-hidden', !showArmholeToggle);
+    if (!showArmholeToggle) document.getElementById('cr-attaches-armhole').checked = false;
+    var labels = document.querySelectorAll('#cr-outfit-chips .yl-chip.active');
+    document.getElementById('cr-outfit-types-val').value = Array.prototype.map.call(labels, function(c) { return c.dataset.label; }).join(', ');
+    renderMeasurements();
+  }});
+  document.getElementById('cr-fitted-sleeves').addEventListener('change', renderMeasurements);
+  document.getElementById('cr-attaches-armhole').addEventListener('change', renderMeasurements);
+
+  /* ── SIZING METHOD ── */
+  initChips('cr-sizing-chips', { onChange: function() {
+    var vals = activeChipValues('cr-sizing-chips');
+    state.sizingMethod = vals[0] || '';
+    document.getElementById('cr-standard-panel').classList.toggle('yl-hidden', state.sizingMethod !== 'standard');
+    document.getElementById('cr-measure-panel').classList.toggle('yl-hidden', state.sizingMethod !== 'body' && state.sizingMethod !== 'garment');
+    var sizingLabelMap = { standard:'My usual size', body:'Measure my body', garment:'Measure an outfit that fits me well' };
+    document.getElementById('cr-sizing-method-val').value = sizingLabelMap[state.sizingMethod] || '';
+    document.getElementById('cr-measure-source-val').value = state.sizingMethod === 'body' ? 'Body Measurement' : (state.sizingMethod === 'garment' ? 'Existing Garment Measurement' : '');
+    if (state.sizingMethod === 'body' || state.sizingMethod === 'garment') {
+      document.getElementById('cr-measure-intro').textContent = state.sizingMethod === 'body'
+        ? 'Measure your body directly, in a well-fitted (not stretched) position.'
+        : 'Measure a garment you already own that fits the way you like — laid flat, unstretched.';
+      document.getElementById('cr-garment-note').classList.toggle('yl-hidden', state.sizingMethod !== 'garment');
+    }
+    renderMeasurements();
+  }});
+  initChips('cr-size-chips', { onChange: function() {
+    document.getElementById('cr-size-val').value = activeChipValues('cr-size-chips')[0] || '';
+  }});
+
+  /* ── DYNAMIC MEASUREMENT RENDERING ── */
+  function computeMeasureKeys() {
+    var keys = {};
+    state.outfitTypes.forEach(function(t) {
+      (OUTFIT_MEASURES[t] || []).forEach(function(k) { keys[k] = true; });
+    });
+    var fittedEligible = state.outfitTypes.some(function(t) { return FITTED_SLEEVE_TYPES.indexOf(t) > -1; });
+    if (fittedEligible && document.getElementById('cr-fitted-sleeves').checked) {
+      SLEEVE_EXTRA.forEach(function(k) { keys[k] = true; });
+    }
+    if (state.outfitTypes.indexOf('sleeves') > -1 && document.getElementById('cr-attaches-armhole').checked) {
+      keys.armhole = true;
+    }
+    return keys;
+  }
+  function renderMeasurements() {
+    var keys = computeMeasureKeys();
+    var useGarment = state.sizingMethod === 'garment';
+    MEASURE_ORDER.forEach(function(k) {
+      var wrap = document.getElementById('mf-' + k);
+      if (!wrap) return;
+      var show = !!keys[k];
+      wrap.classList.toggle('yl-hidden', !show);
+      if (show) {
+        var def = MEASURE_DEFS[k];
+        document.getElementById('mf-' + k + '-help').textContent = useGarment ? def.garment : def.body;
+      }
+    });
+  }
+
+  /* ── CONTACT METHOD ── */
+  initChips('cr-contact-chips', { onChange: function() {
+    var vals = activeChipValues('cr-contact-chips');
+    state.contactMethod = vals[0] || '';
+    document.getElementById('cr-contact-method-val').value = state.contactMethod;
+    var cfg = CONTACT_FIELDS[state.contactMethod];
+    var detailWrap = document.getElementById('cr-contact-detail-wrap');
+    var detailInput = document.getElementById('cr-contact-detail');
+    var detailLabel = document.getElementById('cr-contact-detail-label');
+    var emailWrap = document.getElementById('cr-email-optional-wrap');
+    if (cfg) {
+      detailWrap.classList.remove('yl-hidden');
+      detailLabel.textContent = cfg.label;
+      detailInput.type = cfg.type;
+      detailInput.required = true;
+    } else {
+      detailWrap.classList.add('yl-hidden');
+    }
+    if (state.contactMethod && state.contactMethod !== 'email') {
+      emailWrap.classList.remove('yl-hidden');
+    } else {
+      emailWrap.classList.add('yl-hidden');
+      document.getElementById('cr-email-optional').value = '';
+    }
+  }});
+
+  /* ── MEASUREMENT GUIDE LIGHTBOX ── */
+  (function() {
+    var btn = document.getElementById('cr-guide-btn');
+    var lightbox = document.getElementById('crGuideLightbox');
+    var closeBtn = document.getElementById('crGuideClose');
+    var img = document.getElementById('crGuideImg');
+    if (!btn || !lightbox) return;
+    function open() {
+      if (!img.src) img.src = 'images/guide/measurement-guide.png';
+      lightbox.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function close() {
+      lightbox.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    btn.addEventListener('click', open);
+    closeBtn.addEventListener('click', close);
+    lightbox.addEventListener('click', function(e) { if (e.target === lightbox) close(); });
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') close(); });
+  })();
+
+  /* ── INIT ── */
+  function genRequestId() {
+    return 'YL-CR-' + Date.now().toString(36).toUpperCase().slice(-5) + Math.random().toString(36).slice(2, 5).toUpperCase();
+  }
+  document.getElementById('cr-request-id').value = genRequestId();
+  var dateInput = document.getElementById('cr-date');
+  dateInput.min = new Date().toISOString().slice(0, 10);
+
+  /* ── SUBMIT ── */
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (state.outfitTypes.length === 0) { alert("What are we making? Pick at least one — that's how we know what to create ✨"); return; }
+    if (!state.sizingMethod) { alert('Pick how you\'d like us to size it 📏'); return; }
+    if (!state.contactMethod || !document.getElementById('cr-contact-detail').value.trim()) { alert("How should we reach you? Pick a contact method and pop in your details 💌"); return; }
+    document.getElementById('cr-submitted-at').value = new Date().toISOString();
+    var btn = form.querySelector('.yl-submit');
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+    var requestId = document.getElementById('cr-request-id').value;
+    fetch('/', { method: 'POST', body: new FormData(form) })
+      .then(function(res) {
+        if (!res.ok) throw new Error('Network response was not ok');
+        form.style.display = 'none';
+        document.getElementById('cr-request-id-display').textContent = 'Your request: ' + requestId;
+        success.style.display = 'block';
+      })
+      .catch(function() {
+        btn.disabled = false;
+        btn.textContent = 'Send My Idea ✨';
+        alert('Something went wrong sending your idea. Please try again, or reach us directly on LINE.');
+      });
+  });
+})();
+</script>
 
 </body>
 </html>

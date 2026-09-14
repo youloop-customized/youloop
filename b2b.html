@@ -198,6 +198,29 @@
     text-align:center; padding:28px 24px 40px;
     font-size:12px; color:var(--text-soft);
   }
+
+  /* ---------- Inquiry form ---------- */
+  .inquiry-form-wrap{
+    background:var(--cream);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:36px 28px;
+    max-width:640px;
+    margin:0 auto;
+  }
+  .yl-field{margin-bottom:20px;text-align:left;}
+  .yl-label{display:block;font-size:13px;font-weight:600;color:var(--maroon-deep);margin-bottom:6px;}
+  .yl-input{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--text);font-family:'Inter',sans-serif;font-size:14px;}
+  .yl-input:focus{outline:none;border-color:var(--rose);}
+  .yl-textarea{resize:vertical;min-height:90px;}
+  .yl-help{font-size:12px;color:var(--text-soft);margin-top:5px;}
+  .yl-radio-group{display:flex;flex-direction:column;gap:9px;}
+  .yl-radio{display:flex;align-items:flex-start;gap:8px;font-size:13.5px;color:var(--text);cursor:pointer;}
+  .yl-radio input{margin-top:3px;flex:0 0 auto;}
+  .yl-submit{width:100%;background:var(--maroon-deep);color:#fff;border:none;padding:15px;border-radius:999px;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;}
+  .yl-submit:hover{opacity:0.92;}
+  .yl-submit:disabled{opacity:0.6;cursor:not-allowed;}
+  .yl-success{text-align:center;padding:1rem 0;}
 </style>
 </head>
 <body>
@@ -211,11 +234,11 @@
 </nav>
 
 <div class="hero">
-  <img class="logo" src="images/b2b/youloop-logo-transparent.png" alt="YOU LOOP">
+  <img class="logo" src="images/logo/youloop-logo.png" alt="YOU LOOP">
   <div class="eyebrow" style="margin-bottom:16px;">Responsible Handmade Merchandise Partner</div>
   <h1>Custom Crochet Corporate Gifts</h1>
   <p class="sub">Thoughtful handmade merchandise for brands, teams, events, and communities — responsibly crafted through artisan partners in Thailand and Myanmar.</p>
-  <a class="cta-btn" href="https://tally.so/r/yPk6Pg" target="_blank">Bulk Inquiry</a>
+  <a class="cta-btn" href="#inquiry">Bulk Inquiry</a>
   <div class="cta-sub">Get partner pricing, samples, and a custom quotation</div>
 </div>
 
@@ -364,9 +387,7 @@
 
     <a
       class="cta-btn"
-      href="https://tally.so/r/yPk6Pg"
-      target="_blank"
-      rel="noopener noreferrer"
+      href="#inquiry"
       style="
         width:100%;
         text-align:center;
@@ -488,13 +509,140 @@
   </div>
 </section>
 
+<section id="inquiry" style="background:var(--cream);">
+  <div class="section-inner">
+    <div class="section-title">
+      <span class="eyebrow">Let's talk</span>
+      <h2>Tell us about your project</h2>
+    </div>
+
+    <div class="inquiry-form-wrap">
+      <form name="b2b-inquiry" method="POST" data-netlify="true" netlify-honeypot="bot-field" enctype="multipart/form-data" id="b2bInquiryForm">
+        <input type="hidden" name="form-name" value="b2b-inquiry">
+        <p style="display:none;"><label>Don't fill this out: <input name="bot-field"></label></p>
+
+        <div class="yl-field">
+          <label class="yl-label" for="b2b-name">Your name *</label>
+          <input class="yl-input" type="text" id="b2b-name" name="name" required>
+        </div>
+
+        <div class="yl-field">
+          <label class="yl-label" for="b2b-email">Work email *</label>
+          <input class="yl-input" type="email" id="b2b-email" name="email" required>
+        </div>
+
+        <div class="yl-field">
+          <label class="yl-label" for="b2b-phone">Phone / WhatsApp *</label>
+          <input class="yl-input" type="tel" id="b2b-phone" name="phone" required>
+        </div>
+
+        <div class="yl-field">
+          <label class="yl-label" for="b2b-company">Company or organization *</label>
+          <input class="yl-input" type="text" id="b2b-company" name="company" required>
+        </div>
+
+        <div class="yl-field">
+          <label class="yl-label" for="b2b-website">Website or social profile *</label>
+          <input class="yl-input" type="text" id="b2b-website" name="website" required>
+        </div>
+
+        <div class="yl-field">
+          <label class="yl-label">You are contacting us as *</label>
+          <div class="yl-radio-group">
+            <label class="yl-radio"><input type="radio" name="contacting_as" value="Direct brand or company" required> Direct brand or company</label>
+            <label class="yl-radio"><input type="radio" name="contacting_as" value="Corporate-gifting company"> Corporate-gifting company</label>
+            <label class="yl-radio"><input type="radio" name="contacting_as" value="Marketing or branding agency"> Marketing or branding agency</label>
+            <label class="yl-radio"><input type="radio" name="contacting_as" value="Event organizer"> Event organizer</label>
+            <label class="yl-radio"><input type="radio" name="contacting_as" value="NGO or community"> NGO or community</label>
+            <label class="yl-radio"><input type="radio" name="contacting_as" value="Retail or distribution partner"> Retail or distribution partner</label>
+            <label class="yl-radio"><input type="radio" name="contacting_as" value="Individual"> Individual</label>
+            <label class="yl-radio"><input type="radio" name="contacting_as" value="Other"> Other</label>
+          </div>
+        </div>
+
+        <div class="yl-field">
+          <label class="yl-label" for="b2b-develop">What would you like to develop? *</label>
+          <input class="yl-input" type="text" id="b2b-develop" name="develop" required placeholder="e.g. branded laptop sleeves, event merch, a new product">
+        </div>
+
+        <div class="yl-field">
+          <label class="yl-label" for="b2b-project-for">What is this project for? *</label>
+          <textarea class="yl-input yl-textarea" id="b2b-project-for" name="project_for" rows="3" required></textarea>
+        </div>
+
+        <div class="yl-field">
+          <label class="yl-label">Estimated quantity *</label>
+          <div class="yl-radio-group">
+            <label class="yl-radio"><input type="radio" name="quantity" value="Prototype only" required> Prototype only</label>
+            <label class="yl-radio"><input type="radio" name="quantity" value="3–10 pieces"> 3–10 pieces</label>
+            <label class="yl-radio"><input type="radio" name="quantity" value="11–30 pieces"> 11–30 pieces</label>
+            <label class="yl-radio"><input type="radio" name="quantity" value="31–100 pieces"> 31–100 pieces</label>
+            <label class="yl-radio"><input type="radio" name="quantity" value="101–300 pieces"> 101–300 pieces</label>
+            <label class="yl-radio"><input type="radio" name="quantity" value="More than 300 pieces"> More than 300 pieces</label>
+            <label class="yl-radio"><input type="radio" name="quantity" value="Quantity not confirmed"> Quantity not confirmed</label>
+          </div>
+        </div>
+
+        <div class="yl-field">
+          <label class="yl-label" for="b2b-date">Target delivery date *</label>
+          <input class="yl-input" type="date" id="b2b-date" name="delivery_date" required>
+        </div>
+
+        <div class="yl-field">
+          <label class="yl-label" for="b2b-location">Where should the order be delivered? *</label>
+          <input class="yl-input" type="text" id="b2b-location" name="delivery_location" required>
+        </div>
+
+        <div class="yl-field">
+          <label class="yl-label" for="b2b-customize">What would you like to customize? *</label>
+          <textarea class="yl-input yl-textarea" id="b2b-customize" name="customize" rows="3" required placeholder="Logos, brand colours, names, motifs…"></textarea>
+        </div>
+
+        <div class="yl-field">
+          <label class="yl-label" for="b2b-brief">Tell us about the brief *</label>
+          <textarea class="yl-input yl-textarea" id="b2b-brief" name="brief" rows="4" required></textarea>
+        </div>
+
+        <div class="yl-field">
+          <label class="yl-label" for="b2b-references">Upload your references</label>
+          <input class="yl-input" type="file" id="b2b-references" name="references" accept="image/*,.pdf">
+          <div class="yl-help">Max 10MB</div>
+        </div>
+
+        <div class="yl-field">
+          <label class="yl-label">What would you like from YOU LOOP next? *</label>
+          <div class="yl-radio-group">
+            <label class="yl-radio"><input type="radio" name="next_step" value="15-minute introductory call" required> 15-minute introductory call</label>
+            <label class="yl-radio"><input type="radio" name="next_step" value="Indicative quotation"> Indicative quotation</label>
+            <label class="yl-radio"><input type="radio" name="next_step" value="Paid prototype or sample"> Paid prototype or sample</label>
+            <label class="yl-radio"><input type="radio" name="next_step" value="Product recommendations"> Product recommendations</label>
+            <label class="yl-radio"><input type="radio" name="next_step" value="Production-feasibility discussion"> Production-feasibility discussion</label>
+          </div>
+        </div>
+
+        <div class="yl-field" style="margin-bottom:0.5rem;">
+          <label class="yl-label" for="b2b-notes">Anything else we should know?</label>
+          <textarea class="yl-input yl-textarea" id="b2b-notes" name="notes" rows="3"></textarea>
+        </div>
+
+        <button type="submit" class="yl-submit">Submit inquiry</button>
+      </form>
+
+      <div class="yl-success" id="b2bInquirySuccess" style="display:none;">
+        <p style="font-family:'Fraunces',serif;font-size:20px;color:var(--maroon-deep);margin-bottom:8px;">Thank you — got it.</p>
+        <p style="font-size:14px;color:var(--text-soft);">We'll review your project and follow up by email within 24 hours.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section>
   <div class="section-inner">
     <div class="closing">
       <span class="eyebrow" style="color:rgba(255,255,255,0.7);">Let's create something your clients can't buy off the shelf</span>
       <h2 style="margin-top:14px;">List our ready-to-customize crochet products in your catalogue, or bring us your client's next idea.</h2>
       <p>We'll help turn it into handmade merchandise — samples, partner pricing, prototype development, custom quotations, and product consultation, all included.</p>
-      <a class="cta-btn" href="https://tally.so/r/yPk6Pg" target="_blank">Bulk Inquiry</a>
+      <a class="cta-btn" href="#inquiry">Bulk Inquiry</a>
       <div class="contact">
         <a href="mailto:hello.youloop@gmail.com">hello.youloop@gmail.com</a>
         <a href="https://instagram.com/hello.youloop" target="_blank">@hello.youloop</a>
@@ -504,6 +652,32 @@
 </section>
 
 <footer>YOU LOOP · Custom Crochet Corporate Gifts &amp; Merchandise</footer>
+
+<script>
+(function(){
+  var form = document.getElementById('b2bInquiryForm');
+  var success = document.getElementById('b2bInquirySuccess');
+  if (!form) return;
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var btn = form.querySelector('.yl-submit');
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+    fetch('/', { method: 'POST', body: new FormData(form) })
+      .then(function(res){
+        if (!res.ok) throw new Error('Network response was not ok');
+        form.style.display = 'none';
+        success.style.display = 'block';
+        success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      })
+      .catch(function(){
+        btn.disabled = false;
+        btn.textContent = 'Submit inquiry';
+        alert('Something went wrong sending your inquiry. Please try again, or reach us directly at hello.youloop@gmail.com.');
+      });
+  });
+})();
+</script>
 
 </body>
 </html>

@@ -21,6 +21,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content
 .nav-links{display:flex;gap:1.5rem;align-items:center;}
 .nav-links a{font-size:0.8rem;color:var(--mgray);text-decoration:none;letter-spacing:0.08em;transition:color 0.2s;}
 .nav-links a:hover{color:var(--cream);}
+.nav-logo-img{height:30px;width:auto;display:block;}
 .nav-cta{background:var(--rose);color:white!important;padding:0.55rem 1.2rem;border-radius:20px;font-size:0.8rem;font-weight:500;}
 @media(max-width:768px){.nav-links{display:none;}}
 
@@ -30,8 +31,18 @@ h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,2.8rem);font-we
 h1 em{font-style:italic;color:var(--rose);}
 .sub{font-size:0.95rem;color:var(--mgray);line-height:1.7;max-width:460px;margin:0 auto 3rem;}
 
-.form-wrap{background:rgba(196,112,138,0.05);border:1px solid rgba(196,112,138,0.2);border-radius:20px;overflow:hidden;padding:1.5rem 0.5rem;}
-.form-wrap iframe{display:block;border:none;width:100%;min-height:480px;}
+.form-wrap{background:rgba(196,112,138,0.05);border:1px solid rgba(196,112,138,0.2);border-radius:20px;padding:2rem 1.5rem;}
+
+.yl-field{margin-bottom:1.1rem;text-align:left;}
+.yl-label{display:block;font-size:0.8rem;color:var(--cream);margin-bottom:0.4rem;font-weight:500;}
+.yl-input{width:100%;padding:0.7rem 0.9rem;border-radius:10px;border:1px solid rgba(196,112,138,0.3);background:rgba(255,255,255,0.04);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:0.9rem;}
+.yl-input:focus{outline:none;border-color:var(--rose);}
+.yl-textarea{resize:vertical;min-height:100px;}
+.yl-help{font-size:0.72rem;color:var(--mgray);margin-top:0.35rem;}
+.yl-submit{width:100%;background:var(--rose);color:#fff;border:none;padding:0.85rem;border-radius:24px;font-size:0.9rem;font-weight:500;cursor:pointer;margin-top:0.5rem;transition:background 0.2s;}
+.yl-submit:hover{background:var(--blush);}
+.yl-submit:disabled{opacity:0.6;cursor:not-allowed;}
+.yl-success{text-align:center;padding:1rem 0;}
 
 .note{font-size:0.75rem;color:var(--dgray);margin-top:1.5rem;line-height:1.6;}
 .note a{color:var(--rose);}
@@ -44,7 +55,7 @@ footer{padding:2.5rem 2rem;border-top:1px solid rgba(196,112,138,0.1);display:fl
 <body>
 
 <nav>
-  <a href="index.html" class="nav-brand">✦ YOU LOOP</a>
+  <a href="index.html" class="nav-brand" style="display:flex;align-items:center;"><img src="images/logo/youloop-logo.png" alt="YOU LOOP" class="nav-logo-img"></a>
   <div class="nav-links">
     <a href="index.html#how">How it works</a>
     <a href="index.html#collection">Collection</a>
@@ -60,22 +71,52 @@ footer{padding:2.5rem 2rem;border-top:1px solid rgba(196,112,138,0.1);display:fl
   <p class="sub">Whether it's branded merch, a team order, or a custom production run — tell us what you need and we'll follow up with a quote and timeline.</p>
 
   <div class="form-wrap">
-    <!--
-      TODO (Yu): Create a dedicated Tally form for bulk/B2B inquiries
-      (company name, product interest, quantity, timeline, notes) and
-      replace the src below with that form's embed URL — same pattern
-      as the Custom Request form on index.html.
-    -->
-    <iframe
-      data-tally-src="https://tally.so/embed/yPk6Pg?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
-      loading="lazy"
-      width="100%"
-      height="480"
-      frameborder="0"
-      marginheight="0"
-      marginwidth="0"
-      title="YOU LOOP Bulk & Partnership Inquiry">
-    </iframe>
+    <form name="bulk-inquiry" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="bulkInquiryForm">
+      <input type="hidden" name="form-name" value="bulk-inquiry">
+      <p style="display:none;"><label>Don't fill this out: <input name="bot-field"></label></p>
+
+      <div class="yl-field">
+        <label class="yl-label" for="bi-name">Your Name *</label>
+        <input class="yl-input" type="text" id="bi-name" name="name" required>
+      </div>
+
+      <div class="yl-field">
+        <label class="yl-label" for="bi-contact">Email or WhatsApp *</label>
+        <input class="yl-input" type="text" id="bi-contact" name="contact" required placeholder="you@company.com or +66 xx xxx xxxx">
+      </div>
+
+      <div class="yl-field">
+        <label class="yl-label" for="bi-company">Company / Brand Name</label>
+        <input class="yl-input" type="text" id="bi-company" name="company">
+      </div>
+
+      <div class="yl-field">
+        <label class="yl-label" for="bi-product">What would you like to order? *</label>
+        <input class="yl-input" type="text" id="bi-product" name="product_interest" required placeholder="e.g. branded crochet tote bags">
+      </div>
+
+      <div class="yl-field">
+        <label class="yl-label" for="bi-quantity">Estimated Quantity *</label>
+        <input class="yl-input" type="text" id="bi-quantity" name="quantity" required placeholder="e.g. 25 pieces">
+      </div>
+
+      <div class="yl-field">
+        <label class="yl-label" for="bi-timeline">Target Timeline *</label>
+        <input class="yl-input" type="text" id="bi-timeline" name="timeline" required placeholder="e.g. needed by mid-October">
+      </div>
+
+      <div class="yl-field" style="margin-bottom:0.5rem;">
+        <label class="yl-label" for="bi-notes">Anything else we should know?</label>
+        <textarea class="yl-input yl-textarea" id="bi-notes" name="notes" rows="4"></textarea>
+      </div>
+
+      <button type="submit" class="yl-submit">Send inquiry</button>
+    </form>
+
+    <div class="yl-success" id="bulkInquirySuccess" style="display:none;">
+      <p style="font-size:1.05rem;color:var(--cream);margin-bottom:0.5rem;">✦ Got it — thank you!</p>
+      <p style="font-size:0.85rem;color:var(--mgray);">We'll get back to you within 24 hours with a quote and timeline.</p>
+    </div>
   </div>
 
   <p class="note">We'll get back to you within 24 hours. For anything urgent, reach us directly on <a href="https://line.me/ti/p/~imaqt80085" target="_blank" rel="noopener">LINE</a>.</p>
@@ -86,18 +127,28 @@ footer{padding:2.5rem 2rem;border-top:1px solid rgba(196,112,138,0.1);display:fl
   <div class="footer-tag">Keep it Soft Riot. · Fast fashion fills wardrobes. Custom fashion fills moments.</div>
 </footer>
 
-<!-- Tally embed script — loads form dynamically and handles height -->
 <script>
 (function(){
-  var d=document,w="https://tally.so/widgets/embed.js",v=function(){
-    "undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach(function(e){e.src=e.dataset.tallySrc})
-  };
-  if("undefined"!=typeof Tally)v();
-  else if(d.querySelector('script[src="'+w+'"]')==null){
-    var s=d.createElement("script");
-    s.src=w;s.onload=v;s.onerror=v;
-    d.body.appendChild(s);
-  }
+  var form = document.getElementById('bulkInquiryForm');
+  var success = document.getElementById('bulkInquirySuccess');
+  if (!form) return;
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var btn = form.querySelector('.yl-submit');
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+    fetch('/', { method: 'POST', body: new FormData(form) })
+      .then(function(res){
+        if (!res.ok) throw new Error('Network response was not ok');
+        form.style.display = 'none';
+        success.style.display = 'block';
+      })
+      .catch(function(){
+        btn.disabled = false;
+        btn.textContent = 'Send inquiry';
+        alert('Something went wrong sending your inquiry. Please try again, or reach us directly on LINE.');
+      });
+  });
 })();
 </script>
 
