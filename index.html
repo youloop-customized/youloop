@@ -516,6 +516,13 @@ footer {
 .yl-lightbox-actions a{display:inline-block;background:var(--rose);color:#fff;text-decoration:none;font-size:0.8rem;font-weight:500;padding:0.6rem 1.3rem;border-radius:20px;transition:background 0.2s;}
 .yl-lightbox-actions a:hover{background:var(--midrose,#A45070);}
 .yl-lightbox-hint{font-size:0.68rem;color:#8a7080;margin-top:0.5rem;}
+.yl-file-preview{display:flex;flex-wrap:wrap;gap:8px;margin-top:0.6rem;}
+.yl-thumb{position:relative;width:64px;height:64px;border-radius:8px;overflow:hidden;border:1px solid rgba(196,112,138,0.3);}
+.yl-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.yl-thumb-remove{position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;background:rgba(20,10,20,0.75);color:#fff;border:none;font-size:0.6rem;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
+.yl-input.invalid{border-color:#d9534f;}
+.yl-error{font-size:0.68rem;color:#e08590;margin-top:0.3rem;line-height:1.4;}
+.yl-warning{font-size:0.68rem;color:var(--gold);margin-top:0.3rem;line-height:1.4;}
 
 </style>
 </head>
@@ -844,6 +851,7 @@ loadRandomQuiz();
           <label class="yl-label" for="cr-inspo">Show us your inspo 📌</label>
           <input class="yl-input" type="file" id="cr-inspo" name="inspiration" accept="image/*" multiple>
           <div class="yl-help">Upload as many reference photos as you like (max 10MB each)</div>
+          <div class="yl-file-preview" id="cr-inspo-preview"></div>
         </div>
 
         <!-- CUSTOMIZATION -->
@@ -1547,15 +1555,143 @@ document.addEventListener('click', function(e) {
   var SLEEVE_EXTRA = ['upper_arm','sleeve_length','wrist'];
   var FITTED_SLEEVE_TYPES = ['top','dress','bodycon'];
   var CONTACT_FIELDS = {
-    instagram: { label:'Your Instagram @',                        type:'text' },
-    facebook:  { label:'Your Facebook profile / Messenger link',   type:'text' },
-    whatsapp:  { label:'Your WhatsApp number',                     type:'tel'  },
-    telegram:  { label:'Your Telegram username or number',         type:'text' },
-    viber:     { label:'Your Viber number',                        type:'tel'  },
-    email:     { label:'Your email address',                       type:'email'}
+    instagram: { label:'Your Instagram @',                        type:'text',  kind:'handle' },
+    facebook:  { label:'Your Facebook profile / Messenger link',   type:'text',  kind:'url' },
+    whatsapp:  { label:'Your WhatsApp number',                     type:'tel',   kind:'phone' },
+    telegram:  { label:'Your Telegram username or number',         type:'text',  kind:'handle_or_phone' },
+    viber:     { label:'Your Viber number',                        type:'tel',   kind:'phone' },
+    email:     { label:'Your email address',                       type:'email', kind:'email' }
   };
+  /* Sanity-check ranges (cm) — wide enough to cover real human variation; only meant to catch typos, not judge body size. */
+  var MEASURE_RANGES = {
+    bust: [55,170], underbust: [50,160], waist: [45,170], hips: [55,180],
+    shoulder_width: [25,60], shoulder_to_waist: [20,60], armhole: [20,75],
+    upper_arm: [12,65], sleeve_length: [10,95], wrist: [10,30],
+    top_length: [15,110], dress_length: [25,170], skirt_length: [10,130],
+    rise: [12,50], inseam: [20,120]
+  };
+  var BRA_SIZE_RE = /^\d{2,3}\s*[a-zA-Z]{1,3}$/;
 
   var state = { moment:'', outfitTypes:[], sizingMethod:'', contactMethod:'' };
+
+  /* ── VALIDATION HELPERS ── */
+  function showFieldMsg(inputEl, msg, isWarning) {
+    clearFieldMsg(inputEl);
+    if (!isWarning) inputEl.classList.add('invalid');
+    var msgEl = document.createElement('div');
+    msgEl.className = isWarning ? 'yl-warning' : 'yl-error';
+    msgEl.textContent = msg;
+    msgEl.setAttribute('data-yl-msg', '1');
+    inputEl.insertAdjacentElement('afterend', msgEl);
+  }
+  function clearFieldMsg(inputEl) {
+    inputEl.classList.remove('invalid');
+    var next = inputEl.nextElementSibling;
+    if (next && next.getAttribute && next.getAttribute('data-yl-msg')) next.remove();
+  }
+  var PHONE_RE = /^[0-9]{7,15}$/;
+  var HANDLE_RE = /^@?[a-zA-Z0-9_.]{2,30}$/;
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  var URL_OR_HANDLE_RE = /^(https?:\/\/[^\s]+|(www\.|m\.|fb\.com\/|facebook\.com\/)?[a-zA-Z0-9_.\/-]{2,60})$/i;
+
+  function validateMeasureInput(key) {
+    var input = document.getElementById('ms-' + key);
+    if (!input || input.closest('.yl-measure-field').classList.contains('yl-hidden')) return true;
+    var raw = input.value.trim();
+    if (!raw) { clearFieldMsg(input); return true; }
+    if (key === 'bra_size') {
+      if (!BRA_SIZE_RE.test(raw)) { showFieldMsg(input, 'Enter a bra size like 34B or 85C'); return false; }
+      clearFieldMsg(input);
+      return true;
+    }
+    if (!/^\d{1,3}(\.\d{1,2})?$/.test(raw)) { showFieldMsg(input, 'Numbers only, in cm (e.g. 76 or 76.5)'); return false; }
+    var num = parseFloat(raw);
+    var range = MEASURE_RANGES[key];
+    if (range && (num < range[0] || num > range[1])) {
+      showFieldMsg(input, 'That looks outside a realistic range (' + range[0] + '–' + range[1] + ' cm) — please double check');
+      return false;
+    }
+    clearFieldMsg(input);
+    return true;
+  }
+  function checkBustUnderbustPair() {
+    var bustEl = document.getElementById('ms-bust');
+    var underEl = document.getElementById('ms-underbust');
+    if (!bustEl || !underEl) return;
+    if (bustEl.closest('.yl-measure-field').classList.contains('yl-hidden')) return;
+    var bust = parseFloat(bustEl.value);
+    var under = parseFloat(underEl.value);
+    if (!isNaN(bust) && !isNaN(under) && !underEl.classList.contains('invalid') && !bustEl.classList.contains('invalid')) {
+      if (under >= bust) {
+        showFieldMsg(underEl, 'Underbust is usually a little smaller than bust — worth double-checking these two', true);
+      } else {
+        var next = underEl.nextElementSibling;
+        if (next && next.classList.contains('yl-warning')) next.remove();
+      }
+    }
+  }
+  function validateContactDetail() {
+    var input = document.getElementById('cr-contact-detail');
+    if (document.getElementById('cr-contact-detail-wrap').classList.contains('yl-hidden')) return true;
+    var raw = input.value.trim();
+    if (!raw) { showFieldMsg(input, 'This one\'s needed so we can reach you'); return false; }
+    var cfg = CONTACT_FIELDS[state.contactMethod];
+    var kind = cfg ? cfg.kind : 'text';
+    var digits = raw.replace(/\D/g, '');
+    if (kind === 'phone' && !PHONE_RE.test(digits)) {
+      showFieldMsg(input, 'Enter a valid phone number (7–15 digits, with country code)');
+      return false;
+    }
+    if (kind === 'handle' && !HANDLE_RE.test(raw)) {
+      showFieldMsg(input, "That doesn't look like a valid username");
+      return false;
+    }
+    if (kind === 'handle_or_phone' && !(HANDLE_RE.test(raw) || PHONE_RE.test(digits))) {
+      showFieldMsg(input, 'Enter a valid username or phone number');
+      return false;
+    }
+    if (kind === 'url' && !URL_OR_HANDLE_RE.test(raw)) {
+      showFieldMsg(input, 'Enter a valid profile link (e.g. facebook.com/yourname)');
+      return false;
+    }
+    if (kind === 'email' && !EMAIL_RE.test(raw)) {
+      showFieldMsg(input, 'Enter a valid email address');
+      return false;
+    }
+    clearFieldMsg(input);
+    return true;
+  }
+  function validateEmailOptional() {
+    var input = document.getElementById('cr-email-optional');
+    if (document.getElementById('cr-email-optional-wrap').classList.contains('yl-hidden')) return true;
+    var raw = input.value.trim();
+    if (!raw) { clearFieldMsg(input); return true; }
+    if (!EMAIL_RE.test(raw)) { showFieldMsg(input, 'Enter a valid email address'); return false; }
+    clearFieldMsg(input);
+    return true;
+  }
+  function validateDateField() {
+    var input = document.getElementById('cr-date');
+    if (!input.value) return true;
+    var picked = new Date(input.value + 'T00:00:00');
+    var today = new Date(); today.setHours(0,0,0,0);
+    if (picked < today) { showFieldMsg(input, "That date's already passed — pick a day from today onward"); return false; }
+    clearFieldMsg(input);
+    return true;
+  }
+  function runFullValidation() {
+    var ok = true;
+    MEASURE_ORDER.forEach(function(k) { if (!validateMeasureInput(k)) ok = false; });
+    checkBustUnderbustPair();
+    if (!validateContactDetail()) ok = false;
+    if (!validateEmailOptional()) ok = false;
+    if (!validateDateField()) ok = false;
+    if (!ok) {
+      var firstInvalid = form.querySelector('.yl-input.invalid');
+      if (firstInvalid) firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    return ok;
+  }
 
   /* ── CHIP HELPER ── */
   function initChips(containerId, opts) {
@@ -1710,6 +1846,38 @@ document.addEventListener('click', function(e) {
     document.addEventListener('keydown', function(e) { if (e.key === 'Escape') close(); });
   })();
 
+  /* ── INSPIRATION IMAGE PREVIEW ── */
+  (function() {
+    var input = document.getElementById('cr-inspo');
+    var preview = document.getElementById('cr-inspo-preview');
+    var files = [];
+    function syncInput() {
+      var dt = new DataTransfer();
+      files.forEach(function(f) { dt.items.add(f); });
+      input.files = dt.files;
+    }
+    function render() {
+      preview.innerHTML = '';
+      files.forEach(function(file, i) {
+        var url = URL.createObjectURL(file);
+        var thumb = document.createElement('div');
+        thumb.className = 'yl-thumb';
+        thumb.innerHTML = '<img src="' + url + '" alt="Inspiration photo ' + (i + 1) + '"><button type="button" class="yl-thumb-remove" aria-label="Remove photo">&#10005;</button>';
+        thumb.querySelector('.yl-thumb-remove').addEventListener('click', function() {
+          files.splice(i, 1);
+          syncInput();
+          render();
+        });
+        preview.appendChild(thumb);
+      });
+    }
+    input.addEventListener('change', function() {
+      files = files.concat(Array.prototype.slice.call(input.files));
+      syncInput();
+      render();
+    });
+  })();
+
   /* ── INIT ── */
   function genRequestId() {
     return 'YL-CR-' + Date.now().toString(36).toUpperCase().slice(-5) + Math.random().toString(36).slice(2, 5).toUpperCase();
@@ -1717,6 +1885,18 @@ document.addEventListener('click', function(e) {
   document.getElementById('cr-request-id').value = genRequestId();
   var dateInput = document.getElementById('cr-date');
   dateInput.min = new Date().toISOString().slice(0, 10);
+  dateInput.addEventListener('change', validateDateField);
+
+  MEASURE_ORDER.forEach(function(k) {
+    var el = document.getElementById('ms-' + k);
+    if (!el) return;
+    el.addEventListener('blur', function() {
+      validateMeasureInput(k);
+      if (k === 'bust' || k === 'underbust') checkBustUnderbustPair();
+    });
+  });
+  document.getElementById('cr-contact-detail').addEventListener('blur', validateContactDetail);
+  document.getElementById('cr-email-optional').addEventListener('blur', validateEmailOptional);
 
   /* ── SUBMIT ── */
   form.addEventListener('submit', function(e) {
@@ -1724,6 +1904,7 @@ document.addEventListener('click', function(e) {
     if (state.outfitTypes.length === 0) { alert("What are we making? Pick at least one — that's how we know what to create ✨"); return; }
     if (!state.sizingMethod) { alert('Pick how you\'d like us to size it 📏'); return; }
     if (!state.contactMethod || !document.getElementById('cr-contact-detail').value.trim()) { alert("How should we reach you? Pick a contact method and pop in your details 💌"); return; }
+    if (!runFullValidation()) { alert('A couple of fields need a second look — check the highlighted ones ✨'); return; }
     document.getElementById('cr-submitted-at').value = new Date().toISOString();
     var btn = form.querySelector('.yl-submit');
     btn.disabled = true;
