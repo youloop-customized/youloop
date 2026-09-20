@@ -9,35 +9,6 @@
 // Requires a Netlify environment variable: RESEND_API_KEY
 // Optional overrides: NOTIFY_EMAIL, RESEND_FROM
 
-const MEASURE_LABELS = {
-  bust: 'Bust',
-  underbust: 'Underbust',
-  bra_size: 'Usual Bra Size',
-  waist: 'Waist',
-  hips: 'Hips',
-  shoulder_width: 'Shoulder Width',
-  shoulder_to_waist: 'Shoulder to Waist',
-  armhole: 'Armhole',
-  upper_arm: 'Upper Arm',
-  sleeve_length: 'Arm / Sleeve Length',
-  wrist: 'Wrist',
-  top_length: 'Desired Top Length',
-  dress_length: 'Desired Dress Length',
-  skirt_length: 'Desired Skirt Length',
-  rise: 'Rise',
-  inseam: 'Inseam / Desired Bottom Length',
-};
-const MEASURE_ORDER = Object.keys(MEASURE_LABELS);
-
-const CONTACT_LABELS = {
-  instagram: 'Instagram DM',
-  facebook: 'Facebook Messenger',
-  whatsapp: 'WhatsApp',
-  telegram: 'Telegram',
-  viber: 'Viber',
-  email: 'Email',
-};
-
 function val(v) {
   if (v === undefined || v === null) return '';
   if (Array.isArray(v)) return v.filter(Boolean).join(', ');
@@ -60,34 +31,18 @@ function esc(s) {
 
 function buildFields(data) {
   const name = val(data.name) || 'Unknown';
-  const moment = val(data.moment) || '—';
-  let outfitTypes = val(data.outfit_types) || '—';
-  if (val(data.outfit_other)) outfitTypes += ` (Other: ${val(data.outfit_other)})`;
-
-  const sizingMethod = val(data.sizing_method) || '—';
-  const standardSize = val(data.standard_size);
-  const measurementSource = val(data.measurement_source);
-
-  const measureRows = MEASURE_ORDER
-    .map((key) => {
-      const v = val(data['measure_' + key]);
-      return v ? { label: MEASURE_LABELS[key], value: v } : null;
-    })
-    .filter(Boolean);
-
-  const contactKey = val(data.preferred_contact);
-  const contactLabel = CONTACT_LABELS[contactKey] || contactKey || '—';
+  const outfitType = val(data.outfit_type) || '—';
+  const sizingMethod = val(data.sizing_method) || 'Standard Size';
+  const standardSize = val(data.standard_size) || '—';
   const images = fileLinks(data.inspiration);
   const submittedAt = val(data.submitted_at) || new Date().toISOString();
   const requestId = val(data.request_id) || '—';
 
   return {
-    name, moment, outfitTypes, sizingMethod, standardSize, measurementSource,
-    measureRows, contactKey, contactLabel, images, submittedAt, requestId,
+    name, outfitType, sizingMethod, standardSize, images, submittedAt, requestId,
     notes: val(data.customization_notes) || '(none provided)',
     requiredBy: val(data.required_by) || '—',
-    contactDetail: val(data.contact_detail) || '—',
-    emailOptional: val(data.email_optional) || '(not provided)',
+    email: val(data.email) || '—',
     fitStatus: val(data.fit_status) || 'Fit Check Required',
     requestStatus: val(data.request_status) || 'Needs Review',
   };
@@ -97,9 +52,7 @@ function buildText(f) {
   const lines = [
     `Customer: ${f.name}`,
     '',
-    `Moment: ${f.moment}`,
-    '',
-    `Outfit Type: ${f.outfitTypes}`,
+    `Outfit Type: ${f.outfitType}`,
     '',
     `Inspiration:`,
     f.images.length ? f.images.join('\n') : 'None uploaded',
@@ -108,15 +61,11 @@ function buildText(f) {
     f.notes,
     '',
     `Sizing Method: ${f.sizingMethod}`,
-    f.standardSize ? `Standard Size: ${f.standardSize}` : null,
-    f.measureRows.length ? `Measurements:\n${f.measureRows.map((m) => `  ${m.label}: ${m.value}`).join('\n')}` : null,
-    f.measurementSource ? `Measurement Source: ${f.measurementSource}` : null,
+    `Standard Size: ${f.standardSize}`,
     '',
     `Required By: ${f.requiredBy}`,
     '',
-    `Preferred Contact: ${f.contactLabel}`,
-    `Contact: ${f.contactDetail}`,
-    `Email: ${f.emailOptional}`,
+    `Email: ${f.email}`,
     '',
     `Fit Status: ${f.fitStatus}`,
     `Request Status: ${f.requestStatus}`,
@@ -125,7 +74,7 @@ function buildText(f) {
     `Submitted: ${f.submittedAt}`,
     '',
     'View all submissions: your Netlify dashboard → Site → Forms → custom-request',
-  ].filter((l) => l !== null);
+  ];
   return lines.join('\n');
 }
 
@@ -137,12 +86,6 @@ function row(label, value) {
 }
 
 function buildHtml(f) {
-  const measureBlock = f.measureRows.length
-    ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:4px;">
-        ${f.measureRows.map((m) => row(m.label, esc(m.value) + ' cm')).join('')}
-      </table>`
-    : '<div style="font-size:13px;color:#8a7080;">No measurements submitted.</div>';
-
   const imagesBlock = f.images.length
     ? `<table role="presentation" cellpadding="0" cellspacing="0"><tr>
         ${f.images.map((url) => `<td style="padding:4px;"><a href="${esc(url)}"><img src="${esc(url)}" width="110" height="110" style="width:110px;height:110px;object-fit:cover;border-radius:8px;display:block;border:1px solid #eadde2;"></a></td>`).join('')}
@@ -158,34 +101,23 @@ function buildHtml(f) {
         <tr><td style="background:#2a1a2e;padding:22px 24px;">
           <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#c4708a;font-weight:700;">YOU LOOP · Custom Order</div>
           <div style="font-size:22px;color:#ffffff;margin-top:4px;font-weight:700;">✨ New Custom Look</div>
-          <div style="font-size:13px;color:#d9c3cc;margin-top:2px;">${esc(f.name)} — ${esc(f.moment)}</div>
+          <div style="font-size:13px;color:#d9c3cc;margin-top:2px;">${esc(f.name)} — ${esc(f.outfitType)}</div>
         </td></tr>
         <tr><td style="padding:20px 24px 4px;">
           <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#c4708a;font-weight:700;margin-bottom:6px;">Customer &amp; Contact</div>
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
             ${row('Name', esc(f.name))}
-            ${row('Preferred Contact', esc(f.contactLabel))}
-            ${row('Contact', esc(f.contactDetail))}
-            ${row('Email', esc(f.emailOptional))}
+            ${row('Email', esc(f.email))}
           </table>
         </td></tr>
         <tr><td style="padding:20px 24px 4px;">
           <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#c4708a;font-weight:700;margin-bottom:6px;">The Look</div>
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-            ${row('Outfit Type', esc(f.outfitTypes))}
-            ${row('Moment', esc(f.moment))}
+            ${row('Outfit Type', esc(f.outfitType))}
+            ${row('Size', esc(f.standardSize))}
             ${row('Required By', esc(f.requiredBy))}
             ${row('Customization Notes', esc(f.notes).replace(/\n/g, '<br>'))}
           </table>
-        </td></tr>
-        <tr><td style="padding:20px 24px 4px;">
-          <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#c4708a;font-weight:700;margin-bottom:6px;">Sizing</div>
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-            ${row('Sizing Method', esc(f.sizingMethod))}
-            ${f.standardSize ? row('Standard Size', esc(f.standardSize)) : ''}
-            ${f.measurementSource ? row('Measurement Source', esc(f.measurementSource)) : ''}
-          </table>
-          ${measureBlock}
         </td></tr>
         <tr><td style="padding:20px 24px 4px;">
           <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#c4708a;font-weight:700;margin-bottom:8px;">Inspiration</div>
@@ -230,7 +162,7 @@ exports.handler = async (event) => {
     const from = process.env.RESEND_FROM || 'YOU LOOP <onboarding@resend.dev>';
 
     const f = buildFields(data);
-    const subject = `✨ New Custom Look — ${f.name} — ${f.moment}`;
+    const subject = `✨ New Custom Look — ${f.name} — ${f.outfitType}`;
 
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
