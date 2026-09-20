@@ -787,7 +787,7 @@ loadRandomQuiz();
 
         <!-- OUTFIT TYPE -->
         <div class="yl-field">
-          <label class="yl-label">What do you want us to make?</label>
+          <label class="yl-label">What do you want us to make? *</label>
           <div class="yl-chips" id="cr-outfit-chips">
             <button type="button" class="yl-chip" data-value="dress" data-label="Dress">Dress</button>
             <button type="button" class="yl-chip" data-value="bodycon" data-label="Bodycon Dress">Bodycon Dress</button>
@@ -811,16 +811,16 @@ loadRandomQuiz();
 
         <!-- CUSTOMIZATION -->
         <div class="yl-field">
-          <label class="yl-label" for="cr-notes">Tell us more about how you'd like it made 🎨</label>
+          <label class="yl-label" for="cr-notes">Tell us more about how you'd like it made 🎨 *</label>
           <div class="yl-help" style="margin-bottom:0.5rem;">Tell us what you want to keep, change or add. You don't need fashion words — just tell us how you want it.</div>
-          <textarea class="yl-input yl-textarea" id="cr-notes" name="customization_notes" rows="4"></textarea>
+          <textarea class="yl-input yl-textarea" id="cr-notes" name="customization_notes" rows="4" required></textarea>
           <div class="yl-example">"I want it about 90% like my inspo. Make the V-neck wider but not too deep. Keep the sleeves, but make them slightly flared. Make the dress shorter, above my knees. Replace the front knot with a small bow. Keep the same colors."</div>
           <div class="yl-help" style="margin-top:0.4rem;">You can change as much or as little as you want. ✨</div>
         </div>
 
         <!-- SIZE -->
         <div class="yl-field">
-          <label class="yl-label">Size</label>
+          <label class="yl-label">Size *</label>
           <div class="yl-chips" id="cr-size-chips">
             <button type="button" class="yl-chip" data-value="XS">XS</button>
             <button type="button" class="yl-chip" data-value="S">S</button>
@@ -834,8 +834,8 @@ loadRandomQuiz();
 
         <!-- REQUIRED BY -->
         <div class="yl-field">
-          <label class="yl-label" for="cr-date">When would you like your outfit ready? 🗓️</label>
-          <input class="yl-input" type="date" id="cr-date" name="required_by">
+          <label class="yl-label" for="cr-date">When would you like your outfit ready? 🗓️ *</label>
+          <input class="yl-input" type="date" id="cr-date" name="required_by" required>
           <div class="yl-help">We'll confirm what's possible after reviewing your request.</div>
         </div>
 
