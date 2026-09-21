@@ -12,13 +12,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --cream: #FAF5F1;
-    --plum: #3D1F2E;
-    --dusty-rose: #C9848C;
-    --purple: #6B4270;
-    --thread-red: #A6293D;
-    --ink: #2B1B24;
-    --line: #E5D8D3;
+    --cream: #f9f5ee;
+    --plum: #2a1e1b;
+    --dusty-rose: #dfb6a6;
+    --purple: #3b4a3f;
+    --thread-red: #aa4a30;
+    --ink: #2a1e1b;
+    --line: #E4DACE;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -88,7 +88,7 @@
   .sub {
     margin-top: 14px;
     font-size: 15px;
-    color: #6b5560;
+    color: #8a8079;
     max-width: 440px;
     margin-left: auto;
     margin-right: auto;
@@ -139,7 +139,7 @@
 
   .price-unit {
     font-size: 13px;
-    color: #8a7680;
+    color: #8a8079;
     font-family: 'Inter', sans-serif;
   }
 
@@ -152,7 +152,7 @@
 
   .specs li {
     font-size: 13.5px;
-    color: #5a4750;
+    color: #6b6058;
     padding-left: 16px;
     position: relative;
   }
@@ -167,7 +167,7 @@
   .note {
     margin-top: 18px;
     font-size: 12.5px;
-    color: #8a7680;
+    color: #8a8079;
     font-style: italic;
     border-top: 1px dashed var(--line);
     padding-top: 14px;
@@ -260,7 +260,7 @@
 
   .payment-card .sub-light {
     font-size: 13.5px;
-    color: #d9c3cb;
+    color: #dfb6a6;
     margin-bottom: 22px;
   }
 
@@ -278,7 +278,7 @@
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: #d9c3cb;
+    color: #dfb6a6;
   }
 
   .pay-value {
@@ -308,7 +308,7 @@
 
   .steps li {
     font-size: 13.5px;
-    color: #ecdfe3;
+    color: #f0e4d8;
     padding-left: 22px;
     position: relative;
   }
@@ -327,7 +327,7 @@
     text-align: center;
     margin-top: 40px;
     font-size: 12px;
-    color: #a08a94;
+    color: #8a8079;
   }
 </style>
 </head>
@@ -438,7 +438,7 @@
     </div>
 
     <div class="wallet-box">
-      <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:#d9c3cb; margin-bottom:6px;">0xec2757F903DFFb8a868fD19C60d5449c63a87363</div>
+      <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:#dfb6a6; margin-bottom:6px;">0xec2757F903DFFb8a868fD19C60d5449c63a87363</div>
     </div>
 
     <ul class="steps">
@@ -456,13 +456,13 @@
       <input type="hidden" id="confirm-amount" name="amount_due">
 
       <div class="field" style="margin-bottom:14px;">
-        <label for="tx-hash" style="color:#d9c3cb;">Transaction hash (optional, speeds up confirmation)</label>
+        <label for="tx-hash" style="color:#dfb6a6;">Transaction hash (optional, speeds up confirmation)</label>
         <input type="text" id="tx-hash" name="transaction_hash" placeholder="Paste your tx hash here if you have it" style="background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.25); color:#fff;">
       </div>
 
       <div class="field" style="margin-bottom:18px; display:flex; align-items:flex-start; gap:8px;">
         <input type="checkbox" id="paid-checkbox" name="confirmed_paid" required style="width:auto; margin-top:3px;">
-        <label for="paid-checkbox" style="text-transform:none; font-weight:400; font-size:13px; color:#ecdfe3; margin-bottom:0;">I've sent the payment above</label>
+        <label for="paid-checkbox" style="text-transform:none; font-weight:400; font-size:13px; color:#f0e4d8; margin-bottom:0;">I've sent the payment above</label>
       </div>
 
       <button type="submit" style="background: var(--dusty-rose); color: var(--plum);">Confirm my payment</button>

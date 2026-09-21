@@ -15,14 +15,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --plum: #2A1A2E;
-  --rose: #C4708A;
-  --blush: #E8B4C0;
-  --cream: #F7F0EB;
-  --gold: #C8A040;
-  --mgray: #9E8090;
-  --dgray: #4A2A40;
-  --bg: #2A1A2E;
+  --plum: #f9f5ee;
+  --rose: #aa4a30;
+  --blush: #dfb6a6;
+  --cream: #2a1e1b;
+  --gold: #d49a37;
+  --mgray: #8a8079;
+  --dgray: #8a8079;
+  --bg: #f9f5ee;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -41,9 +41,9 @@ nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   display: flex; justify-content: space-between; align-items: center;
   padding: 1.25rem 2rem;
-  background: rgba(42,26,46,0.92);
+  background: rgba(249,245,238,0.92);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(196,112,138,0.15);
+  border-bottom: 1px solid rgba(170,74,48,0.15);
 }
 .nav-brand { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--rose); letter-spacing: 2px; }
 .nav-logo-img { height: 30px; width: auto; display: block; }
@@ -65,7 +65,7 @@ nav {
 .hero::before {
   content: '';
   position: absolute; inset: 0;
-  background: radial-gradient(ellipse at 50% 60%, rgba(196,112,138,0.12) 0%, transparent 70%);
+  background: radial-gradient(ellipse at 50% 60%, rgba(170,74,48,0.12) 0%, transparent 70%);
   pointer-events: none;
 }
 .hero-tag {
@@ -92,15 +92,15 @@ nav {
   background: var(--rose); color: white; padding: 0.9rem 2rem;
   border-radius: 32px; font-size: 0.9rem; font-weight: 500;
   text-decoration: none; transition: all 0.25s;
-  box-shadow: 0 4px 24px rgba(196,112,138,0.3);
+  box-shadow: 0 4px 24px rgba(170,74,48,0.3);
 }
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(196,112,138,0.4); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(170,74,48,0.4); }
 .btn-outline {
-  border: 1.5px solid rgba(196,112,138,0.4); color: var(--cream);
+  border: 1.5px solid rgba(170,74,48,0.4); color: var(--cream);
   padding: 0.9rem 2rem; border-radius: 32px; font-size: 0.9rem;
   text-decoration: none; transition: all 0.25s;
 }
-.btn-outline:hover { border-color: var(--rose); background: rgba(196,112,138,0.08); }
+.btn-outline:hover { border-color: var(--rose); background: rgba(170,74,48,0.08); }
 .hero-scroll {
   margin-top: 4rem; font-size: 0.7rem; letter-spacing: 0.2em;
   color: var(--dgray); text-transform: uppercase;
@@ -164,13 +164,13 @@ section { padding: 6rem 2rem; }
 /* ── ORDER MODAL ── */
 .modal-overlay {
   position: fixed; inset: 0; z-index: 200;
-  background: rgba(42,26,46,0.95); backdrop-filter: blur(8px);
+  background: rgba(249,245,238,0.95); backdrop-filter: blur(8px);
   display: none; align-items: center; justify-content: center;
   padding: 1rem;
 }
 .modal-overlay.open { display: flex; }
 .modal {
-  background: #1E0E28; border: 1px solid rgba(196,112,138,0.2);
+  background: #1E0E28; border: 1px solid rgba(170,74,48,0.2);
   border-radius: 24px; width: 100%; max-width: 540px;
   max-height: 90vh; overflow-y: auto;
   padding: 2rem;
@@ -193,14 +193,14 @@ section { padding: 6rem 2rem; }
 .mood-grid { display: grid; grid-template-columns: repeat(2, 1fr) !important; gap: 8px; }
 .mood-opt {
   padding: 0.75rem 1rem; border-radius: 12px;
-  border: 1.5px solid rgba(196,112,138,0.2);
+  border: 1.5px solid rgba(170,74,48,0.2);
   background: transparent; color: var(--cream);
   cursor: pointer; transition: all 0.2s;
   display: flex; align-items: center; gap: 10px;
   font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
 }
 .mood-opt:hover { border-color: var(--rose); }
-.mood-opt.selected { border-color: var(--rose); background: rgba(196,112,138,0.1); }
+.mood-opt.selected { border-color: var(--rose); background: rgba(170,74,48,0.1); }
 .mood-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
 .mood-name { font-weight: 500; }
 .mood-code { font-size: 0.7rem; color: var(--mgray); margin-left: auto; }
@@ -209,18 +209,18 @@ section { padding: 6rem 2rem; }
 .size-grid { display: flex; gap: 8px; flex-wrap: wrap; }
 .size-opt {
   padding: 0.5rem 1.1rem; border-radius: 20px;
-  border: 1.5px solid rgba(196,112,138,0.2);
+  border: 1.5px solid rgba(170,74,48,0.2);
   background: transparent; color: var(--cream);
   cursor: pointer; transition: all 0.2s;
   font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
 }
 .size-opt:hover { border-color: var(--rose); }
-.size-opt.selected { border-color: var(--rose); background: rgba(196,112,138,0.1); color: var(--rose); font-weight: 500; }
+.size-opt.selected { border-color: var(--rose); background: rgba(170,74,48,0.1); color: var(--rose); font-weight: 500; }
 
 /* Inputs */
 .form-input, .form-textarea {
   width: 100%; background: rgba(255,255,255,0.04);
-  border: 1.5px solid rgba(196,112,138,0.2);
+  border: 1.5px solid rgba(170,74,48,0.2);
   border-radius: 12px; color: var(--cream);
   font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
   padding: 0.8rem 1rem; outline: none;
@@ -232,13 +232,13 @@ section { padding: 6rem 2rem; }
 
 /* Order summary */
 .order-summary {
-  background: rgba(196,112,138,0.08);
-  border: 1px solid rgba(196,112,138,0.2);
+  background: rgba(170,74,48,0.08);
+  border: 1px solid rgba(170,74,48,0.2);
   border-radius: 12px; padding: 1rem 1.25rem;
   margin-bottom: 1.5rem;
 }
 .summary-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 0.85rem; }
-.summary-row:last-child { margin-bottom: 0; font-weight: 600; font-size: 1rem; border-top: 1px solid rgba(196,112,138,0.2); padding-top: 8px; margin-top: 8px; }
+.summary-row:last-child { margin-bottom: 0; font-weight: 600; font-size: 1rem; border-top: 1px solid rgba(170,74,48,0.2); padding-top: 8px; margin-top: 8px; }
 .summary-label { color: var(--mgray); }
 .summary-value { color: var(--cream); }
 
@@ -266,15 +266,15 @@ section { padding: 6rem 2rem; }
 
 /* Step indicator */
 .steps-indicator { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 2rem; }
-.step-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(196,112,138,0.3); transition: all 0.3s; }
+.step-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(170,74,48,0.3); transition: all 0.3s; }
 .step-dot.active { background: var(--rose); width: 24px; border-radius: 4px; }
-.step-dot.done { background: #1D9E75; }
+.step-dot.done { background: #3b4a3f; }
 
 /* ── MANIFESTO ── */
 .manifesto {
-  background: linear-gradient(135deg, rgba(196,112,138,0.08) 0%, rgba(42,26,46,0) 60%);
-  border-top: 1px solid rgba(196,112,138,0.1);
-  border-bottom: 1px solid rgba(196,112,138,0.1);
+  background: linear-gradient(135deg, rgba(170,74,48,0.08) 0%, rgba(249,245,238,0) 60%);
+  border-top: 1px solid rgba(170,74,48,0.1);
+  border-bottom: 1px solid rgba(170,74,48,0.1);
   text-align: center;
 }
 .manifesto-text {
@@ -286,7 +286,7 @@ section { padding: 6rem 2rem; }
 }
 .manifesto-pills { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 .pill {
-  border: 1px solid rgba(196,112,138,0.3); color: var(--mgray);
+  border: 1px solid rgba(170,74,48,0.3); color: var(--mgray);
   padding: 6px 16px; border-radius: 20px; font-size: 0.75rem;
   letter-spacing: 0.1em; text-transform: uppercase;
 }
@@ -294,7 +294,7 @@ section { padding: 6rem 2rem; }
 /* ── FOOTER ── */
 footer {
   padding: 3rem 2rem;
-  border-top: 1px solid rgba(196,112,138,0.1);
+  border-top: 1px solid rgba(170,74,48,0.1);
   display: flex; flex-direction: column; align-items: center; gap: 1rem;
   text-align: center;
 }
@@ -309,7 +309,7 @@ footer {
 .success-icon { font-size: 3rem; margin-bottom: 1rem; }
 .success-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 0.75rem; color: var(--cream); }
 .success-sub { font-size: 0.9rem; color: var(--mgray); line-height: 1.7; max-width: 340px; margin: 0 auto 1.5rem; }
-.success-id { background: rgba(196,112,138,0.1); border: 1px solid rgba(196,112,138,0.2); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.85rem; color: var(--rose); font-family: monospace; margin-bottom: 1.5rem; }
+.success-id { background: rgba(170,74,48,0.1); border: 1px solid rgba(170,74,48,0.2); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.85rem; color: var(--rose); font-family: monospace; margin-bottom: 1.5rem; }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 640px) {
@@ -328,26 +328,26 @@ footer {
 
 /* ── PRODUCT CAROUSEL ── */
 .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4rem; max-width: 1180px; margin: 0 auto; }
-.product-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(196,112,138,0.15); border-radius: 20px; overflow: hidden; transition: transform 0.3s, box-shadow 0.3s; }
-.product-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(196,112,138,0.12); }
-.carousel-wrap { position: relative; overflow: hidden; aspect-ratio: 7/6; width: 100%; background: rgba(196,112,138,0.08); }
+.product-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(170,74,48,0.15); border-radius: 20px; overflow: hidden; transition: transform 0.3s, box-shadow 0.3s; }
+.product-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(170,74,48,0.12); }
+.carousel-wrap { position: relative; overflow: hidden; aspect-ratio: 7/6; width: 100%; background: rgba(170,74,48,0.08); }
 .carousel-track { display: flex; height: 100%; transition: transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94); }
 .carousel-slide { min-width: 100%; height: 100%; flex-shrink: 0; position: relative; overflow: hidden; }
 .carousel-slide img { width: 100%; height: 100%; object-fit: contain; object-position: center center; display: block; position: absolute; top: 0; left: 0; }
 .carousel-badge { position: absolute; top: 12px; left: 12px; font-size: 0.62rem; font-weight: 600; letter-spacing: 0.1em; padding: 4px 10px; border-radius: 12px; text-transform: uppercase; z-index: 2; }
-.carousel-prev, .carousel-next { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(42,26,46,0.75); border: none; color: #C4708A; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; transition: background 0.2s; z-index: 3; backdrop-filter: blur(4px); }
-.carousel-prev:hover, .carousel-next:hover { background: rgba(196,112,138,0.4); }
+.carousel-prev, .carousel-next { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(249,245,238,0.75); border: none; color: #aa4a30; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; transition: background 0.2s; z-index: 3; backdrop-filter: blur(4px); }
+.carousel-prev:hover, .carousel-next:hover { background: rgba(170,74,48,0.4); }
 .carousel-prev { left: 8px; }
 .carousel-next { right: 8px; }
 .carousel-dots { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; z-index: 3; }
-.carousel-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(196,112,138,0.4); border: none; cursor: pointer; padding: 0; transition: background 0.2s; }
-.carousel-dot.active { background: #C4708A; }
+.carousel-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(170,74,48,0.4); border: none; cursor: pointer; padding: 0; transition: background 0.2s; }
+.carousel-dot.active { background: #aa4a30; }
 .product-body { padding: 1.25rem 1.5rem 1.5rem; }
 .product-code { font-size: 0.62rem; letter-spacing: 0.15em; color: var(--rose); text-transform: uppercase; margin-bottom: 0.4rem; }
 .product-name { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 400; margin-bottom: 0.4rem; }
 .product-desc { font-size: 0.82rem; color: var(--mgray); line-height: 1.6; margin-bottom: 1rem; }
 .product-includes { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 1.25rem; }
-.product-tag { background: rgba(196,112,138,0.12); color: var(--rose); font-size: 0.68rem; padding: 3px 9px; border-radius: 12px; }
+.product-tag { background: rgba(170,74,48,0.12); color: var(--rose); font-size: 0.68rem; padding: 3px 9px; border-radius: 12px; }
 .product-footer { display: flex; align-items: center; justify-content: space-between; }
 .product-price { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--cream); }
 .product-price span { font-family: 'DM Sans', sans-serif; font-size: 0.72rem; color: var(--mgray); margin-left: 4px; }
@@ -411,19 +411,19 @@ footer {
 .mobile-nav {
   display: none;
   position: fixed; top: 56px; left: 0; right: 0; z-index: 99;
-  background: rgba(42,26,46,0.98);
+  background: rgba(249,245,238,0.98);
   backdrop-filter: blur(12px);
   flex-direction: column;
   padding: 1.5rem 2rem;
   gap: 0;
-  border-bottom: 1px solid rgba(196,112,138,0.15);
+  border-bottom: 1px solid rgba(170,74,48,0.15);
 }
 .mobile-nav.open { display: flex; }
 .mobile-nav a {
   padding: 0.85rem 0;
   font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase;
   color: var(--mgray); text-decoration: none;
-  border-bottom: 1px solid rgba(196,112,138,0.08);
+  border-bottom: 1px solid rgba(170,74,48,0.08);
   transition: color 0.2s;
 }
 .mobile-nav a:hover { color: var(--cream); }
@@ -445,7 +445,7 @@ footer {
 /* NATIVE FORMS */
 .yl-field{margin-bottom:1.1rem;text-align:left;}
 .yl-label{display:block;font-size:0.8rem;color:var(--cream);margin-bottom:0.4rem;font-weight:500;}
-.yl-input{width:100%;padding:0.7rem 0.9rem;border-radius:10px;border:1px solid rgba(196,112,138,0.3);background:rgba(255,255,255,0.04);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:0.9rem;}
+.yl-input{width:100%;padding:0.7rem 0.9rem;border-radius:10px;border:1px solid rgba(170,74,48,0.3);background:rgba(255,255,255,0.04);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:0.9rem;}
 .yl-input:focus{outline:none;border-color:var(--rose);}
 .yl-textarea{resize:vertical;min-height:100px;}
 .yl-help{font-size:0.72rem;color:var(--mgray);margin-top:0.35rem;}
@@ -455,14 +455,14 @@ footer {
 .yl-success{text-align:center;padding:1rem 0;}
 .yl-hidden{display:none!important;}
 .yl-chips{display:flex;flex-wrap:wrap;gap:8px;}
-.yl-chip{padding:8px 14px;border-radius:20px;border:1px solid rgba(196,112,138,0.3);background:rgba(255,255,255,0.03);color:var(--mgray);font-size:0.8rem;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;-webkit-user-select:none;user-select:none;}
+.yl-chip{padding:8px 14px;border-radius:20px;border:1px solid rgba(170,74,48,0.3);background:rgba(255,255,255,0.03);color:var(--mgray);font-size:0.8rem;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;-webkit-user-select:none;user-select:none;}
 .yl-chip:hover{border-color:var(--rose);color:var(--cream);}
 .yl-chip.active{background:var(--rose);border-color:var(--rose);color:#fff;}
 .yl-example{background:rgba(255,255,255,0.03);border-left:2px solid var(--rose);padding:0.7rem 0.9rem;border-radius:0 8px 8px 0;font-size:0.78rem;color:var(--mgray);font-style:italic;line-height:1.6;margin-top:0.6rem;}
 .yl-checkline{display:flex;align-items:center;gap:8px;font-size:0.8rem;color:var(--mgray);cursor:pointer;}
 .yl-checkline input{accent-color:var(--rose);}
 .yl-file-preview{display:flex;flex-wrap:wrap;gap:8px;margin-top:0.6rem;}
-.yl-thumb{position:relative;width:64px;height:64px;border-radius:8px;overflow:hidden;border:1px solid rgba(196,112,138,0.3);}
+.yl-thumb{position:relative;width:64px;height:64px;border-radius:8px;overflow:hidden;border:1px solid rgba(170,74,48,0.3);}
 .yl-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
 .yl-thumb-remove{position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;background:rgba(20,10,20,0.75);color:#fff;border:none;font-size:0.6rem;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
 .yl-input.invalid{border-color:#d9534f;}
@@ -605,7 +605,7 @@ footer {
     <div class="product-card" onclick="window.location.href='SRAC01_Hood_Configurator.html'" style="cursor:pointer;">
       <div class="carousel-wrap" id="c-hood">
         <div class="carousel-track" id="t-hood"></div>
-        <span class="carousel-badge" style="background:var(--gold);color:#2A1A2E;">Unisex</span>
+        <span class="carousel-badge" style="background:var(--gold);color:#f9f5ee;">Unisex</span>
         <button class="carousel-prev" onclick="event.stopPropagation(); cPrev('hood')">&#8592;</button>
         <button class="carousel-next" onclick="event.stopPropagation(); cNext('hood')">&#8594;</button>
         <div class="carousel-dots" id="d-hood"></div>
@@ -638,7 +638,7 @@ footer {
     <p class="section-sub" style="margin-bottom:2rem;">Share your idea and we'll help make it yours.</p>
 
     <!-- Native Netlify form -->
-    <div style="background:rgba(196,112,138,0.05); border:1px solid rgba(196,112,138,0.2); border-radius:20px; padding: 2rem 1.5rem; text-align:left;">
+    <div style="background:rgba(170,74,48,0.05); border:1px solid rgba(170,74,48,0.2); border-radius:20px; padding: 2rem 1.5rem; text-align:left;">
       <form name="custom-request" method="POST" data-netlify="true" netlify-honeypot="bot-field" enctype="multipart/form-data" id="customRequestForm">
         <input type="hidden" name="form-name" value="custom-request">
         <p style="display:none;"><label>Don't fill this out: <input name="bot-field"></label></p>
@@ -778,15 +778,15 @@ footer {
       <div class="form-group">
         <label class="form-label">Your mood / colour set</label>
         <!-- Live preview -->
-        <div id="modal-preview" style="display:flex;align-items:center;justify-content:center;background:#1A0A24;border-radius:12px;padding:1rem;margin-bottom:0.75rem;min-height:130px;border:1px solid rgba(196,112,138,0.15);">
-          <div id="preview-placeholder" style="text-align:center;color:#4A2A40;font-size:0.78rem;line-height:1.8;">Select a mood to<br>preview your set ✨</div>
+        <div id="modal-preview" style="display:flex;align-items:center;justify-content:center;background:#f9f5ee;border-radius:12px;padding:1rem;margin-bottom:0.75rem;min-height:130px;border:1px solid rgba(170,74,48,0.15);">
+          <div id="preview-placeholder" style="text-align:center;color:#8a8079;font-size:0.78rem;line-height:1.8;">Select a mood to<br>preview your set ✨</div>
           <svg id="preview-svg" style="display:none;" width="100" height="155" viewBox="0 0 220 300" xmlns="http://www.w3.org/2000/svg">
             <path id="pv-dress" d="M75 30 Q70 28 62 35 Q50 45 48 60 L44 120 Q42 130 40 140 L40 180 Q40 185 45 186 L175 186 Q180 185 180 180 L180 140 Q178 130 176 120 L172 60 Q170 45 158 35 Q150 28 145 30 Q130 20 110 18 Q90 20 75 30 Z" fill="#3A2A4A"/>
-            <path d="M85 32 Q110 48 135 32" fill="none" stroke="#2A1A2E" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
-            <circle id="pv-tie" cx="110" cy="37" r="3" fill="#C8A040"/>
-            <path d="M107 40 Q103 50 101 56" fill="none" stroke="#C8A040" stroke-width="1.5" stroke-linecap="round" opacity="0.9"/>
-            <path d="M113 40 Q117 50 119 56" fill="none" stroke="#C8A040" stroke-width="1.5" stroke-linecap="round" opacity="0.9"/>
-            <g opacity="0.08" stroke="#F7F0EB" stroke-width="0.7" fill="none">
+            <path d="M85 32 Q110 48 135 32" fill="none" stroke="#f9f5ee" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+            <circle id="pv-tie" cx="110" cy="37" r="3" fill="#d49a37"/>
+            <path d="M107 40 Q103 50 101 56" fill="none" stroke="#d49a37" stroke-width="1.5" stroke-linecap="round" opacity="0.9"/>
+            <path d="M113 40 Q117 50 119 56" fill="none" stroke="#d49a37" stroke-width="1.5" stroke-linecap="round" opacity="0.9"/>
+            <g opacity="0.08" stroke="#2a1e1b" stroke-width="0.7" fill="none">
               <path d="M58 70 Q110 68 162 70"/><path d="M56 82 Q110 80 164 82"/>
               <path d="M54 94 Q110 92 166 94"/><path d="M52 106 Q110 104 168 106"/>
               <path d="M50 118 Q110 116 170 118"/><path d="M50 130 Q110 128 170 130"/>
@@ -795,7 +795,7 @@ footer {
             </g>
             <path id="pv-r1" d="M34 186 Q26 192 24 200 Q22 208 28 214 Q40 222 58 217 Q70 211 74 203 Q84 218 102 215 Q115 211 120 203 Q130 218 148 215 Q162 211 166 202 Q174 218 192 215 Q205 211 208 200 Q210 192 205 186 Z" fill="#3A1A4A"/>
             <path id="pv-r2" d="M28 216 Q18 222 16 232 Q15 242 22 248 Q36 258 58 252 Q72 246 78 237 Q90 253 110 250 Q124 246 130 236 Q142 252 164 249 Q179 244 184 234 Q196 250 216 247 Q228 242 230 230 Q232 221 226 215 Z" fill="#6B3A7A"/>
-            <path id="pv-r3" d="M22 250 Q10 257 8 268 Q7 280 15 287 Q32 298 58 291 Q74 284 82 274 Q96 291 118 288 Q134 283 140 272 Q154 290 178 287 Q196 282 202 270 Q216 288 236 285 Q248 279 248 267 Q247 256 239 249 Z" fill="#C8A040"/>
+            <path id="pv-r3" d="M22 250 Q10 257 8 268 Q7 280 15 287 Q32 298 58 291 Q74 284 82 274 Q96 291 118 288 Q134 283 140 272 Q154 290 178 287 Q196 282 202 270 Q216 288 236 285 Q248 279 248 267 Q247 256 239 249 Z" fill="#d49a37"/>
             <rect id="pv-w1" x="2" y="105" width="24" height="55" rx="6" fill="#3A1A4A"/>
             <rect id="pv-w2" x="194" y="105" width="24" height="55" rx="6" fill="#3A1A4A"/>
           </svg>
@@ -1000,11 +1000,11 @@ function updatePreview(mood) {
       <!-- Bralette body -->
       <path id="pv2-bra" d="M94 37 Q86 33 80 39 Q74 45 76 57 Q78 67 86 73 Q94 79 102 77 Q106 76 108 73 Q110 76 114 77 Q122 79 130 73 Q138 67 140 57 Q142 45 136 39 Q130 33 122 37 Q116 31 108 29 Q100 31 94 37 Z" fill="#F0A0A8"/>
       <!-- Bralette centre line -->
-      <path d="M108 31 L108 75" stroke="#2A1A2E" stroke-width="0.8" opacity="0.15" fill="none"/>
+      <path d="M108 31 L108 75" stroke="#f9f5ee" stroke-width="0.8" opacity="0.15" fill="none"/>
       <!-- Gold tie knot -->
-      <circle id="pv2-tie" cx="108" cy="75" r="2.5" fill="#C8A040"/>
-      <path d="M106 77 Q103 86 102 93" fill="none" stroke="#C8A040" stroke-width="1.5" stroke-linecap="round" opacity="0.9"/>
-      <path d="M110 77 Q113 86 114 93" fill="none" stroke="#C8A040" stroke-width="1.5" stroke-linecap="round" opacity="0.9"/>
+      <circle id="pv2-tie" cx="108" cy="75" r="2.5" fill="#d49a37"/>
+      <path d="M106 77 Q103 86 102 93" fill="none" stroke="#d49a37" stroke-width="1.5" stroke-linecap="round" opacity="0.9"/>
+      <path d="M110 77 Q113 86 114 93" fill="none" stroke="#d49a37" stroke-width="1.5" stroke-linecap="round" opacity="0.9"/>
       <!-- Straps -->
       <path id="pv2-stl" d="M94 37 Q88 23 86 15" fill="none" stroke="#F0A0A8" stroke-width="2.5" stroke-linecap="round"/>
       <path id="pv2-str" d="M122 37 Q128 23 130 15" fill="none" stroke="#F0A0A8" stroke-width="2.5" stroke-linecap="round"/>
@@ -1013,7 +1013,7 @@ function updatePreview(mood) {
       <!-- Skirt body -->
       <path id="pv2-skirt" d="M74 106 Q72 104 70 106 L64 114 Q60 122 60 130 L58 192 Q58 200 64 202 L152 202 Q158 200 158 192 L156 130 Q156 122 152 114 L146 106 Q144 104 142 106 Q130 102 108 102 Q86 102 74 106 Z" fill="#F0A0A8"/>
       <!-- Skirt texture lines -->
-      <g opacity="0.07" stroke="#F7F0EB" stroke-width="0.6" fill="none">
+      <g opacity="0.07" stroke="#2a1e1b" stroke-width="0.6" fill="none">
         <path d="M62 120 Q108 118 154 120"/>
         <path d="M61 132 Q108 130 155 132"/>
         <path d="M60 144 Q108 142 156 144"/>
@@ -1027,10 +1027,10 @@ function updatePreview(mood) {
   }
 
   const moodSR01 = {
-    'soft-riot':   {dress:'#F0A0A8', r1:'#3A1A4A', r2:'#F0B8C0', r3:'#C8A040', w:'#3A1A4A'},
-    'golden-hour': {dress:'#F5F0E8', r1:'#7A4A20', r2:'#C88020', r3:'#C8A040', w:'#7A4A20'},
-    'midnight':    {dress:'#3A1A4A', r1:'#3A1A4A', r2:'#6B3A7A', r3:'#C8A040', w:'#6B3A7A'},
-    'garden':      {dress:'#88CC20', r1:'#7A4A20', r2:'#E87820', r3:'#C8A040', w:'#7A4A20'},
+    'soft-riot':   {dress:'#F0A0A8', r1:'#3A1A4A', r2:'#F0B8C0', r3:'#d49a37', w:'#3A1A4A'},
+    'golden-hour': {dress:'#F5F0E8', r1:'#7A4A20', r2:'#C88020', r3:'#d49a37', w:'#7A4A20'},
+    'midnight':    {dress:'#3A1A4A', r1:'#3A1A4A', r2:'#6B3A7A', r3:'#d49a37', w:'#6B3A7A'},
+    'garden':      {dress:'#88CC20', r1:'#7A4A20', r2:'#E87820', r3:'#d49a37', w:'#7A4A20'},
   };
 
   const set = (id, attr, val) => { const el=document.getElementById(id); if(el) el.setAttribute(attr,val); };
@@ -1231,7 +1231,7 @@ function buildCarousel(id) {
     track.appendChild(slide);
     const dot = document.createElement('button');
     dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
-    dot.style.background = i === 0 ? s.dot : 'rgba(196,112,138,0.35)';
+    dot.style.background = i === 0 ? s.dot : 'rgba(170,74,48,0.35)';
     dot.onclick = (e) => { e.stopPropagation(); goTo(id, i); };
     dotsEl.appendChild(dot);
   });
@@ -1244,7 +1244,7 @@ function goTo(id, idx) {
   const dots = document.getElementById('d-' + id).querySelectorAll('.carousel-dot');
   dots.forEach((d, i) => {
     d.classList.toggle('active', i === c.current);
-    d.style.background = i === c.current ? c.slides[i].dot : 'rgba(196,112,138,0.35)';
+    d.style.background = i === c.current ? c.slides[i].dot : 'rgba(170,74,48,0.35)';
   });
 }
 
