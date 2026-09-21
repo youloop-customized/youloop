@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>YOU LOOP — form definitions</title>
+<meta name="robots" content="noindex">
+</head>
+<body>
+<!--
+  Netlify Forms detects forms by parsing the HTML that gets deployed. A Next.js
+  app renders its pages from JavaScript, so the React forms are invisible to
+  that parser. This file is the standard workaround: it is a plain static page
+  that declares every form and every field, and it is what the client-side
+  submit handlers POST to (see src/lib/netlify.ts).
+
+  Keep this in sync with the forms in the app. A field that is missing here is
+  silently dropped from the submission, even if the browser sends it.
+-->
+
+<!-- Home page — "Create Your Look" custom request. Also triggers the
+     submission-created function, which emails the order card. -->
+<form name="custom-request" data-netlify="true" netlify-honeypot="bot-field" enctype="multipart/form-data" hidden>
+  <input type="hidden" name="form-name" value="custom-request">
+  <input name="bot-field">
+  <input type="hidden" name="request_id">
+  <input type="hidden" name="request_status">
+  <input type="hidden" name="fit_status">
+  <input type="hidden" name="submitted_at">
+  <input type="hidden" name="sizing_method">
+  <input type="hidden" name="outfit_type">
+  <input type="hidden" name="standard_size">
+  <input type="text" name="name">
+  <input type="file" name="inspiration">
+  <textarea name="customization_notes"></textarea>
+  <input type="date" name="required_by">
+  <input type="email" name="email">
+</form>
+
+<!-- /b2b — corporate gifting inquiry -->
+<form name="b2b-inquiry" data-netlify="true" netlify-honeypot="bot-field" enctype="multipart/form-data" hidden>
+  <input type="hidden" name="form-name" value="b2b-inquiry">
+  <input name="bot-field">
+  <input type="text" name="name">
+  <input type="email" name="email">
+  <input type="tel" name="phone">
+  <input type="text" name="company">
+  <input type="text" name="website">
+  <input type="text" name="contacting_as">
+  <input type="text" name="develop">
+  <textarea name="project_for"></textarea>
+  <input type="text" name="quantity">
+  <input type="date" name="delivery_date">
+  <input type="text" name="delivery_location">
+  <textarea name="customize"></textarea>
+  <textarea name="brief"></textarea>
+  <input type="file" name="references">
+  <input type="text" name="next_step">
+  <textarea name="notes"></textarea>
+</form>
+
+<!-- /bulk-inquiry — short bulk & partnership form -->
+<form name="bulk-inquiry" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input type="hidden" name="form-name" value="bulk-inquiry">
+  <input name="bot-field">
+  <input type="text" name="name">
+  <input type="text" name="contact">
+  <input type="text" name="company">
+  <input type="text" name="product_interest">
+  <input type="text" name="quantity">
+  <input type="text" name="timeline">
+  <textarea name="notes"></textarea>
+</form>
+
+<!-- /collection/sr01 -->
+<form name="order-sr01" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input type="hidden" name="form-name" value="order-sr01">
+  <input name="bot-field">
+  <input type="hidden" name="orderNumber">
+  <input type="hidden" name="product">
+  <input type="hidden" name="colour">
+  <input type="hidden" name="yarn">
+  <input type="hidden" name="size">
+  <input type="hidden" name="bust_cm">
+  <input type="hidden" name="waist_cm">
+  <input type="hidden" name="hips_cm">
+  <input type="hidden" name="height_cm">
+  <input type="hidden" name="moment">
+  <input type="hidden" name="promo_code">
+  <input type="hidden" name="discount">
+  <input type="hidden" name="total">
+  <input type="hidden" name="name">
+  <input type="hidden" name="contact">
+  <input type="hidden" name="address">
+</form>
+
+<!-- /collection/sr02 -->
+<form name="order-sr02" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input type="hidden" name="form-name" value="order-sr02">
+  <input name="bot-field">
+  <input type="hidden" name="orderNumber">
+  <input type="hidden" name="product">
+  <input type="hidden" name="colour">
+  <input type="hidden" name="yarn">
+  <input type="hidden" name="size">
+  <input type="hidden" name="bust_cm">
+  <input type="hidden" name="waist_cm">
+  <input type="hidden" name="hips_cm">
+  <input type="hidden" name="height_cm">
+  <input type="hidden" name="moment">
+  <input type="hidden" name="promo_code">
+  <input type="hidden" name="discount">
+  <input type="hidden" name="total">
+  <input type="hidden" name="name">
+  <input type="hidden" name="contact">
+  <input type="hidden" name="address">
+</form>
+
+<!-- /collection/srac01 — no size or measurements, the hood is one size -->
+<form name="order-srac01" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input type="hidden" name="form-name" value="order-srac01">
+  <input name="bot-field">
+  <input type="hidden" name="orderNumber">
+  <input type="hidden" name="product">
+  <input type="hidden" name="colour">
+  <input type="hidden" name="yarn">
+  <input type="hidden" name="moment">
+  <input type="hidden" name="promo_code">
+  <input type="hidden" name="discount">
+  <input type="hidden" name="total">
+  <input type="hidden" name="name">
+  <input type="hidden" name="contact">
+  <input type="hidden" name="address">
+</form>
+
+<!-- /zucity — ZUCITY collab pre-order -->
+<form name="zucity-preorder" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input type="hidden" name="form-name" value="zucity-preorder">
+  <input name="bot-field">
+  <input type="text" name="quantity">
+  <input type="text" name="name">
+  <input type="email" name="email">
+  <input type="text" name="delivery_method">
+  <textarea name="address"></textarea>
+  <input type="text" name="telegram">
+</form>
+
+<!-- /zucity — payment confirmation step -->
+<form name="zucity-payment-confirmation" data-netlify="true" netlify-honeypot="bot-field-2" hidden>
+  <input type="hidden" name="form-name" value="zucity-payment-confirmation">
+  <input name="bot-field-2">
+  <input type="hidden" name="order_reference">
+  <input type="hidden" name="telegram">
+  <input type="hidden" name="quantity">
+  <input type="hidden" name="amount_due">
+  <input type="text" name="transaction_hash">
+  <input type="checkbox" name="confirmed_paid">
+</form>
+
+</body>
+</html>

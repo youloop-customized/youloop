@@ -1,2 +1,16 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+# The Next.js runtime turns the App Router build into Netlify Functions and
+# edge functions. Netlify auto-installs it when it detects Next.js; declaring it
+# explicitly keeps the behaviour pinned to this repo rather than to detection.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# submission-created.js still fires on every Netlify Forms submission.
 [functions]
   directory = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "20"

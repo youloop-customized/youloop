@@ -1,0 +1,574 @@
+/*
+ * Home page. Ported from index.html; the nav, footer and `yl-*` form rules moved
+ * into their shared components, and bare element selectors are scoped under
+ * .page so a CSS Module cannot leak them to other routes.
+ */
+
+.page section {
+  padding: 6rem 2rem;
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 8rem 2rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 60%, rgba(170, 74, 48, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.heroLogo {
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.heroLogo img {
+  height: clamp(32px, 6vw, 52px);
+  width: auto;
+}
+
+.heroTag {
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  color: var(--rose);
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.heroTag::before,
+.heroTag::after {
+  content: '';
+  height: 1px;
+  width: 40px;
+  background: var(--rose);
+  opacity: 0.4;
+}
+
+.hero h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  font-weight: 400;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  color: var(--cream);
+  animation: fadeUp 0.8s ease forwards;
+}
+
+.hero h1 em {
+  font-style: italic;
+  color: var(--rose);
+}
+
+.heroSub {
+  font-size: 1rem;
+  color: var(--mgray);
+  line-height: 1.7;
+  max-width: 500px;
+  margin: 0 auto 2.5rem;
+  animation: fadeUp 0.8s ease 0.1s forwards;
+  opacity: 0;
+}
+
+.heroBtns {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: fadeUp 0.8s ease 0.2s forwards;
+  opacity: 0;
+}
+
+.btnPrimary {
+  background: var(--rose);
+  color: white;
+  padding: 0.9rem 2rem;
+  border-radius: 32px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.25s;
+  box-shadow: 0 4px 24px rgba(170, 74, 48, 0.3);
+}
+
+.btnPrimary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(170, 74, 48, 0.4);
+}
+
+.btnOutline {
+  border: 1.5px solid rgba(170, 74, 48, 0.4);
+  color: var(--cream);
+  padding: 0.9rem 2rem;
+  border-radius: 32px;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: all 0.25s;
+}
+
+.btnOutline:hover {
+  border-color: var(--rose);
+  background: rgba(170, 74, 48, 0.08);
+}
+
+.heroScroll {
+  margin-top: 4rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: var(--dgray);
+  text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.heroScroll::after {
+  content: '';
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--rose), transparent);
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── SHARED SECTION HEADINGS ── */
+.sectionTag {
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  color: var(--rose);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.sectionTitle {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 400;
+  text-align: center;
+  margin-bottom: 1rem;
+  color: var(--cream);
+}
+
+.sectionSub {
+  font-size: 0.9rem;
+  color: var(--mgray);
+  text-align: center;
+  line-height: 1.7;
+  max-width: 480px;
+  margin: 0 auto 4rem;
+}
+
+/* ── HOW IT WORKS ── */
+.how {
+  background: rgba(255, 255, 255, 0.02);
+  padding-top: 3.5rem !important;
+  padding-bottom: 3.5rem !important;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.step {
+  text-align: center;
+}
+
+.stepNum {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1.5px solid var(--rose);
+  color: var(--rose);
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+
+.step h3 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--cream);
+}
+
+.step p {
+  font-size: 0.85rem;
+  color: var(--mgray);
+  line-height: 1.6;
+}
+
+/* ── COLLECTION ── */
+.collection {
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.productsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.4rem;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.productCard {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(170, 74, 48, 0.15);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.productCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(170, 74, 48, 0.12);
+}
+
+.carouselWrap {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 7 / 6;
+  width: 100%;
+  background: rgba(170, 74, 48, 0.08);
+}
+
+.carouselTrack {
+  display: flex;
+  height: 100%;
+  transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.carouselSlide {
+  min-width: 100%;
+  height: 100%;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.carouselSlide img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center center;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.carouselBadge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  padding: 4px 10px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  z-index: 2;
+}
+
+.carouselPrev,
+.carouselNext {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(249, 245, 238, 0.75);
+  border: none;
+  color: #aa4a30;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  z-index: 3;
+  backdrop-filter: blur(4px);
+}
+
+.carouselPrev:hover,
+.carouselNext:hover {
+  background: rgba(170, 74, 48, 0.4);
+}
+
+.carouselPrev {
+  left: 8px;
+}
+
+.carouselNext {
+  right: 8px;
+}
+
+.carouselDots {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 5px;
+  z-index: 3;
+}
+
+.carouselDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s;
+}
+
+.productBody {
+  padding: 1.25rem 1.5rem 1.5rem;
+}
+
+.productCode {
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  color: var(--rose);
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+
+.productName {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  font-weight: 400;
+  margin-bottom: 0.4rem;
+}
+
+.productDesc {
+  font-size: 0.82rem;
+  color: var(--mgray);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.productIncludes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 1.25rem;
+}
+
+.productTag {
+  background: rgba(170, 74, 48, 0.12);
+  color: var(--rose);
+  font-size: 0.68rem;
+  padding: 3px 9px;
+  border-radius: 12px;
+}
+
+.productFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.productPrice {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  color: var(--cream);
+}
+
+.productPrice span {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  color: var(--mgray);
+  margin-left: 4px;
+}
+
+.btnOrder {
+  background: var(--rose);
+  color: white;
+  padding: 0.65rem 1.3rem;
+  border-radius: 24px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font-sans);
+}
+
+.btnOrder:hover {
+  background: var(--blush);
+  transform: translateY(-1px);
+}
+
+/* ── CUSTOM REQUEST ── */
+.customRequest {
+  background: rgba(255, 255, 255, 0.01);
+  padding: 5rem 2rem !important;
+}
+
+.customRequestInner {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.customRequestCard {
+  background: rgba(170, 74, 48, 0.05);
+  border: 1px solid rgba(170, 74, 48, 0.2);
+  border-radius: 20px;
+  padding: 2rem 1.5rem;
+  text-align: left;
+}
+
+.bulkNote {
+  text-align: center;
+  margin-top: 2.5rem;
+  font-size: 0.78rem;
+  color: var(--mgray);
+}
+
+.bulkNote a {
+  color: var(--rose);
+  text-decoration: underline;
+}
+
+/* ── MANIFESTO ── */
+.manifesto {
+  background: linear-gradient(135deg, rgba(170, 74, 48, 0.08) 0%, rgba(249, 245, 238, 0) 60%);
+  border-top: 1px solid rgba(170, 74, 48, 0.1);
+  border-bottom: 1px solid rgba(170, 74, 48, 0.1);
+  text-align: center;
+}
+
+.manifestoText {
+  font-family: var(--font-serif);
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--cream);
+  line-height: 1.6;
+  max-width: 700px;
+  margin: 0 auto 2rem;
+}
+
+.manifestoPills {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.pill {
+  border: 1px solid rgba(170, 74, 48, 0.3);
+  color: var(--mgray);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .hero {
+    padding-top: 5rem;
+    min-height: 85vh;
+  }
+
+  .heroSub {
+    font-size: 0.9rem;
+    padding: 0 1rem;
+  }
+
+  .heroBtns {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .btnPrimary,
+  .btnOutline {
+    width: 100%;
+    max-width: 280px;
+    text-align: center;
+  }
+
+  .page section {
+    padding: 3.5rem 1.25rem;
+  }
+
+  .sectionTitle {
+    font-size: clamp(1.6rem, 5vw, 2.4rem);
+  }
+
+  .steps {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .productsGrid {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+
+  .productCard {
+    border-radius: 16px;
+  }
+
+  .productBody {
+    padding: 1rem 1.25rem 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .page section {
+    padding: 3rem 1rem;
+  }
+
+  .heroBtns {
+    gap: 0.6rem;
+  }
+
+  .productsGrid {
+    padding: 0 0.25rem;
+  }
+}

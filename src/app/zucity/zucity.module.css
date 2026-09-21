@@ -1,0 +1,415 @@
+/* Ported from zucity_preorder.html — a standalone collab landing page with its
+   own palette and type, scoped to .page like /b2b. */
+
+.page {
+  --cream: #f9f5ee;
+  --plum: #2a1e1b;
+  --dusty-rose: #dfb6a6;
+  --purple: #3b4a3f;
+  --thread-red: #aa4a30;
+  --ink: #2a1e1b;
+  --line: #e4dace;
+
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-ui: var(--font-inter), system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  line-height: 1.6;
+}
+
+.stitchRule {
+  height: 2px;
+  width: 100%;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--thread-red) 0 10px,
+    transparent 10px 18px
+  );
+  margin: 0;
+}
+
+.wrap {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+.header {
+  padding: 20px 0 8px;
+}
+
+.backNav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--plum);
+  text-decoration: none;
+  padding-bottom: 28px;
+}
+
+.backNav:hover {
+  color: var(--thread-red);
+}
+
+.heroBlock {
+  text-align: center;
+}
+
+.eyebrow {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--thread-red);
+  margin-bottom: 14px;
+}
+
+.page h1 {
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-weight: 500;
+  color: var(--plum);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.sub {
+  margin-top: 14px;
+  font-size: 15px;
+  color: #8a8079;
+  max-width: 440px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.photoGallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.photoGallery img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  display: block;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 28px;
+  margin-top: 32px;
+}
+
+.productRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+
+.productName {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--plum);
+}
+
+.price {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--thread-red);
+  font-weight: 500;
+}
+
+.priceUnit {
+  font-size: 13px;
+  color: #8a8079;
+  font-family: var(--font-ui);
+}
+
+.specs {
+  list-style: none;
+  margin-top: 18px;
+  display: grid;
+  gap: 9px;
+}
+
+.specs li {
+  font-size: 13.5px;
+  color: #6b6058;
+  padding-left: 16px;
+  position: relative;
+}
+
+.specs li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--dusty-rose);
+}
+
+.note {
+  margin-top: 18px;
+  font-size: 12.5px;
+  color: #8a8079;
+  font-style: italic;
+  border-top: 1px dashed var(--line);
+  padding-top: 14px;
+}
+
+.noteInline {
+  margin-top: 0;
+  border-top: none;
+  padding-top: 0;
+}
+
+.form {
+  margin-top: 32px;
+  display: grid;
+  gap: 18px;
+}
+
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--plum);
+  margin-bottom: 6px;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  font-family: var(--font-ui);
+  font-size: 14.5px;
+  color: var(--ink);
+  background: var(--cream);
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: 2px solid var(--purple);
+  outline-offset: 1px;
+}
+
+.row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.totalLine {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-display);
+  font-size: 17px;
+  color: var(--plum);
+}
+
+.totalAmount {
+  color: var(--thread-red);
+}
+
+.submit {
+  background: var(--plum);
+  color: var(--cream);
+  border: none;
+  padding: 15px;
+  font-family: var(--font-ui);
+  font-size: 14.5px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  width: 100%;
+}
+
+.submit:hover {
+  background: var(--thread-red);
+}
+
+.submit:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+}
+
+.confirmSubmit {
+  background: var(--dusty-rose);
+  color: var(--plum);
+}
+
+.paymentCard {
+  background: var(--plum);
+  color: var(--cream);
+  border-radius: 4px;
+  padding: 28px;
+  margin-top: 32px;
+}
+
+.paymentCard h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+
+.subLight {
+  font-size: 13.5px;
+  color: #dfb6a6;
+  margin-bottom: 22px;
+}
+
+.payRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.payRow:last-of-type {
+  border-bottom: none;
+}
+
+.payLabel {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #dfb6a6;
+}
+
+.payValue {
+  font-family: var(--font-display);
+  font-size: 16px;
+  word-break: break-all;
+  text-align: right;
+  max-width: 65%;
+}
+
+.walletBox {
+  margin-top: 18px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+  padding: 16px;
+  font-size: 13px;
+  word-break: break-all;
+}
+
+.walletAddress {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #dfb6a6;
+  margin-bottom: 6px;
+}
+
+.steps {
+  margin-top: 22px;
+  display: grid;
+  gap: 10px;
+  list-style: none;
+}
+
+.steps li {
+  font-size: 13.5px;
+  color: #f0e4d8;
+  padding-left: 22px;
+  position: relative;
+}
+
+.steps li::before {
+  content: attr(data-n);
+  position: absolute;
+  left: 0;
+  top: -1px;
+  font-family: var(--font-display);
+  color: var(--dusty-rose);
+  font-size: 13px;
+}
+
+.confirmForm {
+  margin-top: 26px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding-top: 22px;
+  display: grid;
+  gap: 18px;
+}
+
+.confirmLabelLight label {
+  color: #dfb6a6;
+}
+
+.confirmInput {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  color: #fff !important;
+}
+
+.checkField {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.checkField input {
+  width: auto !important;
+  margin-top: 3px;
+}
+
+.checkField label {
+  text-transform: none;
+  font-weight: 400;
+  font-size: 13px;
+  color: #f0e4d8;
+  margin-bottom: 0;
+}
+
+.thanksLink {
+  display: inline-block;
+  margin-top: 8px;
+  color: var(--dusty-rose);
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 12px;
+  color: #8a8079;
+}
+
+@media (max-width: 480px) {
+  .page h1 {
+    font-size: 32px;
+  }
+
+  .row2 {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,167 @@
+/*
+ * The main site nav. Four pages each carried their own copy of this markup,
+ * this CSS and this hamburger script; the small drifts between them (0.92 vs
+ * 0.95 background alpha, 1.5 vs 2rem link gap) are unified here.
+ */
+
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 2rem;
+  background: rgba(249, 245, 238, 0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(170, 74, 48, 0.15);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--rose);
+  letter-spacing: 2px;
+}
+
+.logo {
+  height: 30px;
+  width: auto;
+  display: block;
+}
+
+.links {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.links a {
+  font-size: 0.8rem;
+  color: var(--mgray);
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+.links a:hover,
+.links a.active {
+  color: var(--cream);
+}
+
+.cta {
+  background: var(--rose);
+  color: white;
+  padding: 0.6rem 1.4rem;
+  border-radius: 24px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.cta:hover {
+  background: var(--blush);
+  transform: translateY(-1px);
+}
+
+/* ── HAMBURGER ── */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 1.5px;
+  background: var(--cream);
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+
+/* ── MOBILE DRAWER ── */
+.mobileNav {
+  display: none;
+  position: fixed;
+  top: 56px;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  background: rgba(249, 245, 238, 0.98);
+  backdrop-filter: blur(12px);
+  flex-direction: column;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid rgba(170, 74, 48, 0.15);
+}
+
+.mobileNav.open {
+  display: flex;
+}
+
+.mobileNav a {
+  padding: 0.85rem 0;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mgray);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(170, 74, 48, 0.08);
+  transition: color 0.2s;
+}
+
+.mobileNav a:hover,
+.mobileNav a.active {
+  color: var(--cream);
+}
+
+.mobileCta {
+  margin-top: 1rem;
+  background: var(--rose);
+  color: white;
+  padding: 0.85rem 1.5rem;
+  border-radius: 24px;
+  text-align: center;
+  border-bottom: none;
+}
+
+.mobileCta:hover {
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .links {
+    display: none;
+  }
+
+  .cta {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .nav {
+    padding: 1rem;
+  }
+}
