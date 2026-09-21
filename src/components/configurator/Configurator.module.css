@@ -450,34 +450,6 @@
   font-size: 10px;
 }
 
-/* ── MODE TOGGLE ── */
-.colourModeToggle {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 14px;
-}
-
-.modeBtn {
-  flex: 1;
-  padding: 9px 12px;
-  border: 1.5px solid rgba(170, 74, 48, 0.25);
-  background: transparent;
-  color: var(--dgray);
-  font-family: var(--font-sans);
-  font-size: 11px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.modeBtn.active {
-  border-color: var(--rose);
-  color: var(--rose);
-  background: rgba(170, 74, 48, 0.08);
-}
-
 /* ── SWATCHES ── */
 .swatchGroupLabel {
   font-size: 10px;
@@ -491,7 +463,7 @@
 
 .swatches {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 8px;
   margin-bottom: 8px;
 }
@@ -531,6 +503,20 @@
   display: block;
   height: 34px;
   border-radius: 2px;
+}
+
+.swatchDotCustom {
+  background: conic-gradient(
+    from 210deg,
+    #aa4a30,
+    #d49a37,
+    #8fbc5a,
+    #67b0a9,
+    #6b2d8b,
+    #c4708a,
+    #aa4a30
+  );
+  border: 1px solid rgba(170, 74, 48, 0.25);
 }
 
 .swatchName {
@@ -580,47 +566,108 @@
   color: var(--dgray);
 }
 
-/* ── SIZE ── */
-.sizeBtns {
-  display: flex;
-  gap: 8px;
+/* ── SIZE CHART ──
+   The chart is the picker: one row per size, the standard measurements read
+   only, and a last row that hands over to made-to-measure. The wrapper carries
+   the border so the rounded corners clip a collapsed table's cells. */
+.sizeTableWrap {
+  border: 1px solid rgba(170, 74, 48, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
   margin-bottom: 6px;
-  flex-wrap: wrap;
 }
 
-.sizeBtn {
-  padding: 8px 20px;
-  border: 1px solid rgba(170, 74, 48, 0.3);
-  background: transparent;
-  color: var(--dgray);
-  cursor: pointer;
+.sizeTable {
+  width: 100%;
+  border-collapse: collapse;
   font-family: var(--font-sans);
+}
+
+.sizeTable thead th {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--dgray);
+  background: rgba(170, 74, 48, 0.07);
+  padding: 9px 6px;
+  text-align: center;
+  border-bottom: 1px solid rgba(170, 74, 48, 0.18);
+}
+
+.sizeTable thead th:first-child {
+  text-align: left;
+  padding-left: 12px;
+}
+
+.sizeTable tbody tr {
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sizeTable tbody tr + tr > * {
+  border-top: 1px solid rgba(170, 74, 48, 0.12);
+}
+
+.sizeTable tbody tr:hover {
+  background: rgba(170, 74, 48, 0.05);
+}
+
+.sizeTable tbody tr.active {
+  background: rgba(170, 74, 48, 0.11);
+}
+
+.sizeTable td {
+  padding: 10px 6px;
+  text-align: center;
   font-size: 12px;
-  letter-spacing: 1px;
-  border-radius: 3px;
-  transition: all 0.2s;
-  position: relative;
-}
-
-.sizeBtn.active {
-  border-color: var(--rose);
-  color: var(--rose);
-  background: rgba(170, 74, 48, 0.1);
-}
-
-.sizeBtn:hover:not(.active) {
-  border-color: rgba(170, 74, 48, 0.4);
   color: var(--cream);
 }
 
-.sizeBtn.upsized::after {
-  content: '↑';
-  position: absolute;
-  top: -7px;
-  right: 2px;
-  font-size: 9px;
+.sizeCell {
+  padding: 10px 6px 10px 12px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--cream);
+  white-space: nowrap;
+}
+
+.sizeTable tbody tr.active .sizeCell {
+  color: var(--rose);
+}
+
+.sizeRadio {
+  accent-color: var(--rose);
+  width: 13px;
+  height: 13px;
+  margin-right: 8px;
+  vertical-align: -2px;
+  cursor: pointer;
+}
+
+/* L and XL take more yarn and more hours. */
+.upsizedMark {
   color: var(--gold);
+  font-size: 10px;
   font-weight: 700;
+  margin-left: 5px;
+}
+
+.sizeCustomCell {
+  text-align: left !important;
+  font-size: 11px;
+  font-style: italic;
+  color: var(--dgray) !important;
+}
+
+.proceedHint {
+  font-size: 11px;
+  color: var(--dgray);
+  text-align: center;
+  margin-bottom: 14px;
+  min-height: 14px;
 }
 
 .sizeNote {
@@ -709,29 +756,8 @@
   margin-bottom: 2px;
 }
 
-.yarnToggle {
-  background: transparent;
-  border: 1px solid rgba(170, 74, 48, 0.35);
-  color: var(--rose);
-  padding: 7px 16px;
-  border-radius: 20px;
-  font-size: 10px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  cursor: pointer;
-  font-family: var(--font-sans);
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-
-.yarnToggle:hover,
-.yarnToggle.open {
-  background: rgba(170, 74, 48, 0.12);
-  border-color: var(--rose);
-}
-
 .yarnPanel {
-  display: none;
+  display: block;
   margin-top: 14px;
   background: rgba(249, 245, 238, 0.7);
   border: 1px solid rgba(170, 74, 48, 0.18);
@@ -739,57 +765,8 @@
   overflow: hidden;
 }
 
-.yarnPanel.open {
-  display: block;
-}
-
 .yarnPanelInner {
   padding: 16px;
-}
-
-.yarnSearchWrap {
-  position: relative;
-  margin-bottom: 14px;
-}
-
-.yarnSearch {
-  width: 100%;
-  background: rgba(249, 245, 238, 0.8);
-  border: 1px solid rgba(170, 74, 48, 0.2);
-  border-radius: 6px;
-  padding: 10px 14px 10px 36px;
-  color: var(--cream);
-  font-family: var(--font-sans);
-  font-size: 12px;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.yarnSearch:focus {
-  border-color: var(--rose);
-}
-
-.yarnSearch::placeholder {
-  color: var(--dgray);
-  opacity: 0.7;
-}
-
-.yarnSearchIcon {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--dgray);
-  font-size: 13px;
-  pointer-events: none;
-}
-
-.yarnCount {
-  font-size: 10px;
-  color: var(--dgray);
-  text-align: right;
-  margin-bottom: 10px;
-  letter-spacing: 1px;
 }
 
 .yarnGrid {
@@ -935,43 +912,6 @@
   font-style: italic;
 }
 
-/* ── MOMENT ── */
-.momentSection {
-  margin-bottom: 20px;
-}
-
-.momentBox {
-  background: rgba(170, 74, 48, 0.05);
-  border: 1px solid rgba(170, 74, 48, 0.18);
-  border-radius: 8px;
-  padding: 16px 18px;
-}
-
-.momentTextarea {
-  width: 100%;
-  background: rgba(249, 245, 238, 0.6);
-  border: 1px solid rgba(170, 74, 48, 0.2);
-  border-radius: 6px;
-  padding: 12px 14px;
-  color: var(--cream);
-  font-family: var(--font-sans);
-  font-size: 13px;
-  line-height: 1.6;
-  resize: vertical;
-  min-height: 88px;
-  transition: border-color 0.2s;
-  outline: none;
-}
-
-.momentTextarea:focus {
-  border-color: var(--rose);
-}
-
-.momentTextarea::placeholder {
-  color: var(--dgray);
-  opacity: 0.6;
-}
-
 /* ── ORDER SUMMARY ── */
 .orderSummary {
   background: rgba(170, 74, 48, 0.06);
@@ -1023,12 +963,6 @@
   color: var(--cream);
   text-align: right;
   max-width: 240px;
-}
-
-.momentVal {
-  font-size: 11px;
-  color: var(--dgray);
-  font-style: italic;
 }
 
 .orderTotalRow {
@@ -1198,6 +1132,7 @@
   margin-bottom: 10px;
   display: block;
   text-align: center;
+  text-decoration: none;
 }
 
 .ctaConfirm {
@@ -1498,22 +1433,39 @@
   }
 
   .swatches {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
+    gap: 5px;
   }
 
   .swatchDot {
     height: 28px;
   }
 
-  .sizeBtns {
-    gap: 6px;
+  /* Five columns on a phone: trim the gutters, keep the rows tappable. */
+  .sizeTable thead th {
+    padding: 8px 2px;
+    font-size: 8px;
+    letter-spacing: 1px;
   }
 
-  .sizeBtn {
-    padding: 10px 14px;
-    min-height: 44px;
-    font-size: 10px;
+  .sizeTable thead th:first-child,
+  .sizeCell {
+    padding-left: 9px;
+  }
+
+  .sizeTable td {
+    padding: 12px 2px;
+    font-size: 11px;
+  }
+
+  .sizeCell {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    font-size: 11px;
+    letter-spacing: 0;
+  }
+
+  .sizeRadio {
+    margin-right: 6px;
   }
 
   .yarnGrid {
@@ -1540,8 +1492,11 @@
     grid-template-columns: repeat(4, 1fr);
   }
 
-  .sizeBtn {
-    padding: 10px 10px;
+  /* Never display:none — that drops the radio out of the tab order. */
+  .sizeRadio {
+    width: 11px;
+    height: 11px;
+    margin-right: 4px;
   }
 
   .modelBtn {

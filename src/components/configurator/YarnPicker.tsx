@@ -1,75 +1,36 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import { YARNS, YARN_COUNT, type Yarn } from '@/data/yarns';
+import { YARNS, type Yarn } from '@/data/yarns';
 import s from './Configurator.module.css';
 
 type Props = {
-  searchPlaceholder: string;
   defaultNote: string;
   selected: Yarn | null;
   onSelect: (yarn: Yarn | null) => void;
 };
 
 /**
- * The 81-colour yarn palette. All three configurators inlined this list — with
- * every thumbnail as a base64 data URI — into their own page; it is now one
- * component reading one data module.
+ * The yarn palette. All three configurators inlined this list — with every
+ * thumbnail as a base64 data URI — into their own page; it is now one
+ * component reading one data module (src/data/yarns.ts).
+ *
+ * The palette has no controls of its own — no search, no count, no open/close.
+ * The colour section mounts it when "Custom" is picked and unmounts it when a
+ * named colourway is picked, so the whole grid is simply on screen or not.
  */
-export default function YarnPicker({
-  searchPlaceholder,
-  defaultNote,
-  selected,
-  onSelect,
-}: Props) {
-  const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState('');
-
-  const filtered = useMemo(() => {
-    const q = query.toLowerCase().trim();
-    if (!q) return YARNS;
-    return YARNS.filter(
-      (yarn) => yarn.name.toLowerCase().includes(q) || yarn.id.includes(q),
-    );
-  }, [query]);
-
+export default function YarnPicker({ defaultNote, selected, onSelect }: Props) {
   return (
     <div className={s.yarnSection}>
       <div className={s.yarnHeader}>
         <div className={s.yarnHeaderText}>
           <h3>Choose your yarn colour</h3>
         </div>
-        <button
-          type="button"
-          className={`${s.yarnToggle} ${open ? s.open : ''}`}
-          onClick={() => setOpen((v) => !v)}
-        >
-          {open ? 'Close palette X' : 'Open palette'}
-        </button>
       </div>
 
-      <div className={`${s.yarnPanel} ${open ? s.open : ''}`}>
+      <div className={s.yarnPanel}>
         <div className={s.yarnPanelInner}>
-          <div className={s.yarnSearchWrap}>
-            <span className={s.yarnSearchIcon}>&#128269;</span>
-            <input
-              type="text"
-              className={s.yarnSearch}
-              placeholder={searchPlaceholder}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              aria-label="Search yarn colours"
-            />
-          </div>
-
-          <div className={s.yarnCount}>
-            {filtered.length === YARN_COUNT
-              ? `Showing all ${YARN_COUNT} yarns`
-              : `Showing ${filtered.length} of ${YARN_COUNT} yarns`}
-          </div>
-
           <div className={s.yarnGrid}>
-            {filtered.map((yarn) => (
+            {YARNS.map((yarn) => (
               <button
                 key={yarn.id}
                 type="button"

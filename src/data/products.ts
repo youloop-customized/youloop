@@ -80,8 +80,6 @@ export type ProductConfig = {
   };
   /** Hood only: replaces the size section. */
   wearPills?: { label: string; pills: string[] };
-  momentPlaceholder: string;
-  yarnSearchPlaceholder: string;
   yarnDefaultNote: string;
   leadTime: string;
   trust: string[];
@@ -168,8 +166,6 @@ export const SR01: ProductConfig = {
     note: 'L + XL reflect extra yarn and stitching time.',
     measurements: STANDARD_MEASUREMENTS,
   },
-  momentPlaceholder: 'e.g. It is my 22nd birthday dinner. I want something bold but soft...',
-  yarnSearchPlaceholder: 'Search e.g. pink, 48',
   yarnDefaultNote: 'No yarn selected - we will confirm your colour via LINE before starting.',
   leadTime: '10-14 days',
   trust: ['3 pieces included', '100% Cotton', 'Fairly made', 'Photo approval'],
@@ -253,8 +249,6 @@ export const SR02: ProductConfig = {
     note: 'L + XL reflect extra yarn and stitching time.',
     measurements: STANDARD_MEASUREMENTS,
   },
-  momentPlaceholder: 'e.g. Wearing this to a rooftop party. Something sharp but soft...',
-  yarnSearchPlaceholder: 'Search e.g. pink, 48',
   yarnDefaultNote: 'No yarn selected - we will confirm via Instagram before starting.',
   leadTime: '10-14 days',
   trust: ['2 pieces included', '100% Cotton', 'Fairly made', 'Photo approval'],
@@ -376,8 +370,6 @@ export const SRAC01: ProductConfig = {
     },
   ],
   wearPills: { label: '02 - 3 ways to wear it', pills: ['Loose', 'Tied chin', 'Wrapped'] },
-  momentPlaceholder: 'e.g. Wearing it to a music festival. Cherry Red, loose fit...',
-  yarnSearchPlaceholder: 'Search e.g. black, cream, 21',
   yarnDefaultNote: 'No yarn selected - we will confirm via Instagram before starting.',
   leadTime: '7-10 days',
   trust: ['Handmade to order', '100% Cotton', 'Unisex fit', 'Photo approval'],
