@@ -163,28 +163,67 @@ export default function Checkout() {
     setSending(true);
     setStatus('Submitting...');
 
+    // Netlify Forms stays the durable record of every order, paid or not, so it
+    // is filed before payment is attempted rather than after.
+    //
+    // Best-effort on purpose. Netlify only intercepts POSTs to /__forms.html on
+    // a deployed site, so this always 405s in local dev — but more importantly,
+    // losing the record must never cost a sale. Payment is the path that
+    // matters; the webhook and /api/custom-order both email regardless.
+    let redirecting = false;
     try {
-      await submitFormFields(payload);
-      setStatus('');
-      setSubmitted({
-        orderNumber,
-        colour: colourSummary,
-        yarn: yarnLabel,
-        size: product.sizing ? sizeLabel : null,
-        measurements: measurementSummary,
-        discount: discount ? `${bahtDiscount(discount)} (${promo})` : null,
-        total: totalLabel,
-        name: name.trim(),
-        email: email.trim(),
-        address: addressLabel,
+      await submitFormFields(payload).catch((err) => {
+        console.warn('Netlify Forms record failed — continuing to payment.', err);
       });
+
+      const body = JSON.stringify({
+        draft: params.toString(),
+        orderNumber,
+        customer: { name: name.trim(), email: email.trim(), address: addressLabel },
+      });
+      const headers = { 'Content-Type': 'application/json' };
+
+      const res = await fetch('/api/create-checkout-session', { method: 'POST', headers, body });
+      const data = await res.json().catch(() => ({}));
+
+      // A preset size is priced, so it goes straight to Stripe.
+      if (res.ok && data.url) {
+        redirecting = true;
+        setStatus('Taking you to payment...');
+        window.location.href = data.url;
+        return;
+      }
+
+      // A made-to-measure piece is quoted by hand first: acknowledge it, send
+      // the order card, and follow up with a payment link by email.
+      if (res.status === 409 && data.quoteOnly) {
+        await fetch('/api/custom-order', { method: 'POST', headers, body });
+        setStatus('');
+        setSubmitted({
+          orderNumber,
+          colour: colourSummary,
+          yarn: yarnLabel,
+          size: product.sizing ? sizeLabel : null,
+          measurements: measurementSummary,
+          discount: discount ? `${bahtDiscount(discount)} (${promo})` : null,
+          total: totalLabel,
+          name: name.trim(),
+          email: email.trim(),
+          address: addressLabel,
+        });
+        return;
+      }
+
+      throw new Error(data.error ?? 'Checkout could not be started.');
     } catch {
       setStatus('');
       alert(
         'Something went wrong submitting your order. Please message us directly on Instagram @hello.youloop and we will sort it out.',
       );
     } finally {
-      setSending(false);
+      // Left disabled while the browser is on its way to Stripe, so the order
+      // cannot be submitted twice.
+      if (!redirecting) setSending(false);
     }
   }
 
@@ -419,7 +458,7 @@ export default function Checkout() {
           onClick={submitOrder}
           disabled={sending}
         >
-          Order
+          {isCustomSize ? 'Request your quote' : 'Continue to payment'}
         </button>
         <p className={s.submitStatus}>{status}</p>
 
@@ -436,8 +475,10 @@ export default function Checkout() {
       <div className={`${s.modalOverlay} ${submitted ? s.open : ''}`}>
         {submitted && (
           <div className={s.modalCard}>
-            <div className={s.modalTitle}>&#10022; Order Received</div>
-            <div className={s.modalSubtitle}>We&apos;ll reach out within 1 hour</div>
+            {/* Only made-to-measure orders reach this modal — a preset size is
+                redirected to Stripe and confirmed on /success instead. */}
+            <div className={s.modalTitle}>&#10022; We&apos;re on it</div>
+            <div className={s.modalSubtitle}>Nothing has been charged yet</div>
             <span className={s.modalOrderNum}>{submitted.orderNumber}</span>
 
             <div className={s.modalSummary}>
@@ -474,7 +515,7 @@ export default function Checkout() {
                 </div>
               )}
               <div className={s.modalRow}>
-                <span className={s.modalRowLabel}>Total</span>
+                <span className={s.modalRowLabel}>Starting quote</span>
                 <span className={s.modalRowVal}>{submitted.total}</span>
               </div>
               <div className={s.modalRow}>
@@ -492,7 +533,9 @@ export default function Checkout() {
             </div>
 
             <p className={s.modalInstruction}>
-              We&apos;ll email you within 1 hour to confirm the details and arrange payment.
+              We check every set of measurements by hand before quoting. You&apos;ll have a
+              confirmation email shortly, and the final price with a secure payment link within
+              one working day.
             </p>
             <Link href="/#collection" className={s.modalClose}>
               Done
