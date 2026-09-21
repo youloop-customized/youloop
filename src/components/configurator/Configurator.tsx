@@ -301,7 +301,7 @@ export default function Configurator({ product }: { product: ProductConfig }) {
               className={`${s.modeBtn} ${mode === 'custom' ? s.active : ''}`}
               onClick={() => selectMode('custom')}
             >
-              Customise my ownn
+              Customise my own
             </button>
           </div>
 
