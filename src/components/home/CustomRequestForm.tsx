@@ -21,6 +21,7 @@ import {
   tweaksFor,
   type EntryPath,
 } from '@/data/customRequest';
+import { STANDARD_MEASUREMENTS } from '@/data/products';
 import { YARNS } from '@/data/yarns';
 import { baht, generateRequestId } from '@/lib/format';
 import { submitFormData } from '@/lib/netlify';
@@ -80,6 +81,27 @@ function imageFileError(file: File): string | null {
 
 type Measurements = { bust: string; waist: string; hips: string };
 
+/** Same shape as the collection checkout's shipping form, so both flows
+ * record an order the same way. */
+type Shipping = {
+  line1: string;
+  line2: string;
+  city: string;
+  postcode: string;
+  country: string;
+};
+
+const EMPTY_SHIPPING: Shipping = { line1: '', line2: '', city: '', postcode: '', country: 'Thailand' };
+const REQUIRED_SHIPPING: (keyof Shipping)[] = ['line1', 'city', 'postcode', 'country'];
+
+/** Flattens the address into the one line the record and the email show. */
+function formatAddress(shipping: Shipping): string {
+  return [shipping.line1, shipping.line2, shipping.city, shipping.postcode, shipping.country]
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .join(', ');
+}
+
 /**
  * A pending upload and its preview URL, created together.
  *
@@ -137,6 +159,7 @@ export default function CustomRequestForm() {
   // unset in practice. The customer has to actually choose one.
   const [contactMethod, setContactMethod] = useState<string | null>(null);
   const [contactHandle, setContactHandle] = useState('');
+  const [shipping, setShipping] = useState<Shipping>(EMPTY_SHIPPING);
 
   const [nameError, setNameError] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -256,16 +279,20 @@ export default function CustomRequestForm() {
         return Boolean(referenceTarget);
       case 'shape':
         return Boolean(baseStyle);
+      // Both size steps share one table (see renderSizeSection) and so share
+      // one rule: a standard size, valid exact measurements, or "I'll send
+      // them later" all satisfy it — plus a height in range either way.
       case 'fit':
-        return (
-          (useMeasurements
-            ? isInRange(cm.bust, MIN_MEASURE_CM, MAX_MEASURE_CM) &&
-              isInRange(cm.waist, MIN_MEASURE_CM, MAX_MEASURE_CM) &&
-              isInRange(cm.hips, MIN_MEASURE_CM, MAX_MEASURE_CM)
-            : Boolean(size)) && isInRange(heightCm, MIN_HEIGHT_CM, MAX_HEIGHT_CM)
-        );
       case 'simpleFit':
-        return (Boolean(size) || measureLater) && isInRange(heightCm, MIN_HEIGHT_CM, MAX_HEIGHT_CM);
+        return (
+          (Boolean(size) ||
+            measureLater ||
+            (useMeasurements &&
+              isInRange(cm.bust, MIN_MEASURE_CM, MAX_MEASURE_CM) &&
+              isInRange(cm.waist, MIN_MEASURE_CM, MAX_MEASURE_CM) &&
+              isInRange(cm.hips, MIN_MEASURE_CM, MAX_MEASURE_CM))) &&
+          isInRange(heightCm, MIN_HEIGHT_CM, MAX_HEIGHT_CM)
+        );
       case 'tweaks':
         // Neckline, sleeves and silhouette are required, but "Not Sure" is
         // always a valid answer for each — so this never blocks someone who
@@ -320,7 +347,175 @@ export default function CustomRequestForm() {
     name.trim().length >= 2 &&
     EMAIL_RE.test(email.trim()) &&
     Boolean(contact) &&
-    isValidHandle(contact?.value, contactHandle);
+    isValidHandle(contact?.value, contactHandle) &&
+    REQUIRED_SHIPPING.every((key) => shipping[key].trim());
+
+  /**
+   * The size chart, shared by both paths (see 'simpleFit' and 'fit' below).
+   * Reads the exact same STANDARD_MEASUREMENTS chart the collection
+   * configurator uses, so a size means the same thing everywhere on the
+   * site — and its "Custom" row is what makes the exact-measurement panel
+   * beneath it a real feature on the reference path too, not just the
+   * guided one.
+   */
+  function renderSizeSection() {
+    return (
+      <>
+        <div className={f.field}>
+          <label className={f.label}>Your size *</label>
+          <div className={w.sizeTableWrap}>
+            <table className={w.sizeTable}>
+              <thead>
+                <tr>
+                  <th scope="col">Size</th>
+                  <th scope="col">Bust</th>
+                  <th scope="col">Waist</th>
+                  <th scope="col">Hips</th>
+                  <th scope="col">Height</th>
+                </tr>
+              </thead>
+              <tbody>
+                {SIZES.map((label) => {
+                  const row = STANDARD_MEASUREMENTS[label];
+                  const checked = !useMeasurements && !measureLater && size === label;
+                  const pick = () => {
+                    setSize(label);
+                    setUseMeasurements(false);
+                    setMeasureLater(false);
+                  };
+                  return (
+                    <tr key={label} className={checked ? w.sizeRowActive : ''} onClick={pick}>
+                      <th scope="row" className={w.sizeCell}>
+                        <input
+                          type="radio"
+                          name="cr-size"
+                          className={w.sizeRadio}
+                          value={label}
+                          checked={checked}
+                          onChange={pick}
+                        />
+                        <span>{label}</span>
+                      </th>
+                      <td>{row.bust}</td>
+                      <td>{row.waist}</td>
+                      <td>{row.hips}</td>
+                      <td>{row.height}</td>
+                    </tr>
+                  );
+                })}
+                <tr
+                  className={useMeasurements ? w.sizeRowActive : ''}
+                  onClick={() => {
+                    setUseMeasurements(true);
+                    setSize(null);
+                    setMeasureLater(false);
+                  }}
+                >
+                  <th scope="row" className={w.sizeCell}>
+                    <input
+                      type="radio"
+                      name="cr-size"
+                      className={w.sizeRadio}
+                      value="custom"
+                      checked={useMeasurements}
+                      onChange={() => {
+                        setUseMeasurements(true);
+                        setSize(null);
+                        setMeasureLater(false);
+                      }}
+                    />
+                    <span>Custom</span>
+                  </th>
+                  <td className={w.sizeCustomCell} colSpan={4}>
+                    Your own measurements
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div className={f.help}>All measurements in cm.</div>
+        </div>
+
+        {useMeasurements && (
+          <div className={f.field} style={{ marginTop: '0.6rem' }}>
+            <label className={f.label}>Bust / waist / hips, in cm *</label>
+            <div className={w.measureRow}>
+              {(['bust', 'waist', 'hips'] as const).map((key) => (
+                <div key={key} className={f.field} style={{ marginBottom: '0.6rem' }}>
+                  <input
+                    className={`${f.input} ${measureError ? f.invalid : ''}`}
+                    type="number"
+                    inputMode="numeric"
+                    min={MIN_MEASURE_CM}
+                    max={MAX_MEASURE_CM}
+                    placeholder={key[0].toUpperCase() + key.slice(1)}
+                    value={cm[key]}
+                    onChange={(e) => setCm({ ...cm, [key]: e.target.value })}
+                    onBlur={() => {
+                      const bad = (['bust', 'waist', 'hips'] as const).filter(
+                        (k) => cm[k] && !isInRange(cm[k], MIN_MEASURE_CM, MAX_MEASURE_CM),
+                      );
+                      setMeasureError(
+                        bad.length
+                          ? `Enter a realistic number in cm (${MIN_MEASURE_CM}–${MAX_MEASURE_CM})`
+                          : '',
+                      );
+                    }}
+                    aria-label={`${key} in cm`}
+                  />
+                </div>
+              ))}
+            </div>
+            {measureError && <div className={f.error}>{measureError}</div>}
+          </div>
+        )}
+
+        <label className={f.checkline}>
+          <input
+            type="checkbox"
+            checked={measureLater}
+            onChange={(e) => {
+              setMeasureLater(e.target.checked);
+              if (e.target.checked) {
+                setSize(null);
+                setUseMeasurements(false);
+              }
+            }}
+          />{' '}
+          I&apos;ll send my exact measurements on chat later
+        </label>
+
+        <div className={f.field} style={{ marginTop: '1rem' }}>
+          <label className={f.label} htmlFor="cr-height">
+            Your height *
+          </label>
+          <div className={w.heightRow}>
+            <input
+              className={`${f.input} ${heightError ? f.invalid : ''}`}
+              type="number"
+              id="cr-height"
+              inputMode="numeric"
+              min={MIN_HEIGHT_CM}
+              max={MAX_HEIGHT_CM}
+              placeholder="160"
+              value={heightCm}
+              onChange={(e) => setHeightCm(e.target.value)}
+              onBlur={() =>
+                setHeightError(
+                  isInRange(heightCm, MIN_HEIGHT_CM, MAX_HEIGHT_CM)
+                    ? ''
+                    : `Enter a height between ${MIN_HEIGHT_CM} and ${MAX_HEIGHT_CM} cm`,
+                )
+              }
+            />
+            <span className={w.heightUnit}>cm</span>
+          </div>
+          {heightError && <div className={f.error}>{heightError}</div>}
+          <div className={f.help}>This is what gets dress and trouser lengths right.</div>
+        </div>
+      </>
+    );
+  }
 
   async function handleSubmit() {
     if (name.trim().length < 2) {
@@ -336,7 +531,12 @@ export default function CustomRequestForm() {
       alert('Pick a chat channel and add a valid handle — that is how we talk through the design.');
       return;
     }
+    if (REQUIRED_SHIPPING.some((key) => !shipping[key].trim())) {
+      alert('Please complete your shipping address before submitting.');
+      return;
+    }
 
+    const addressLabel = formatAddress(shipping);
     const data = new FormData();
     data.set('form-name', 'custom-request');
     // Netlify's honeypot: declared on the form in public/__forms.html, and only
@@ -387,6 +587,13 @@ export default function CustomRequestForm() {
     data.set('customization_notes', tweakNote.trim() || '(no extra notes)');
     data.set('starting_price', baht(CUSTOM_STARTING_PRICE));
 
+    data.set('address', addressLabel);
+    data.set('address_line1', shipping.line1.trim());
+    data.set('address_line2', shipping.line2.trim());
+    data.set('city', shipping.city.trim());
+    data.set('postcode', shipping.postcode.trim());
+    data.set('country', shipping.country.trim());
+
     uploads.forEach((upload) => data.append('inspiration', upload.file));
 
     // Read back from `data` rather than the raw state, so the email says
@@ -409,17 +616,24 @@ export default function CustomRequestForm() {
       startingPrice: field('starting_price'),
       contactMethod: field('contact_method'),
       contactHandle: field('contact_handle'),
+      address: addressLabel,
     };
 
     setSending(true);
     try {
-      await submitFormData(data);
+      // Best-effort, same as the collection checkout: Netlify Forms only
+      // intercepts this POST on a deployed site (it always 405s locally), and
+      // a hiccup there must not cost the customer their confirmation email —
+      // that's the more important side effect and does not depend on this
+      // succeeding.
+      await submitFormData(data).catch((err) => {
+        console.warn('Netlify Forms record failed — continuing anyway.', err);
+      });
       setSubmitted(true);
 
-      // Best-effort: the request is already safely recorded in Netlify Forms,
-      // and the studio's internal notice already fired from
-      // netlify/functions/submission-created.js. A flaky send here must not
-      // take back the "Got it" screen the customer is already looking at.
+      // The studio's internal notice fires separately, from
+      // netlify/functions/submission-created.js — a Netlify Forms hook, so it
+      // only runs once deployed and only if the submission above succeeded.
       fetch('/api/custom-request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -690,170 +904,12 @@ export default function CustomRequestForm() {
       )}
 
       {/* ── SIMPLE FIT (reference path) ── */}
-      {current === 'simpleFit' && (
-        <>
-          <div className={f.field}>
-            <label className={f.label}>Your usual size *</label>
-            <div className={f.chips}>
-              {SIZES.map((option) => (
-                <button
-                  key={option}
-                  type="button"
-                  className={`${f.chip} ${size === option ? f.active : ''}`}
-                  onClick={() => {
-                    setSize(size === option ? null : option);
-                    setMeasureLater(false);
-                  }}
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
-            <div className={f.help}>Pick one, or tell us below that you&apos;ll send exact measurements instead.</div>
-          </div>
-
-          <label className={f.checkline}>
-            <input
-              type="checkbox"
-              checked={measureLater}
-              onChange={(e) => {
-                setMeasureLater(e.target.checked);
-                if (e.target.checked) setSize(null);
-              }}
-            />{' '}
-            I&apos;ll send my exact measurements on chat later
-          </label>
-
-          <div className={f.field} style={{ marginTop: '1rem' }}>
-            <label className={f.label} htmlFor="cr-height">
-              Your height *
-            </label>
-            <div className={w.heightRow}>
-              <input
-                className={`${f.input} ${heightError ? f.invalid : ''}`}
-                type="number"
-                id="cr-height"
-                inputMode="numeric"
-                min={MIN_HEIGHT_CM}
-                max={MAX_HEIGHT_CM}
-                placeholder="160"
-                value={heightCm}
-                onChange={(e) => setHeightCm(e.target.value)}
-                onBlur={() =>
-                  setHeightError(
-                    isInRange(heightCm, MIN_HEIGHT_CM, MAX_HEIGHT_CM)
-                      ? ''
-                      : `Enter a height between ${MIN_HEIGHT_CM} and ${MAX_HEIGHT_CM} cm`,
-                  )
-                }
-              />
-              <span className={w.heightUnit}>cm</span>
-            </div>
-            {heightError && <div className={f.error}>{heightError}</div>}
-            <div className={f.help}>
-              This is what gets dress and trouser lengths right.
-            </div>
-          </div>
-        </>
-      )}
+      {current === 'simpleFit' && renderSizeSection()}
 
       {/* ── FIT (shape path) ── */}
       {current === 'fit' && (
         <>
-          {!useMeasurements && (
-            <div className={f.field}>
-              <label className={f.label}>Your size *</label>
-              <div className={f.chips}>
-                {SIZES.map((option) => (
-                  <button
-                    key={option}
-                    type="button"
-                    className={`${f.chip} ${size === option ? f.active : ''}`}
-                    onClick={() => setSize(option)}
-                  >
-                    {option}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <label className={f.checkline}>
-            <input
-              type="checkbox"
-              checked={useMeasurements}
-              onChange={(e) => {
-                setUseMeasurements(e.target.checked);
-                if (e.target.checked) setSize(null);
-              }}
-            />{' '}
-            I&apos;d rather give my measurements
-          </label>
-
-          {useMeasurements && (
-            <div className={f.field} style={{ marginTop: '0.8rem' }}>
-              <label className={f.label}>Bust / waist / hips, in cm *</label>
-              <div className={w.measureRow}>
-                {(['bust', 'waist', 'hips'] as const).map((key) => (
-                  <div key={key} className={f.field} style={{ marginBottom: '0.6rem' }}>
-                    <input
-                      className={`${f.input} ${measureError ? f.invalid : ''}`}
-                      type="number"
-                      inputMode="numeric"
-                      min={MIN_MEASURE_CM}
-                      max={MAX_MEASURE_CM}
-                      placeholder={key[0].toUpperCase() + key.slice(1)}
-                      value={cm[key]}
-                      onChange={(e) => setCm({ ...cm, [key]: e.target.value })}
-                      onBlur={() => {
-                        const bad = (['bust', 'waist', 'hips'] as const).filter(
-                          (k) => cm[k] && !isInRange(cm[k], MIN_MEASURE_CM, MAX_MEASURE_CM),
-                        );
-                        setMeasureError(
-                          bad.length
-                            ? `Enter a realistic number in cm (${MIN_MEASURE_CM}–${MAX_MEASURE_CM})`
-                            : '',
-                        );
-                      }}
-                      aria-label={`${key} in cm`}
-                    />
-                  </div>
-                ))}
-              </div>
-              {measureError && <div className={f.error}>{measureError}</div>}
-            </div>
-          )}
-
-          <div className={f.field} style={{ marginTop: '0.8rem' }}>
-            <label className={f.label} htmlFor="cr-height-b">
-              Your height *
-            </label>
-            <div className={w.heightRow}>
-              <input
-                className={`${f.input} ${heightError ? f.invalid : ''}`}
-                type="number"
-                id="cr-height-b"
-                inputMode="numeric"
-                min={MIN_HEIGHT_CM}
-                max={MAX_HEIGHT_CM}
-                placeholder="160"
-                value={heightCm}
-                onChange={(e) => setHeightCm(e.target.value)}
-                onBlur={() =>
-                  setHeightError(
-                    isInRange(heightCm, MIN_HEIGHT_CM, MAX_HEIGHT_CM)
-                      ? ''
-                      : `Enter a height between ${MIN_HEIGHT_CM} and ${MAX_HEIGHT_CM} cm`,
-                  )
-                }
-              />
-              <span className={w.heightUnit}>cm</span>
-            </div>
-            {heightError && <div className={f.error}>{heightError}</div>}
-            <div className={f.help}>
-              This is what gets dress and trouser lengths right.
-            </div>
-          </div>
+          {renderSizeSection()}
 
           {shows.length && (
             <div className={f.field} style={{ marginTop: '0.8rem' }}>
@@ -1198,6 +1254,86 @@ export default function CustomRequestForm() {
             ) : (
               <div className={f.help}>Pick one to continue.</div>
             )}
+          </div>
+
+          {/* SHIPPING DETAILS — where it goes, same fields as the collection
+              checkout so both flows record an order the same way. */}
+          <div className={f.field}>
+            <label className={f.label}>Shipping details</label>
+          </div>
+          <div className={f.field}>
+            <label className={f.label} htmlFor="cr-ship-line1">
+              Address
+            </label>
+            <input
+              className={f.input}
+              type="text"
+              id="cr-ship-line1"
+              autoComplete="address-line1"
+              placeholder="House number and street"
+              value={shipping.line1}
+              onChange={(e) => setShipping({ ...shipping, line1: e.target.value })}
+            />
+          </div>
+          <div className={f.field}>
+            <label className={f.label} htmlFor="cr-ship-line2">
+              Apartment, building, floor{' '}
+              <span style={{ color: 'var(--mgray)', fontWeight: 400 }}>(optional)</span>
+            </label>
+            <input
+              className={f.input}
+              type="text"
+              id="cr-ship-line2"
+              autoComplete="address-line2"
+              placeholder="Unit 4B, Riverside Tower"
+              value={shipping.line2}
+              onChange={(e) => setShipping({ ...shipping, line2: e.target.value })}
+            />
+          </div>
+          <div className={w.shipRow}>
+            <div className={f.field}>
+              <label className={f.label} htmlFor="cr-ship-city">
+                City / Province
+              </label>
+              <input
+                className={f.input}
+                type="text"
+                id="cr-ship-city"
+                autoComplete="address-level1"
+                placeholder="Bangkok"
+                value={shipping.city}
+                onChange={(e) => setShipping({ ...shipping, city: e.target.value })}
+              />
+            </div>
+            <div className={f.field}>
+              <label className={f.label} htmlFor="cr-ship-postcode">
+                Postcode
+              </label>
+              <input
+                className={f.input}
+                type="text"
+                id="cr-ship-postcode"
+                autoComplete="postal-code"
+                inputMode="numeric"
+                placeholder="10110"
+                value={shipping.postcode}
+                onChange={(e) => setShipping({ ...shipping, postcode: e.target.value })}
+              />
+            </div>
+          </div>
+          <div className={f.field}>
+            <label className={f.label} htmlFor="cr-ship-country">
+              Country
+            </label>
+            <input
+              className={f.input}
+              type="text"
+              id="cr-ship-country"
+              autoComplete="country-name"
+              placeholder="Thailand"
+              value={shipping.country}
+              onChange={(e) => setShipping({ ...shipping, country: e.target.value })}
+            />
           </div>
 
           <div className={w.priceNote}>

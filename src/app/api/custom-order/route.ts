@@ -1,11 +1,17 @@
 /**
- * The made-to-measure path: acknowledge, do not charge.
+ * Acknowledge an order, do not charge.
  *
- * A custom-size order cannot go through Stripe Checkout, because the price on
- * screen is a starting quote rather than a total (see the 409 in
- * /api/create-checkout-session). This endpoint tells the customer we have it
- * and are checking, and sends YOU LOOP the order card to quote from. Payment
- * follows by hand, as a Stripe payment link.
+ * Every configurator order goes through here for now — automatic payment via
+ * Stripe is built (see /api/create-checkout-session and /api/stripe/webhook)
+ * but dormant until the Stripe account is verified. This endpoint tells the
+ * customer we have their order and sends YOU LOOP the order card; payment and
+ * final confirmation happen by hand, over the chat channel the customer chose
+ * at checkout.
+ *
+ * A preset size arrives already priced (order.price is the real total); a
+ * made-to-measure order does not (the on-screen figure is a starting quote).
+ * `priced` below reflects that distinction so the emails never claim a number
+ * that has not actually been agreed.
  *
  * The Netlify Forms submission the checkout page also makes is what keeps the
  * durable record — this endpoint only sends mail.
@@ -31,7 +37,9 @@ export async function POST(request: Request) {
   const orderNumber =
     String((body as { orderNumber?: unknown }).orderNumber ?? '').trim() || generateOrderNumber();
 
-  const data = orderEmailData(order, customer, orderNumber, { priced: false });
+  const data = orderEmailData(order, customer, orderNumber, {
+    priced: order.sizeLabel !== 'Custom',
+  });
 
   // The customer's acknowledgement matters more than our own copy, but neither
   // failing should lose the order — the Netlify Forms record already exists.

@@ -89,6 +89,11 @@ function readSession(session: Stripe.Checkout.Session) {
       name: metadata.customer_name || session.customer_details?.name || 'there',
       email: metadata.customer_email || session.customer_details?.email || '',
       address: metadata.shipping_address || '',
+      // A Stripe-paid order never collects a chat channel — payment already
+      // succeeded automatically, so there's nothing to arrange by hand. These
+      // stay blank; customerPaidEmail doesn't reference them.
+      contactMethod: '',
+      contactHandle: '',
     },
   };
 }

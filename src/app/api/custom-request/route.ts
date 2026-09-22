@@ -49,6 +49,7 @@ export async function POST(request: Request) {
       startingPrice: str('startingPrice'),
       contactMethod: str('contactMethod'),
       contactHandle: str('contactHandle'),
+      address: str('address'),
     }),
     to: email,
   });

@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { CONTACT_METHODS } from '@/data/customRequest';
 import { PROMO_CODES } from '@/data/products';
 import { BRAND } from '@/data/site';
 import { baht, bahtDiscount, generateOrderNumber } from '@/lib/format';
@@ -19,9 +20,12 @@ type SubmittedOrder = {
   measurements: string;
   discount: string | null;
   total: string;
+  isCustomSize: boolean;
   name: string;
   email: string;
   address: string;
+  contactMethod: string;
+  contactHandle: string;
 };
 
 /** Shipping address, kept apart from who is ordering. */
@@ -52,6 +56,12 @@ function formatAddress(shipping: Shipping): string {
     .join(', ');
 }
 
+/** Loose on purpose — this page doesn't validate field-by-field like the
+ * Create Your Look wizard does; a non-trivial value is enough to file. */
+function isUsableHandle(value: string): boolean {
+  return value.trim().length >= 3;
+}
+
 /**
  * Step two of the order flow: the full summary, the customer's details and the
  * one button that actually sends the order. The configurator hands the chosen
@@ -66,6 +76,11 @@ export default function Checkout() {
   const [promoMsg, setPromoMsg] = useState<{ text: string; ok: boolean } | null>(null);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  // No default: automatic payment being off means this is how payment
+  // actually gets arranged, so it has to be a deliberate choice, not
+  // whatever channel happened to be first in the list.
+  const [contactMethod, setContactMethod] = useState<string | null>(null);
+  const [contactHandle, setContactHandle] = useState('');
   const [shipping, setShipping] = useState<Shipping>(EMPTY_SHIPPING);
   const [status, setStatus] = useState('');
   const [sending, setSending] = useState(false);
@@ -104,6 +119,7 @@ export default function Checkout() {
   const discount = promo ? Math.round(price * PROMO_CODES[promo].percent) : 0;
   const total = Math.max(price - discount, 0);
   const isCustomSize = sizeLabel === 'Custom';
+  const contact = CONTACT_METHODS.find((m) => m.value === contactMethod) ?? null;
 
   function applyPromo() {
     const code = promoInput.trim().toUpperCase();
@@ -123,6 +139,12 @@ export default function Checkout() {
       alert('Please fill in your name and email before submitting.');
       return;
     }
+    if (!contact || !isUsableHandle(contactHandle)) {
+      alert(
+        'Please pick a chat channel and add your handle — that is how we confirm your order and arrange payment.',
+      );
+      return;
+    }
     if (REQUIRED_SHIPPING.some((key) => !shipping[key].trim())) {
       alert('Please complete your shipping address before submitting.');
       return;
@@ -132,6 +154,7 @@ export default function Checkout() {
     const yarnLabel = yarn ? `#${yarn.id} - ${yarn.name}` : null;
     const totalLabel = baht(total);
     const addressLabel = formatAddress(shipping);
+    const contactHandleTrimmed = contactHandle.trim();
 
     const payload: Record<string, string> = {
       'form-name': product.formName,
@@ -144,6 +167,8 @@ export default function Checkout() {
       total: totalLabel,
       name: name.trim(),
       email: email.trim(),
+      contact_method: contact.label,
+      contact_handle: contactHandleTrimmed,
       address: addressLabel,
       address_line1: shipping.line1.trim(),
       address_line2: shipping.line2.trim(),
@@ -163,67 +188,64 @@ export default function Checkout() {
     setSending(true);
     setStatus('Submitting...');
 
-    // Netlify Forms stays the durable record of every order, paid or not, so it
-    // is filed before payment is attempted rather than after.
+    // Netlify Forms stays the durable record of every order — filed before
+    // the confirmation email is attempted, so losing that email never means
+    // losing the order.
     //
     // Best-effort on purpose. Netlify only intercepts POSTs to /__forms.html on
-    // a deployed site, so this always 405s in local dev — but more importantly,
-    // losing the record must never cost a sale. Payment is the path that
-    // matters; the webhook and /api/custom-order both email regardless.
-    let redirecting = false;
+    // a deployed site, so this always 405s in local dev.
     try {
       await submitFormFields(payload).catch((err) => {
-        console.warn('Netlify Forms record failed — continuing to payment.', err);
+        console.warn('Netlify Forms record failed — continuing anyway.', err);
       });
 
-      const body = JSON.stringify({
-        draft: params.toString(),
-        orderNumber,
-        customer: { name: name.trim(), email: email.trim(), address: addressLabel },
-      });
-      const headers = { 'Content-Type': 'application/json' };
-
-      const res = await fetch('/api/create-checkout-session', { method: 'POST', headers, body });
-      const data = await res.json().catch(() => ({}));
-
-      // A preset size is priced, so it goes straight to Stripe.
-      if (res.ok && data.url) {
-        redirecting = true;
-        setStatus('Taking you to payment...');
-        window.location.href = data.url;
-        return;
-      }
-
-      // A made-to-measure piece is quoted by hand first: acknowledge it, send
-      // the order card, and follow up with a payment link by email.
-      if (res.status === 409 && data.quoteOnly) {
-        await fetch('/api/custom-order', { method: 'POST', headers, body });
-        setStatus('');
-        setSubmitted({
+      // Automatic payment (Stripe) is built but dormant until the account is
+      // verified — see /api/create-checkout-session. Every order goes through
+      // the same manual-confirmation path for now, regardless of whether the
+      // size is a preset or made-to-measure; /api/custom-order already tells
+      // the customer and the studio, and picks its copy based on whether the
+      // price is fixed or still needs confirming.
+      const res = await fetch('/api/custom-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          draft: params.toString(),
           orderNumber,
-          colour: colourSummary,
-          yarn: yarnLabel,
-          size: product.sizing ? sizeLabel : null,
-          measurements: measurementSummary,
-          discount: discount ? `${bahtDiscount(discount)} (${promo})` : null,
-          total: totalLabel,
-          name: name.trim(),
-          email: email.trim(),
-          address: addressLabel,
-        });
-        return;
-      }
+          customer: {
+            name: name.trim(),
+            email: email.trim(),
+            address: addressLabel,
+            contactMethod: contact.label,
+            contactHandle: contactHandleTrimmed,
+          },
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error ?? 'Order could not be submitted.');
 
-      throw new Error(data.error ?? 'Checkout could not be started.');
+      setStatus('');
+      setSubmitted({
+        orderNumber,
+        colour: colourSummary,
+        yarn: yarnLabel,
+        size: product.sizing ? sizeLabel : null,
+        measurements: measurementSummary,
+        discount: discount ? `${bahtDiscount(discount)} (${promo})` : null,
+        total: totalLabel,
+        isCustomSize,
+        name: name.trim(),
+        email: email.trim(),
+        address: addressLabel,
+        contactMethod: contact.label,
+        contactHandle: contactHandleTrimmed,
+      });
     } catch {
       setStatus('');
       alert(
         'Something went wrong submitting your order. Please message us directly on Instagram @hello.youloop and we will sort it out.',
       );
     } finally {
-      // Left disabled while the browser is on its way to Stripe, so the order
-      // cannot be submitted twice.
-      if (!redirecting) setSending(false);
+      setSending(false);
     }
   }
 
@@ -372,6 +394,41 @@ export default function Checkout() {
               We will send order updates and progress photos here.
             </p>
           </div>
+
+          <div className={s.detailsField}>
+            <label className={s.detailsLabel}>Preferred chat channel</label>
+            <div className={s.channelChips}>
+              {CONTACT_METHODS.map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  className={`${s.channelChip} ${contactMethod === option.value ? s.active : ''}`}
+                  onClick={() => {
+                    setContactMethod(option.value);
+                    setContactHandle('');
+                  }}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+            {contact && (
+              <input
+                className={s.detailsInput}
+                type="text"
+                inputMode={contact.value === 'whatsapp' ? 'tel' : 'text'}
+                placeholder={contact.placeholder}
+                value={contactHandle}
+                onChange={(e) => setContactHandle(e.target.value)}
+                aria-label={contact.fieldLabel ?? 'Chat handle'}
+                style={{ marginTop: 8 }}
+              />
+            )}
+            <p className={s.detailsNote}>
+              Online payment is on its way — for now, we confirm your order and arrange payment
+              together here, so nothing is charged until you&apos;re both ready.
+            </p>
+          </div>
         </div>
 
         {/* SHIPPING DETAILS — where it goes */}
@@ -458,7 +515,7 @@ export default function Checkout() {
           onClick={submitOrder}
           disabled={sending}
         >
-          {isCustomSize ? 'Request your quote' : 'Continue to payment'}
+          {isCustomSize ? 'Request your quote' : 'Confirm My Order'}
         </button>
         <p className={s.submitStatus}>{status}</p>
 
@@ -475,8 +532,8 @@ export default function Checkout() {
       <div className={`${s.modalOverlay} ${submitted ? s.open : ''}`}>
         {submitted && (
           <div className={s.modalCard}>
-            {/* Only made-to-measure orders reach this modal — a preset size is
-                redirected to Stripe and confirmed on /success instead. */}
+            {/* Every order reaches this modal while automatic payment is off —
+                see the comment on /api/custom-order for why. */}
             <div className={s.modalTitle}>&#10022; We&apos;re on it</div>
             <div className={s.modalSubtitle}>Nothing has been charged yet</div>
             <span className={s.modalOrderNum}>{submitted.orderNumber}</span>
@@ -515,7 +572,9 @@ export default function Checkout() {
                 </div>
               )}
               <div className={s.modalRow}>
-                <span className={s.modalRowLabel}>Starting quote</span>
+                <span className={s.modalRowLabel}>
+                  {submitted.isCustomSize ? 'Starting quote' : 'Total'}
+                </span>
                 <span className={s.modalRowVal}>{submitted.total}</span>
               </div>
               <div className={s.modalRow}>
@@ -530,12 +589,18 @@ export default function Checkout() {
                 <span className={s.modalRowLabel}>Ships to</span>
                 <span className={s.modalRowVal}>{submitted.address}</span>
               </div>
+              <div className={s.modalRow}>
+                <span className={s.modalRowLabel}>Reach us on</span>
+                <span className={s.modalRowVal}>
+                  {submitted.contactMethod} — {submitted.contactHandle}
+                </span>
+              </div>
             </div>
 
             <p className={s.modalInstruction}>
-              We check every set of measurements by hand before quoting. You&apos;ll have a
-              confirmation email shortly, and the final price with a secure payment link within
-              one working day.
+              {submitted.isCustomSize
+                ? `We check every set of measurements by hand before confirming the price. You'll have a confirmation email shortly, and we'll message you on ${submitted.contactMethod} within one working day to confirm everything and arrange payment.`
+                : `You'll have a confirmation email shortly, and we'll message you on ${submitted.contactMethod} to confirm everything and arrange payment — online payment is on its way, but for now this is how we take care of it.`}
             </p>
             <Link href="/#collection" className={s.modalClose}>
               Done

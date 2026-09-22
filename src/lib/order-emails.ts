@@ -29,6 +29,9 @@ export type OrderEmailData = {
   customerName: string;
   customerEmail: string;
   address: string;
+  /** How to reach the customer to arrange payment — e.g. "WhatsApp". */
+  contactMethod: string;
+  contactHandle: string;
 };
 
 const C = {
@@ -191,18 +194,35 @@ export function customerPaidEmail(data: OrderEmailData): BuiltEmail {
 }
 
 /**
- * Sent to the customer when a made-to-measure order comes in. Nothing has been
- * charged at this point — the price is confirmed by hand first, then a payment
- * link follows.
+ * Sent to the customer for every order placed through the configurator while
+ * automatic payment is unavailable. Nothing is charged at this point — every
+ * order is confirmed and paid by hand, over the customer's chosen channel.
+ *
+ * Two cases share this one email: a preset size, where `data.total` is
+ * already the real price, and a made-to-measure order, where it is blank and
+ * still needs confirming. The copy branches on that so a preset-size customer
+ * isn't told we're "quoting" a number they already agreed to on screen.
  */
 export function customerQuoteEmail(data: OrderEmailData): BuiltEmail {
-  const intro = `Thank you, ${data.customerName.split(' ')[0] || 'there'} — we have your made-to-measure order and we are checking it over now. Nothing has been charged yet.`;
-  const closing = `We review every set of measurements by hand before quoting, so the fit is right the first time. You will hear from us within one working day with the final price and a secure payment link. Your piece goes into the queue as soon as that is settled.`;
+  const firstName = data.customerName.split(' ')[0] || 'there';
+  const isPriced = Boolean(data.total);
+
+  // Warm and unhurried, the way we'd actually talk to someone about a piece
+  // being made by hand — not a payment receipt. Whether or how payment gets
+  // arranged is already covered by the note under the chat-channel field on
+  // the checkout page, so it doesn't need repeating here.
+  const intro = isPriced
+    ? `Hi ${firstName}, thank you — we've received your order and we're getting it ready.`
+    : `Hi ${firstName}, thank you — we've received your made-to-measure order and we're looking it over now.`;
+
+  const closing = isPriced
+    ? `We'll reach out to you on ${data.contactMethod} to confirm every detail before we start creating. Your piece goes into the queue as soon as that's settled.`
+    : `We check every set of measurements by hand, so the fit is right from the first stitch. We'll reach out to you on ${data.contactMethod} within one working day to confirm the details and your final price before we start creating.`;
 
   return {
     subject: `We have your order — ${data.sku} ${data.productName} (${data.orderNumber})`,
     html: shell({
-      eyebrow: 'YOU LOOP · Made to measure',
+      eyebrow: isPriced ? 'YOU LOOP · Order received' : 'YOU LOOP · Made to measure',
       title: '✦ We are on it',
       subtitle: `${data.sku} ${data.productName}`,
       intro,
@@ -216,6 +236,7 @@ export function customerQuoteEmail(data: OrderEmailData): BuiltEmail {
       ...orderTextLines(data),
       '',
       `Ships to: ${data.customerName}, ${data.address}`,
+      `Reach us on: ${data.contactMethod} — ${data.contactHandle}`,
       `Order number: ${data.orderNumber}`,
       '',
       closing,
@@ -244,11 +265,13 @@ const INTERNAL_COPY: Record<
     intro: () => 'Paid in full through Stripe. Ready to start.',
   },
   quote: {
-    subject: 'QUOTE NEEDED',
-    eyebrow: 'YOU LOOP · Quote needed',
-    title: '✦ Made-to-measure order',
+    subject: 'ORDER — ARRANGE PAYMENT MANUALLY',
+    eyebrow: 'YOU LOOP · Manual order',
+    title: '✦ New order — pay by hand',
     intro: (d) =>
-      `Made-to-measure order — NOT paid. Check the measurements, then send a Stripe payment link to ${d.customerEmail}.`,
+      Boolean(d.total)
+        ? `Priced order — NOT paid. Automatic payment is off for now, so reach out on ${d.contactMethod} (${d.contactHandle}) to confirm and take payment there.`
+        : `Made-to-measure order — NOT paid and not yet priced. Confirm the measurements, then reach out on ${d.contactMethod} (${d.contactHandle}) with the final price and take payment there.`,
   },
   failed: {
     subject: 'PAYMENT FAILED',
@@ -264,7 +287,7 @@ export function internalOrderEmail(data: OrderEmailData, kind: InternalKind): Bu
   const intro = copy.intro(data);
   const closing =
     kind === 'quote'
-      ? `Contact: ${data.customerName} · ${data.customerEmail}. Create the link in the Stripe dashboard under Payment links.`
+      ? `Contact: ${data.customerName} · ${data.customerEmail} · ${data.contactMethod}: ${data.contactHandle}. Confirm the order and take payment there — bank transfer or whatever you've agreed works, no Stripe link needed.`
       : `Contact: ${data.customerName} · ${data.customerEmail}`;
 
   return {

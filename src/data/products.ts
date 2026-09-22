@@ -17,6 +17,14 @@ export type Swatch = {
   dot: string;
   /** Optional border, used where the dot is nearly white or nearly black. */
   dotBorder?: string;
+  /**
+   * The id of the real yarn (src/data/yarns.ts) whose photo best matches this
+   * mood's colour. Chosen by hue/saturation/lightness distance against the
+   * full 81-shade palette, with a couple of near-black/white cases picked by
+   * hand where hue is meaningless and the nearest named colour (e.g. "Black")
+   * is the obviously right call over whatever wins on raw distance.
+   */
+  yarnId: string;
   photo: string;
   /** Alternate photo for the hood's "Him" model toggle. */
   altPhoto?: string;
@@ -92,8 +100,12 @@ export const PROMO_CODES: Record<string, { percent: number; label: string }> = {
   SOFTRIOT15: { percent: 0.15, label: '15% off' },
 };
 
-/** Standard size chart, shared by SR-01 and SR-02. */
-const STANDARD_MEASUREMENTS: Record<string, Measurements> = {
+/**
+ * Standard size chart, shared by SR-01 and SR-02 — and exported so the
+ * Create Your Look wizard can show the exact same XS–XL numbers rather than
+ * a second, potentially drifting copy of the chart.
+ */
+export const STANDARD_MEASUREMENTS: Record<string, Measurements> = {
   XS: { bust: 78, waist: 60, hips: 84, height: 158 },
   S: { bust: 83, waist: 65, hips: 89, height: 161 },
   M: { bust: 88, waist: 70, hips: 94, height: 165 },
@@ -129,6 +141,7 @@ export const SR01: ProductConfig = {
           name: 'Soft Riot',
           sub: 'Dusty Rose - Deep Plum - Golden ruffles',
           dot: '#C4708A',
+          yarnId: '50',
           photo: '/images/sr01/soft_riot.jpg',
         },
         {
@@ -136,6 +149,7 @@ export const SR01: ProductConfig = {
           name: 'Midnight',
           sub: 'Deep Plum - Mid Plum - Golden ruffles',
           dot: '#4A1A5A',
+          yarnId: '62',
           photo: '/images/sr01/midnight.jpg',
         },
         {
@@ -143,6 +157,7 @@ export const SR01: ProductConfig = {
           name: 'Garden',
           sub: 'Celery - Cream - Golden ruffles',
           dot: '#8FBC5A',
+          yarnId: '48',
           photo: '/images/sr01/garden.jpg',
         },
         {
@@ -150,6 +165,7 @@ export const SR01: ProductConfig = {
           name: 'Golden Hour',
           sub: 'Cream - Brown - Golden ruffles',
           dot: '#E8D8B0',
+          yarnId: '19',
           photo: '/images/sr01/golden_hour.jpg',
         },
       ],
@@ -212,6 +228,7 @@ export const SR02: ProductConfig = {
           name: 'Soft Riot',
           sub: 'Dusty Rose throughout',
           dot: '#C4708A',
+          yarnId: '50',
           photo: '/images/sr02/soft_riot.jpg',
         },
         {
@@ -219,6 +236,7 @@ export const SR02: ProductConfig = {
           name: 'Midnight',
           sub: 'Deep Plum throughout',
           dot: '#4A1A5A',
+          yarnId: '62',
           photo: '/images/sr02/midnight.jpg',
         },
         {
@@ -226,6 +244,7 @@ export const SR02: ProductConfig = {
           name: 'Garden',
           sub: 'Celery Green throughout',
           dot: '#8FBC5A',
+          yarnId: '48',
           photo: '/images/sr02/garden.jpg',
         },
         {
@@ -233,6 +252,7 @@ export const SR02: ProductConfig = {
           name: 'Golden Hour',
           sub: 'Cream throughout',
           dot: '#E8D8B0',
+          yarnId: '19',
           photo: '/images/sr02/golden_hour.jpg',
         },
       ],
@@ -292,6 +312,7 @@ export const SRAC01: ProductConfig = {
           name: 'Dusty Rose',
           sub: 'Soft Riot colourway',
           dot: '#C4708A',
+          yarnId: '50',
           photo: '/images/srac01/dusty_rose.jpg',
           altPhoto: '/images/srac01/dusty_rose_m.jpg',
           pairing: 'Pairs with SR-01 and SR-02 Soft Riot',
@@ -301,6 +322,7 @@ export const SRAC01: ProductConfig = {
           name: 'Deep Plum',
           sub: 'Midnight colourway',
           dot: '#6B2D8B',
+          yarnId: '62',
           photo: '/images/srac01/deep_plum.jpg',
           altPhoto: '/images/srac01/deep_plum_m.jpg',
           pairing: 'Pairs with SR-01 and SR-02 Midnight',
@@ -310,6 +332,7 @@ export const SRAC01: ProductConfig = {
           name: 'Celery Green',
           sub: 'Garden colourway',
           dot: '#8FBC5A',
+          yarnId: '48',
           photo: '/images/srac01/celery.jpg',
           altPhoto: '/images/srac01/celery_m.jpg',
           pairing: 'Pairs with SR-01 and SR-02 Garden',
@@ -319,6 +342,7 @@ export const SRAC01: ProductConfig = {
           name: 'Cream',
           sub: 'Golden Hour colourway',
           dot: '#EDE0C8',
+          yarnId: '07',
           dotBorder: '1px solid rgba(255,255,255,0.15)',
           photo: '/images/srac01/cream.jpg',
           altPhoto: '/images/srac01/cream_m.jpg',
@@ -334,6 +358,7 @@ export const SRAC01: ProductConfig = {
           name: 'Golden Caramel',
           sub: 'Honey colourway',
           dot: '#C4903A',
+          yarnId: '40',
           photo: '/images/srac01/golden.jpg',
           altPhoto: '/images/srac01/golden_m.jpg',
           pairing: 'Cross-set accent - pairs with all ruffle tiers',
@@ -343,6 +368,7 @@ export const SRAC01: ProductConfig = {
           name: 'Cherry Red',
           sub: 'Riot Red colourway',
           dot: '#9B1C2E',
+          yarnId: '35',
           photo: '/images/srac01/cherry_red.jpg',
           altPhoto: '/images/srac01/cherry_m.jpg',
           pairing: 'Bold statement - standalone main character energy',
@@ -352,6 +378,7 @@ export const SRAC01: ProductConfig = {
           name: 'Cocoa',
           sub: 'Cocoa colourway',
           dot: '#6B3A1F',
+          yarnId: '26',
           photo: '/images/srac01/cocoa.jpg',
           altPhoto: '/images/srac01/cocoa_m.jpg',
           pairing: 'Pairs beautifully with Golden Hour ruffle tones',
@@ -361,6 +388,7 @@ export const SRAC01: ProductConfig = {
           name: 'Charcoal Black',
           sub: 'Charcoal Black colourway',
           dot: '#111111',
+          yarnId: '21',
           dotBorder: '2px solid rgba(255,255,255,0.35)',
           photo: '/images/srac01/charcoal.jpg',
           altPhoto: '/images/srac01/charcoal_m.jpg',

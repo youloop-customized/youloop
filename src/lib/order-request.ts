@@ -16,6 +16,9 @@ export type CustomerDetails = {
   email: string;
   /** The flattened one-line address the checkout page builds. */
   address: string;
+  /** How the studio reaches the customer to confirm and arrange payment. */
+  contactMethod: string;
+  contactHandle: string;
 };
 
 export type OrderRequest = {
@@ -40,11 +43,21 @@ export function parseOrderRequest(
   const name = String(raw.name ?? '').trim();
   const email = String(raw.email ?? '').trim();
   const address = String(raw.address ?? '').trim();
+  const contactMethod = String(raw.contactMethod ?? '').trim();
+  const contactHandle = String(raw.contactHandle ?? '').trim();
 
   if (!name) return { ok: false, error: 'A name is required.' };
   if (!EMAIL_SHAPE.test(email)) return { ok: false, error: 'A valid email is required.' };
+  // With automatic payment off, this is the only way the studio can reach the
+  // customer to confirm the order and arrange payment — as required as email.
+  if (!contactMethod || !contactHandle) {
+    return { ok: false, error: 'A chat channel to reach you on is required.' };
+  }
 
-  return { ok: true, value: { draft, order, customer: { name, email, address } } };
+  return {
+    ok: true,
+    value: { draft, order, customer: { name, email, address, contactMethod, contactHandle } },
+  };
 }
 
 /**
@@ -71,5 +84,7 @@ export function orderEmailData(
     customerName: customer.name,
     customerEmail: customer.email,
     address: customer.address,
+    contactMethod: customer.contactMethod,
+    contactHandle: customer.contactHandle,
   };
 }

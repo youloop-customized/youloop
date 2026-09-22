@@ -30,6 +30,8 @@ export type CustomRequestEmailData = {
   startingPrice: string;
   contactMethod: string;
   contactHandle: string;
+  /** The flattened one-line shipping address, same shape as the checkout flow. */
+  address: string;
 };
 
 const C = {
@@ -71,6 +73,7 @@ function requestRows(d: CustomRequestEmailData): string {
     d.size ? row('Size', d.size) : '',
     d.height ? row('Height', d.height) : '',
     d.notes && d.notes !== '(no extra notes)' ? row('Notes', d.notes) : '',
+    d.address ? row('Ships to', d.address) : '',
   ]
     .filter(Boolean)
     .join('');
@@ -80,10 +83,14 @@ export type BuiltEmail = { subject: string; html: string; text: string };
 
 export function customerRequestEmail(d: CustomRequestEmailData): BuiltEmail {
   const firstName = d.customerName.split(' ')[0] || 'there';
-  const intro = `Thank you, ${firstName} — we have your idea and we're reviewing it now. Nothing has been charged.`;
+  // Warm and unhurried, the way we'd actually talk to someone about a piece
+  // being made by hand — not a payment receipt. Whether or how payment gets
+  // arranged is already covered by the note under the chat-channel field on
+  // the form, so it doesn't need repeating here.
+  const intro = `Hi ${firstName}, thank you — we've received your idea and we're looking it over now.`;
   const reachOut = d.contactHandle
-    ? `We'll reach out on ${d.contactMethod} (${d.contactHandle}) within one working day with your quote and next steps.`
-    : `We'll reply by email within one working day with your quote and next steps.`;
+    ? `We'll reach out to you on ${d.contactMethod} (${d.contactHandle}) within one working day to confirm every detail before we start creating.`
+    : `We'll reply by email within one working day to confirm every detail before we start creating.`;
 
   const html = `<!doctype html>
 <html>
@@ -147,6 +154,7 @@ export function customerRequestEmail(d: CustomRequestEmailData): BuiltEmail {
     d.size && `Size: ${d.size}`,
     d.height && `Height: ${d.height}`,
     d.notes && d.notes !== '(no extra notes)' && `Notes: ${d.notes}`,
+    d.address && `Ships to: ${d.address}`,
     '',
     `Starting quote: ${d.startingPrice}`,
     `Request number: ${d.requestId}`,

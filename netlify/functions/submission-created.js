@@ -64,6 +64,7 @@ function buildFields(data) {
     yarns: val(data.yarn_colours) || '(our choice)',
     contact: [val(data.contact_method), val(data.contact_handle)].filter(Boolean).join(' · ') || '—',
     startingPrice: val(data.starting_price) || '—',
+    address: val(data.address) || '—',
   };
 }
 
@@ -100,6 +101,7 @@ function buildText(f) {
     '',
     `Email: ${f.email}`,
     `Preferred Contact: ${f.contact}`,
+    `Ships to: ${f.address}`,
     '',
     `Fit Status: ${f.fitStatus}`,
     `Request Status: ${f.requestStatus}`,
@@ -143,6 +145,7 @@ function buildHtml(f) {
             ${row('Name', esc(f.name))}
             ${row('Email', esc(f.email))}
             ${row('Preferred Contact', esc(f.contact))}
+            ${row('Ships to', esc(f.address))}
           </table>
         </td></tr>
         <tr><td style="padding:20px 24px 4px;">
