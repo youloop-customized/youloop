@@ -38,13 +38,32 @@ function buildFields(data) {
   const submittedAt = val(data.submitted_at) || new Date().toISOString();
   const requestId = val(data.request_id) || '—';
 
+  // Custom measurements replace the standard size when the customer gives them.
+  const measurements = [val(data.bust_cm), val(data.waist_cm), val(data.hips_cm)].filter(Boolean);
+
   return {
     name, outfitType, sizingMethod, standardSize, images, submittedAt, requestId,
     notes: val(data.customization_notes) || '(none provided)',
-    requiredBy: val(data.required_by) || '—',
     email: val(data.email) || '—',
     fitStatus: val(data.fit_status) || 'Fit Check Required',
     requestStatus: val(data.request_status) || 'Needs Review',
+    // Structured choices from the wizard. Each is '—' when the step did not
+    // apply to the chosen garment, or the customer left it to us.
+    measurements: measurements.length === 3 ? `${measurements.join(' / ')} cm` : '—',
+    length: val(data.length) || '—',
+    neckline: val(data.neckline) || '—',
+    sleeves: val(data.sleeves) || '—',
+    entryPath: val(data.entry_path) || 'Guided build',
+    referenceUrl: val(data.reference_url),
+    referenceTarget: val(data.reference_target) || '—',
+    lovedElements: val(data.loved_elements) || '—',
+    height: val(data.height_cm) ? `${val(data.height_cm)} cm` : '—',
+    measurementsLater: val(data.measurements_later) === 'Yes',
+    silhouette: val(data.silhouette) || '—',
+    details: val(data.details) || '—',
+    yarns: val(data.yarn_colours) || '(our choice)',
+    contact: [val(data.contact_method), val(data.contact_handle)].filter(Boolean).join(' · ') || '—',
+    startingPrice: val(data.starting_price) || '—',
   };
 }
 
@@ -52,7 +71,18 @@ function buildText(f) {
   const lines = [
     `Customer: ${f.name}`,
     '',
+    `Started from: ${f.entryPath}`,
+    f.referenceUrl ? `Reference link: ${f.referenceUrl}` : '',
+    `Making: ${f.referenceTarget !== '—' ? f.referenceTarget : f.outfitType}`,
+    `Keep exactly as shown: ${f.lovedElements}`,
+    '',
     `Outfit Type: ${f.outfitType}`,
+    `Length: ${f.length}`,
+    `Neckline: ${f.neckline}`,
+    `Sleeves: ${f.sleeves}`,
+    `Silhouette: ${f.silhouette}`,
+    `Details: ${f.details}`,
+    `Yarn colours: ${f.yarns}`,
     '',
     `Inspiration:`,
     f.images.length ? f.images.join('\n') : 'None uploaded',
@@ -62,10 +92,14 @@ function buildText(f) {
     '',
     `Sizing Method: ${f.sizingMethod}`,
     `Standard Size: ${f.standardSize}`,
+    `Height: ${f.height}`,
+    `Measurements: ${f.measurements}`,
+    f.measurementsLater ? '>> Customer is sending exact measurements on chat — follow up.' : '',
     '',
-    `Required By: ${f.requiredBy}`,
+    `Starting Price: ${f.startingPrice}`,
     '',
     `Email: ${f.email}`,
+    `Preferred Contact: ${f.contact}`,
     '',
     `Fit Status: ${f.fitStatus}`,
     `Request Status: ${f.requestStatus}`,
@@ -108,14 +142,34 @@ function buildHtml(f) {
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
             ${row('Name', esc(f.name))}
             ${row('Email', esc(f.email))}
+            ${row('Preferred Contact', esc(f.contact))}
           </table>
         </td></tr>
         <tr><td style="padding:20px 24px 4px;">
           <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#c4708a;font-weight:700;margin-bottom:6px;">The Look</div>
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+            ${row('Started from', esc(f.entryPath))}
+            ${f.referenceUrl ? row('Reference link', `<a href="${esc(f.referenceUrl)}" style="color:#8f4a63;">${esc(f.referenceUrl)}</a>`) : ''}
+            ${f.referenceTarget !== '—' ? row('Making', esc(f.referenceTarget)) : ''}
+            ${f.lovedElements !== '—' ? row('Keep as shown', esc(f.lovedElements)) : ''}
             ${row('Outfit Type', esc(f.outfitType))}
-            ${row('Size', esc(f.standardSize))}
-            ${row('Required By', esc(f.requiredBy))}
+            ${row('Length', esc(f.length))}
+            ${row('Neckline', esc(f.neckline))}
+            ${row('Sleeves', esc(f.sleeves))}
+            ${row('Silhouette', esc(f.silhouette))}
+            ${row('Details', esc(f.details))}
+            ${row('Yarn colours', esc(f.yarns))}
+          </table>
+        </td></tr>
+        <tr><td style="padding:20px 24px 4px;">
+          <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#c4708a;font-weight:700;margin-bottom:6px;">Fit &amp; Timing</div>
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+            ${row('Sizing Method', esc(f.sizingMethod))}
+            ${row('Size', esc(f.standardSize) || '&mdash;')}
+            ${row('Height', esc(f.height))}
+            ${row('Measurements', esc(f.measurements))}
+            ${f.measurementsLater ? row('Follow up', '<strong>Customer is sending exact measurements on chat</strong>') : ''}
+            ${row('Starting Price', esc(f.startingPrice))}
             ${row('Customization Notes', esc(f.notes).replace(/\n/g, '<br>'))}
           </table>
         </td></tr>

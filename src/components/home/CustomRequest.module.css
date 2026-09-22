@@ -1,0 +1,466 @@
+/*
+ * The custom request wizard.
+ *
+ * Only what the stepped layout needs — fields, chips, inputs and the submit
+ * button still come from Form.module.css so this form stays visually identical
+ * to the bulk and B2B ones.
+ */
+
+/* ── PROGRESS ── */
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 1.4rem;
+}
+
+.tick {
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(170, 74, 48, 0.22);
+  transition: background 0.3s;
+}
+
+.tickDone {
+  background: var(--rose);
+}
+
+.stepCount {
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mgray);
+  white-space: nowrap;
+  margin-left: 4px;
+}
+
+.stepTitle {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  color: var(--cream);
+  margin-bottom: 0.25rem;
+  line-height: 1.25;
+}
+
+.stepIntro {
+  font-size: 0.78rem;
+  color: var(--mgray);
+  line-height: 1.6;
+  margin-bottom: 1.2rem;
+}
+
+/* ── PATH CHOICE ──
+   The first thing anyone sees. Two large targets, stacked, nothing else on
+   screen competing with them — the only decision is which way to go. */
+.pathGrid {
+  display: grid;
+  gap: 10px;
+}
+
+.pathCard {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 1.15rem 1.15rem;
+  border-radius: 14px;
+  border: 1px solid rgba(170, 74, 48, 0.32);
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--mgray);
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  text-align: left;
+}
+
+.pathCard:hover {
+  border-color: var(--rose);
+  background: rgba(196, 112, 138, 0.1);
+  transform: translateY(-1px);
+}
+
+.pathBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.pathQuote {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  color: var(--cream);
+  line-height: 1.25;
+}
+
+.pathName {
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--rose);
+  margin-bottom: 4px;
+}
+
+.pathHint {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--mgray);
+  margin-top: 5px;
+  line-height: 1.55;
+}
+
+.pathArrow {
+  flex-shrink: 0;
+  font-size: 1.1rem;
+  color: var(--rose);
+  transition: transform 0.2s;
+}
+
+.pathCard:hover .pathArrow {
+  transform: translateX(3px);
+}
+
+/* The chooser has no progress bar — counting starts once a path is picked. */
+.chooseIntro {
+  font-size: 0.78rem;
+  color: var(--mgray);
+  line-height: 1.6;
+  margin-bottom: 1.3rem;
+}
+
+/* ── HEIGHT ── */
+.heightRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.heightRow input {
+  max-width: 130px;
+}
+
+.heightUnit {
+  font-size: 0.78rem;
+  color: var(--mgray);
+}
+
+/* ── DROPZONE ── */
+.dropzone {
+  border: 1px dashed rgba(170, 74, 48, 0.45);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 1.5rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dropzone:hover {
+  border-color: var(--rose);
+  background: rgba(196, 112, 138, 0.06);
+}
+
+.dropzoneOver {
+  border-color: var(--rose);
+  border-style: solid;
+  background: rgba(196, 112, 138, 0.12);
+}
+
+.dropzoneTitle {
+  font-size: 0.82rem;
+  color: var(--cream);
+  margin-bottom: 0.2rem;
+}
+
+.dropzoneHint {
+  font-size: 0.68rem;
+  color: var(--mgray);
+  line-height: 1.5;
+}
+
+.orRule {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 1rem 0 0.9rem;
+  color: var(--mgray);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.orRule::before,
+.orRule::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(170, 74, 48, 0.22);
+}
+
+/* ── BASE STYLE CARDS ── */
+.styleGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.styleCard {
+  padding: 0.85rem 0.6rem;
+  border-radius: 12px;
+  border: 1px solid rgba(170, 74, 48, 0.3);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--mgray);
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.styleCard:hover {
+  border-color: var(--rose);
+  color: var(--cream);
+}
+
+.styleCardActive {
+  background: rgba(196, 112, 138, 0.16);
+  border-color: var(--rose);
+  color: var(--cream);
+}
+
+.styleName {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: inherit;
+}
+
+.styleHint {
+  display: block;
+  font-size: 0.66rem;
+  color: var(--mgray);
+  margin-top: 2px;
+}
+
+/* ── MEASUREMENTS ── */
+.measureRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+/* ── YARN PALETTE ──
+   All 81 shades, in a scrolling grid so the step stays a screenful rather
+   than a page. The configurator's grid (Configurator.module.css) is tuned for
+   a wider column, so this is its own compact version. */
+.yarnGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
+  gap: 7px;
+  max-height: 232px;
+  overflow-y: auto;
+  padding: 4px 6px 4px 4px;
+  border: 1px solid rgba(170, 74, 48, 0.2);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.yarnGrid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.yarnGrid::-webkit-scrollbar-thumb {
+  background: rgba(170, 74, 48, 0.4);
+  border-radius: 3px;
+}
+
+.yarnBall {
+  position: relative;
+  aspect-ratio: 1;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background: none;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s;
+  overflow: visible;
+}
+
+.yarnBall img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.yarnBall:hover {
+  transform: scale(1.12);
+  border-color: var(--rose);
+}
+
+.yarnBallActive {
+  border-color: var(--rose);
+  box-shadow: 0 0 0 2px rgba(196, 112, 138, 0.35);
+}
+
+.yarnBallActive::after {
+  content: '✓';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.yarnBall:disabled {
+  opacity: 0.32;
+  cursor: not-allowed;
+}
+
+.yarnBall:disabled:hover {
+  transform: none;
+  border-color: transparent;
+}
+
+/* Selected shades, listed by name so the choice is readable, not just visual. */
+.yarnChosen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 0.6rem;
+}
+
+.yarnChip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px 4px 5px;
+  border-radius: 16px;
+  border: 1px solid var(--rose);
+  background: rgba(196, 112, 138, 0.14);
+  color: var(--cream);
+  font-family: var(--font-sans);
+  font-size: 0.71rem;
+  cursor: pointer;
+}
+
+.yarnChip:hover {
+  background: rgba(196, 112, 138, 0.26);
+}
+
+.yarnChipDot {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  flex-shrink: 0;
+}
+
+.yarnChipX {
+  color: var(--mgray);
+  font-size: 0.72rem;
+}
+
+/* ── NAVIGATION ── */
+.nav {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 1.5rem;
+}
+
+.back {
+  padding: 0.7rem 1.1rem;
+  border-radius: 24px;
+  border: 1px solid rgba(170, 74, 48, 0.35);
+  background: transparent;
+  color: var(--mgray);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.back:hover {
+  color: var(--cream);
+  border-color: var(--rose);
+}
+
+.next {
+  flex: 1;
+}
+
+/* ── PRICE INDICATOR ── */
+.priceNote {
+  border-top: 1px solid rgba(170, 74, 48, 0.2);
+  margin-top: 1.2rem;
+  padding-top: 0.9rem;
+  text-align: center;
+}
+
+.priceFrom {
+  font-size: 0.72rem;
+  color: var(--mgray);
+  letter-spacing: 0.04em;
+}
+
+.priceValue {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  color: var(--cream);
+  margin: 0 0.25rem;
+}
+
+.priceCaveat {
+  display: block;
+  font-size: 0.66rem;
+  color: var(--mgray);
+  margin-top: 0.3rem;
+  line-height: 1.5;
+}
+
+/* ── REVIEW LIST ── */
+.review {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+  padding: 0.5rem 0.85rem;
+  margin-bottom: 1.1rem;
+}
+
+.reviewRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid rgba(170, 74, 48, 0.12);
+  font-size: 0.74rem;
+}
+
+.reviewRow:last-child {
+  border-bottom: none;
+}
+
+.reviewLabel {
+  color: var(--mgray);
+  white-space: nowrap;
+}
+
+.reviewValue {
+  color: var(--cream);
+  text-align: right;
+}
+
+@media (max-width: 560px) {
+  .styleGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .measureRow {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
