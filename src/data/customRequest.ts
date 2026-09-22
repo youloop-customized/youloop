@@ -73,21 +73,20 @@ export const BASE_STYLES: { value: string; label: string; hint: string }[] = [
 ];
 
 /**
- * Provisional starting prices, in baht, shown above the submit button so
- * nobody abandons the form wondering what this will cost.
+ * The confirmed price of the cheapest custom piece (a top), used as the
+ * "starts from" anchor. Shown twice — once at the chooser, before either
+ * path is opened, and once at the end of the form, above the submit button —
+ * and intentionally the same figure and the same "Custom top starts from"
+ * copy in both places. It does not vary by the shape actually chosen: a
+ * customer building a dress sees this exact number too, since it is an entry
+ * anchor ("things start this cheap"), not a per-shape quote.
  *
- * TODO: these are anchored to the SR-01/SR-02/SR-AC01 catalogue prices as a
- * placeholder. Replace with real custom-make figures before launch — this is
- * the number a customer will hold you to.
+ * If real per-category prices are ever wanted again, this is the one place
+ * that would need to become a lookup rather than a constant — but that
+ * reintroduces the "does the entry price match the shape I picked" problem
+ * this replaced, so change it deliberately.
  */
-export const BASE_PRICES: Record<string, number> = {
-  dress: 2490,
-  set: 2690,
-  top: 1290,
-  skirt: 1490,
-  pants: 1690,
-  unique: 2490,
-};
+export const CUSTOM_STARTING_PRICE = 890;
 
 /**
  * Standard sizes, shared by both paths.
@@ -106,6 +105,14 @@ export const LENGTHS: Option[] = [
   { value: 'maxi', label: 'Maxi' },
 ];
 
+/**
+ * Closes every single-select group in Step 3 (Neckline, Sleeves, Silhouette).
+ * A customer who has not decided is not the same as one who skipped the
+ * question — picking this says "I want to talk it through," which is worth
+ * more to the studio than a blank field.
+ */
+export const NOT_SURE: Option = { value: 'not_sure', label: 'Not Sure / Open to Suggestions' };
+
 export const NECKLINES: Option[] = [
   { value: 'v', label: 'V-neck' },
   { value: 'sweetheart', label: 'Sweetheart' },
@@ -113,6 +120,7 @@ export const NECKLINES: Option[] = [
   { value: 'halter', label: 'Halter' },
   { value: 'round', label: 'Round' },
   { value: 'off-shoulder', label: 'Off-shoulder' },
+  NOT_SURE,
 ];
 
 export const SLEEVES: Option[] = [
@@ -121,6 +129,7 @@ export const SLEEVES: Option[] = [
   { value: 'short', label: 'Short' },
   { value: 'long', label: 'Long' },
   { value: 'flared', label: 'Flared' },
+  NOT_SURE,
 ];
 
 /**
@@ -135,6 +144,7 @@ export const SILHOUETTES: Option[] = [
   { value: 'a-line', label: 'A-line' },
   { value: 'bodycon', label: 'Bodycon' },
   { value: 'relaxed', label: 'Relaxed' },
+  NOT_SURE,
 ];
 
 export const DETAILS: Option[] = [
@@ -163,13 +173,19 @@ export type ContactMethod = {
   help: string;
 };
 
+/**
+ * Email is deliberately not an option here. It is already collected
+ * separately (for order confirmations) — this field exists specifically to
+ * get a live channel for the design back-and-forth, and offering email would
+ * just let people default back to the slow path this is meant to replace.
+ */
 export const CONTACT_METHODS: ContactMethod[] = [
   {
-    value: 'email',
-    label: 'Email',
-    fieldLabel: null,
-    placeholder: '',
-    help: "We'll reply to the address above.",
+    value: 'line',
+    label: 'LINE',
+    fieldLabel: 'Your LINE ID',
+    placeholder: 'LINE ID or phone number',
+    help: 'Whichever you use — an ID like @youloop, or the number your LINE is registered to.',
   },
   {
     value: 'whatsapp',

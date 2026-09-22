@@ -2,15 +2,16 @@
 
 import { useEffect, useRef, useState } from 'react';
 import {
-  BASE_PRICES,
   BASE_STYLES,
   CONTACT_METHODS,
+  CUSTOM_STARTING_PRICE,
   DETAILS,
   ENTRY_PATHS,
   LENGTHS,
   LOVED_ELEMENTS,
   MAX_YARNS,
   NECKLINES,
+  NOT_SURE,
   PATH_STEPS,
   REFERENCE_TARGETS,
   SILHOUETTES,
@@ -27,6 +28,55 @@ import f from '@/components/forms/Form.module.css';
 import w from './CustomRequest.module.css';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+/** Mostly digits, with room for +, spaces, dashes and parentheses. */
+const WHATSAPP_RE = /^[+\d][\d\s()-]{6,}$/;
+/** Instagram's own rules: letters, numbers, periods, underscores; @ optional. */
+const INSTAGRAM_RE = /^@?[a-zA-Z0-9._]{1,30}$/;
+
+const MIN_HEIGHT_CM = 120;
+const MAX_HEIGHT_CM = 220;
+const MIN_MEASURE_CM = 40;
+const MAX_MEASURE_CM = 200;
+/** Matches the "max 10MB each" already promised in the upload help text. */
+const MAX_FILE_BYTES = 10 * 1024 * 1024;
+/** A sane ceiling so nobody accidentally attaches fifty photos to an email. */
+const MAX_FILES = 10;
+
+/** Rejects "asdf" and typos, accepts anything genuinely link-shaped. */
+function isValidUrl(value: string): boolean {
+  try {
+    const url = new URL(value.trim());
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
+function isInRange(value: string, min: number, max: number): boolean {
+  if (!value.trim()) return false;
+  const n = Number(value);
+  return Number.isFinite(n) && n >= min && n <= max;
+}
+
+/**
+ * Each chat platform has its own real shape — a WhatsApp number is mostly
+ * digits, an Instagram handle is a fixed character set. LINE stays loose
+ * (an @id or a phone number, both legitimate) rather than guessing wrong and
+ * rejecting something real.
+ */
+function isValidHandle(method: string | undefined, value: string): boolean {
+  const v = value.trim();
+  if (!v) return false;
+  if (method === 'whatsapp') return WHATSAPP_RE.test(v);
+  if (method === 'instagram') return INSTAGRAM_RE.test(v);
+  return v.length >= 3;
+}
+
+function imageFileError(file: File): string | null {
+  if (!file.type.startsWith('image/')) return `${file.name} isn't an image — only photos are accepted.`;
+  if (file.size > MAX_FILE_BYTES) return `${file.name} is over 10MB — try a smaller photo.`;
+  return null;
+}
 
 type Measurements = { bust: string; waist: string; hips: string };
 
@@ -71,6 +121,7 @@ export default function CustomRequestForm() {
   const [silhouette, setSilhouette] = useState<string | null>(null);
   const [details, setDetails] = useState<string[]>([]);
   const [yarnIds, setYarnIds] = useState<string[]>([]);
+  const [yarnUnsure, setYarnUnsure] = useState(false);
   const [length, setLength] = useState<string | null>(null);
   const [useMeasurements, setUseMeasurements] = useState(false);
   const [cm, setCm] = useState<Measurements>({ bust: '', waist: '', hips: '' });
@@ -82,12 +133,21 @@ export default function CustomRequestForm() {
   const [uploads, setUploads] = useState<Upload[]>([]);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [contactMethod, setContactMethod] = useState('email');
+  // No default: a silently pre-picked channel is exactly how this ends up
+  // unset in practice. The customer has to actually choose one.
+  const [contactMethod, setContactMethod] = useState<string | null>(null);
   const [contactHandle, setContactHandle] = useState('');
 
+  const [nameError, setNameError] = useState('');
   const [emailError, setEmailError] = useState('');
+  const [urlError, setUrlError] = useState('');
+  const [heightError, setHeightError] = useState('');
+  const [measureError, setMeasureError] = useState('');
+  const [handleError, setHandleError] = useState('');
+  const [fileError, setFileError] = useState('');
   const [sending, setSending] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const successRef = useRef<HTMLDivElement>(null);
 
   // Generated after mount: a value derived from Date.now()/Math.random() during
   // render would not match between the server and client HTML.
@@ -101,6 +161,14 @@ export default function CustomRequestForm() {
   }, [uploads]);
   useEffect(() => () => uploadsRef.current.forEach((u) => URL.revokeObjectURL(u.url)), []);
 
+  // The wizard is tall by the last step, and the success screen that replaces
+  // it is short — without this, the page keeps whatever scroll position the
+  // customer was at, which after a long form is usually past the now-shorter
+  // card, down among the footer. Bring the confirmation to them instead.
+  useEffect(() => {
+    if (submitted) successRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [submitted]);
+
   const labelOf = (list: { value: string; label: string }[], value: string | null) =>
     list.find((o) => o.value === value)?.label ?? '';
   const labelsOf = (list: { value: string; label: string }[], values: string[]) =>
@@ -111,21 +179,40 @@ export default function CustomRequestForm() {
   const isLast = stepIndex === steps.length - 1;
 
   const shows = tweaksFor(baseStyle);
-  // A reference-led request has no silhouette yet, so it is quoted against the
-  // open-ended "something unique" figure until we have seen the photo.
-  const basePrice = BASE_PRICES[baseStyle ?? 'unique'];
-  const priceLabel = baseStyle ? labelOf(BASE_STYLES, baseStyle).toLowerCase() : 'piece';
   const chosenYarns = yarnIds
     .map((id) => YARNS.find((y) => y.id === id))
     .filter((y): y is (typeof YARNS)[number] => Boolean(y));
-  const contact = CONTACT_METHODS.find((m) => m.value === contactMethod) ?? CONTACT_METHODS[0];
+  // No fallback: null here means "not chosen yet," and that has to stay
+  // visible rather than quietly resolving to some default channel.
+  const contact = CONTACT_METHODS.find((m) => m.value === contactMethod) ?? null;
 
+  // The `accept="image/*"` attribute only filters the file picker dialog —
+  // drag-and-drop bypasses it entirely, so a non-image or oversized file can
+  // still reach here and has to be caught explicitly.
   function addFiles(list: FileList | null) {
-    const added = Array.from(list ?? []).map((file) => ({
-      file,
-      url: URL.createObjectURL(file),
-    }));
-    if (added.length) setUploads((current) => [...current, ...added]);
+    const incoming = Array.from(list ?? []);
+    if (!incoming.length) return;
+
+    const errors: string[] = [];
+    const accepted = incoming.filter((file) => {
+      const reason = imageFileError(file);
+      if (reason) errors.push(reason);
+      return !reason;
+    });
+
+    const room = Math.max(0, MAX_FILES - uploads.length);
+    if (accepted.length > room) {
+      errors.push(`Only ${MAX_FILES} photos at a time — the rest were skipped.`);
+    }
+    const toAdd = accepted.slice(0, room);
+
+    setFileError(errors.join(' '));
+    if (toAdd.length) {
+      setUploads((current) => [
+        ...current,
+        ...toAdd.map((file) => ({ file, url: URL.createObjectURL(file) })),
+      ]);
+    }
   }
 
   function removeUpload(index: number) {
@@ -141,6 +228,9 @@ export default function CustomRequestForm() {
   }
 
   function toggleYarn(id: string) {
+    // Picking a real colour is a change of mind away from "not sure" — the
+    // two states are mutually exclusive by construction, not just by copy.
+    setYarnUnsure(false);
     setYarnIds((c) => {
       if (c.includes(id)) return c.filter((v) => v !== id);
       if (c.length >= MAX_YARNS) return c;
@@ -148,19 +238,49 @@ export default function CustomRequestForm() {
     });
   }
 
+  function toggleYarnUnsure() {
+    setYarnUnsure((v) => {
+      if (!v) setYarnIds([]);
+      return !v;
+    });
+  }
+
   /** Each step gates the next, so nothing is validated twice at the end. */
   function canAdvance(): boolean {
     switch (current) {
       case 'reference':
-        return uploads.length > 0 || referenceUrl.trim().length > 0;
+        // A photo alone is enough — the link only needs to be well-formed
+        // when it's the sole reference, not when a photo already covers it.
+        return uploads.length > 0 || (referenceUrl.trim().length > 0 && isValidUrl(referenceUrl));
       case 'refine':
         return Boolean(referenceTarget);
       case 'shape':
         return Boolean(baseStyle);
       case 'fit':
-        return useMeasurements ? Boolean(cm.bust && cm.waist && cm.hips) : Boolean(size);
+        return (
+          (useMeasurements
+            ? isInRange(cm.bust, MIN_MEASURE_CM, MAX_MEASURE_CM) &&
+              isInRange(cm.waist, MIN_MEASURE_CM, MAX_MEASURE_CM) &&
+              isInRange(cm.hips, MIN_MEASURE_CM, MAX_MEASURE_CM)
+            : Boolean(size)) && isInRange(heightCm, MIN_HEIGHT_CM, MAX_HEIGHT_CM)
+        );
       case 'simpleFit':
-        return Boolean(size) || measureLater;
+        return (Boolean(size) || measureLater) && isInRange(heightCm, MIN_HEIGHT_CM, MAX_HEIGHT_CM);
+      case 'tweaks':
+        // Neckline, sleeves and silhouette are required, but "Not Sure" is
+        // always a valid answer for each — so this never blocks someone who
+        // genuinely doesn't know, only someone who hasn't answered at all.
+        // Yarn follows the same shape via its own not-sure toggle. Either
+        // way we end up with real data instead of silence. The description
+        // needs a little more than one character too — "ok" technically
+        // isn't blank, but it isn't a description either.
+        return (
+          (!shows.neckline || Boolean(neckline)) &&
+          (!shows.sleeves || Boolean(sleeves)) &&
+          Boolean(silhouette) &&
+          (yarnIds.length > 0 || yarnUnsure) &&
+          tweakNote.trim().length >= 10
+        );
       default:
         return true;
     }
@@ -186,10 +306,24 @@ export default function CustomRequestForm() {
     : useMeasurements
       ? `${cm.bust} / ${cm.waist} / ${cm.hips} cm`
       : (size ?? '');
-  const yarnSummary = chosenYarns.map((y) => `#${y.id} ${y.name}`).join(', ');
+  const yarnSummary = yarnUnsure
+    ? NOT_SURE.label
+    : chosenYarns.map((y) => `#${y.id} ${y.name}`).join(', ');
+
+  // Every other step disables Continue until it's satisfied; Submit was the
+  // one place that instead let the click through and interrupted it with an
+  // alert. This makes the last step behave like every step before it.
+  // Every remaining chat channel needs a real, correctly-shaped handle to be
+  // worth anything — a chosen channel we can't actually reach is the same as
+  // no channel at all.
+  const canSubmit =
+    name.trim().length >= 2 &&
+    EMAIL_RE.test(email.trim()) &&
+    Boolean(contact) &&
+    isValidHandle(contact?.value, contactHandle);
 
   async function handleSubmit() {
-    if (!name.trim()) {
+    if (name.trim().length < 2) {
       alert('We need a name to put on your request ✨');
       return;
     }
@@ -198,6 +332,10 @@ export default function CustomRequestForm() {
       return;
     }
     setEmailError('');
+    if (!contact || !isValidHandle(contact.value, contactHandle)) {
+      alert('Pick a chat channel and add a valid handle — that is how we talk through the design.');
+      return;
+    }
 
     const data = new FormData();
     data.set('form-name', 'custom-request');
@@ -244,17 +382,49 @@ export default function CustomRequestForm() {
     data.set('waist_cm', useMeasurements ? cm.waist : '');
     data.set('hips_cm', useMeasurements ? cm.hips : '');
 
-    data.set('contact_method', contact.label);
-    data.set('contact_handle', contact.fieldLabel ? contactHandle.trim() : '');
+    data.set('contact_method', contact?.label ?? '');
+    data.set('contact_handle', contact ? contactHandle.trim() : '');
     data.set('customization_notes', tweakNote.trim() || '(no extra notes)');
-    data.set('starting_price', baht(basePrice));
+    data.set('starting_price', baht(CUSTOM_STARTING_PRICE));
 
     uploads.forEach((upload) => data.append('inspiration', upload.file));
+
+    // Read back from `data` rather than the raw state, so the email says
+    // exactly what was actually recorded — one source of truth for both.
+    const field = (key: string) => String(data.get(key) ?? '');
+    const emailPayload = {
+      requestId: field('request_id'),
+      name: name.trim(),
+      email: email.trim(),
+      making: field('outfit_type'),
+      enteredVia: field('entry_path'),
+      referenceUrl: field('reference_url'),
+      keepAsShown: field('loved_elements'),
+      size: fitSummary,
+      height: heightCm.trim() ? `${heightCm.trim()} cm` : '',
+      silhouette: field('silhouette'),
+      details: field('details'),
+      yarns: yarnSummary,
+      notes: field('customization_notes'),
+      startingPrice: field('starting_price'),
+      contactMethod: field('contact_method'),
+      contactHandle: field('contact_handle'),
+    };
 
     setSending(true);
     try {
       await submitFormData(data);
       setSubmitted(true);
+
+      // Best-effort: the request is already safely recorded in Netlify Forms,
+      // and the studio's internal notice already fired from
+      // netlify/functions/submission-created.js. A flaky send here must not
+      // take back the "Got it" screen the customer is already looking at.
+      fetch('/api/custom-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(emailPayload),
+      }).catch((err) => console.warn('Request confirmation email failed to send.', err));
     } catch {
       setSending(false);
       alert(
@@ -265,7 +435,7 @@ export default function CustomRequestForm() {
 
   if (submitted) {
     return (
-      <div className={f.success}>
+      <div ref={successRef} className={f.success}>
         <p style={{ fontSize: '1.05rem', color: 'var(--cream)', marginBottom: '0.6rem' }}>
           Got it! Your idea is with YOU LOOP. ✨
         </p>
@@ -317,6 +487,19 @@ export default function CustomRequestForm() {
               </span>
             </button>
           ))}
+        </div>
+
+        <div className={w.chooserTeaser}>
+          {/* The only place this figure is shown on screen — it no longer
+              repeats at the end of the form, which just states that the
+              final quote depends on the piece. Still recorded in
+              starting_price for the record and the confirmation email. */}
+          <span className={w.chooserTeaserTitle}>
+            Custom top starts from {baht(CUSTOM_STARTING_PRICE)}.
+          </span>
+          <span className={w.chooserTeaserSub}>
+            Hand-crocheted to your exact measurements • Tailored color choice
+          </span>
         </div>
       </div>
     );
@@ -379,6 +562,7 @@ export default function CustomRequestForm() {
                 e.target.value = '';
               }}
             />
+            {fileError && <div className={f.error}>{fileError}</div>}
             <div className={f.filePreview}>
               {uploads.map((upload, i) => (
                 <div key={upload.url} className={f.thumb}>
@@ -401,15 +585,26 @@ export default function CustomRequestForm() {
 
           <div className={f.field}>
             <input
-              className={f.input}
+              className={`${f.input} ${urlError ? f.invalid : ''}`}
               type="url"
               inputMode="url"
+              maxLength={500}
               placeholder="Paste a TikTok, Instagram or Pinterest link"
               value={referenceUrl}
               onChange={(e) => setReferenceUrl(e.target.value)}
+              onBlur={() =>
+                setUrlError(
+                  !referenceUrl.trim() || isValidUrl(referenceUrl)
+                    ? ''
+                    : "That doesn't look like a valid link",
+                )
+              }
               aria-label="Link to a photo or post"
             />
-            <div className={f.help}>Whichever you have — a photo, a link, or both.</div>
+            {urlError && <div className={f.error}>{urlError}</div>}
+            <div className={f.help}>
+              Whichever you have — a photo, a link, or both. At least one is needed to continue.
+            </div>
           </div>
         </>
       )}
@@ -465,6 +660,7 @@ export default function CustomRequestForm() {
               className={f.input}
               type="text"
               id="cr-tweaks"
+              maxLength={600}
               value={tweakNote}
               onChange={(e) => setTweakNote(e.target.value)}
               placeholder="e.g., Make the skirt longer, change colour to cream…"
@@ -497,7 +693,7 @@ export default function CustomRequestForm() {
       {current === 'simpleFit' && (
         <>
           <div className={f.field}>
-            <label className={f.label}>Your usual size</label>
+            <label className={f.label}>Your usual size *</label>
             <div className={f.chips}>
               {SIZES.map((option) => (
                 <button
@@ -513,6 +709,7 @@ export default function CustomRequestForm() {
                 </button>
               ))}
             </div>
+            <div className={f.help}>Pick one, or tell us below that you&apos;ll send exact measurements instead.</div>
           </div>
 
           <label className={f.checkline}>
@@ -529,24 +726,32 @@ export default function CustomRequestForm() {
 
           <div className={f.field} style={{ marginTop: '1rem' }}>
             <label className={f.label} htmlFor="cr-height">
-              Your height
+              Your height *
             </label>
             <div className={w.heightRow}>
               <input
-                className={f.input}
+                className={`${f.input} ${heightError ? f.invalid : ''}`}
                 type="number"
                 id="cr-height"
                 inputMode="numeric"
-                min={120}
-                max={220}
+                min={MIN_HEIGHT_CM}
+                max={MAX_HEIGHT_CM}
                 placeholder="160"
                 value={heightCm}
                 onChange={(e) => setHeightCm(e.target.value)}
+                onBlur={() =>
+                  setHeightError(
+                    isInRange(heightCm, MIN_HEIGHT_CM, MAX_HEIGHT_CM)
+                      ? ''
+                      : `Enter a height between ${MIN_HEIGHT_CM} and ${MAX_HEIGHT_CM} cm`,
+                  )
+                }
               />
               <span className={w.heightUnit}>cm</span>
             </div>
+            {heightError && <div className={f.error}>{heightError}</div>}
             <div className={f.help}>
-              This is what gets dress and trouser lengths right — worth 10 seconds.
+              This is what gets dress and trouser lengths right.
             </div>
           </div>
         </>
@@ -592,39 +797,61 @@ export default function CustomRequestForm() {
                 {(['bust', 'waist', 'hips'] as const).map((key) => (
                   <div key={key} className={f.field} style={{ marginBottom: '0.6rem' }}>
                     <input
-                      className={f.input}
+                      className={`${f.input} ${measureError ? f.invalid : ''}`}
                       type="number"
                       inputMode="numeric"
-                      min={40}
-                      max={200}
+                      min={MIN_MEASURE_CM}
+                      max={MAX_MEASURE_CM}
                       placeholder={key[0].toUpperCase() + key.slice(1)}
                       value={cm[key]}
                       onChange={(e) => setCm({ ...cm, [key]: e.target.value })}
+                      onBlur={() => {
+                        const bad = (['bust', 'waist', 'hips'] as const).filter(
+                          (k) => cm[k] && !isInRange(cm[k], MIN_MEASURE_CM, MAX_MEASURE_CM),
+                        );
+                        setMeasureError(
+                          bad.length
+                            ? `Enter a realistic number in cm (${MIN_MEASURE_CM}–${MAX_MEASURE_CM})`
+                            : '',
+                        );
+                      }}
                       aria-label={`${key} in cm`}
                     />
                   </div>
                 ))}
               </div>
+              {measureError && <div className={f.error}>{measureError}</div>}
             </div>
           )}
 
           <div className={f.field} style={{ marginTop: '0.8rem' }}>
             <label className={f.label} htmlFor="cr-height-b">
-              Your height
+              Your height *
             </label>
             <div className={w.heightRow}>
               <input
-                className={f.input}
+                className={`${f.input} ${heightError ? f.invalid : ''}`}
                 type="number"
                 id="cr-height-b"
                 inputMode="numeric"
-                min={120}
-                max={220}
+                min={MIN_HEIGHT_CM}
+                max={MAX_HEIGHT_CM}
                 placeholder="160"
                 value={heightCm}
                 onChange={(e) => setHeightCm(e.target.value)}
+                onBlur={() =>
+                  setHeightError(
+                    isInRange(heightCm, MIN_HEIGHT_CM, MAX_HEIGHT_CM)
+                      ? ''
+                      : `Enter a height between ${MIN_HEIGHT_CM} and ${MAX_HEIGHT_CM} cm`,
+                  )
+                }
               />
               <span className={w.heightUnit}>cm</span>
+            </div>
+            {heightError && <div className={f.error}>{heightError}</div>}
+            <div className={f.help}>
+              This is what gets dress and trouser lengths right.
             </div>
           </div>
 
@@ -653,7 +880,7 @@ export default function CustomRequestForm() {
         <>
           {shows.neckline && (
             <div className={f.field}>
-              <label className={f.label}>Neckline</label>
+              <label className={f.label}>Neckline *</label>
               <div className={f.chips}>
                 {NECKLINES.map((option) => (
                   <button
@@ -671,7 +898,7 @@ export default function CustomRequestForm() {
 
           {shows.sleeves && (
             <div className={f.field}>
-              <label className={f.label}>Sleeves</label>
+              <label className={f.label}>Sleeves *</label>
               <div className={f.chips}>
                 {SLEEVES.map((option) => (
                   <button
@@ -688,7 +915,7 @@ export default function CustomRequestForm() {
           )}
 
           <div className={f.field}>
-            <label className={f.label}>Silhouette</label>
+            <label className={f.label}>Silhouette *</label>
             <div className={f.chips}>
               {SILHOUETTES.map((option) => (
                 <button
@@ -723,9 +950,18 @@ export default function CustomRequestForm() {
 
           <div className={f.field}>
             <label className={f.label}>
-              Yarn colours{' '}
+              Yarn colours *{' '}
               <span style={{ color: 'var(--mgray)', fontWeight: 400 }}>(up to {MAX_YARNS})</span>
             </label>
+            <div className={f.chips} style={{ marginBottom: '10px' }}>
+              <button
+                type="button"
+                className={`${f.chip} ${yarnUnsure ? f.active : ''}`}
+                onClick={toggleYarnUnsure}
+              >
+                {NOT_SURE.label}
+              </button>
+            </div>
             <div className={w.yarnGrid}>
               {YARNS.map((yarn) => {
                 const picked = yarnIds.includes(yarn.id);
@@ -765,8 +1001,31 @@ export default function CustomRequestForm() {
             )}
             <div className={f.help}>
               Our full palette — {YARNS.length} shades of 100% cotton. Pick up to {MAX_YARNS}, or
-              skip and we&apos;ll suggest a combination.
+              choose &ldquo;{NOT_SURE.label}&rdquo; and we&apos;ll suggest a combination that suits
+              the piece.
             </div>
+          </div>
+
+          {/* Required — every choice above it can honestly be "Not Sure,"
+              so this is the only thing on this path that guarantees an
+              actual description exists to work from. */}
+          <div className={f.field}>
+            <label className={f.label} htmlFor="cr-vision">
+              Describe what you have in mind *
+            </label>
+            <div className={f.help} style={{ marginBottom: '0.5rem' }}>
+              The choices above cover the shape — this is what our artisan actually reads first,
+              so the more specific, the better we get it on the first try.
+            </div>
+            <textarea
+              className={`${f.input} ${f.textarea}`}
+              id="cr-vision"
+              rows={4}
+              maxLength={600}
+              value={tweakNote}
+              onChange={(e) => setTweakNote(e.target.value)}
+              placeholder="e.g., For a friend's wedding, something that photographs well outdoors. I love a fitted waist with movement in the skirt…"
+            />
           </div>
         </>
       )}
@@ -788,6 +1047,7 @@ export default function CustomRequestForm() {
               e.target.value = '';
             }}
           />
+          {fileError && <div className={f.error}>{fileError}</div>}
           <div className={f.help}>Upload as many as you like (max 10MB each).</div>
           <div className={f.filePreview}>
             {uploads.map((upload, i) => (
@@ -823,7 +1083,7 @@ export default function CustomRequestForm() {
               { label: 'Reference', value: uploads.length ? `${uploads.length} photo${uploads.length > 1 ? 's' : ''}` : '' },
               { label: 'Link', value: referenceUrl.trim() },
               { label: 'Keep as shown', value: labelsOf(LOVED_ELEMENTS, lovedElements) },
-              { label: 'Tweaks', value: tweakNote.trim() },
+              { label: 'Your notes', value: tweakNote.trim() },
               { label: 'Size', value: fitSummary },
               { label: 'Height', value: heightCm ? `${heightCm} cm` : '' },
               { label: 'Length', value: shows.length ? labelOf(LENGTHS, length) : '' },
@@ -847,13 +1107,18 @@ export default function CustomRequestForm() {
               Your name *
             </label>
             <input
-              className={f.input}
+              className={`${f.input} ${nameError ? f.invalid : ''}`}
               type="text"
               id="cr-name"
+              maxLength={80}
               value={name}
               onChange={(e) => setName(e.target.value)}
+              onBlur={() =>
+                setNameError(name.trim().length >= 2 ? '' : 'Enter your name')
+              }
               autoComplete="name"
             />
+            {nameError && <div className={f.error}>{nameError}</div>}
           </div>
 
           <div className={f.field}>
@@ -864,6 +1129,7 @@ export default function CustomRequestForm() {
               className={`${f.input} ${emailError ? f.invalid : ''}`}
               type="email"
               id="cr-email"
+              maxLength={200}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               onBlur={() =>
@@ -876,7 +1142,11 @@ export default function CustomRequestForm() {
           </div>
 
           <div className={f.field}>
-            <label className={f.label}>Preferred chat channel</label>
+            <label className={f.label}>Preferred chat channel *</label>
+            <div className={f.help} style={{ marginBottom: '0.5rem' }}>
+              We&apos;ll talk through fit and design details here — faster than going back and
+              forth by email.
+            </div>
             <div className={f.chips}>
               {CONTACT_METHODS.map((option) => (
                 <button
@@ -886,6 +1156,9 @@ export default function CustomRequestForm() {
                   onClick={() => {
                     setContactMethod(option.value);
                     setContactHandle('');
+                    // Each channel has its own valid shape, so an error about
+                    // yesterday's channel has nothing useful to say here.
+                    setHandleError('');
                   }}
                 >
                   {option.label}
@@ -893,31 +1166,41 @@ export default function CustomRequestForm() {
               ))}
             </div>
 
-            {/* Each platform asks for what that platform actually uses. */}
-            {contact.fieldLabel ? (
+            {/* Each platform asks for what that platform actually uses, and a
+                correctly-shaped handle is required once a channel is picked —
+                a "preferred channel" we can't actually reach you on isn't a
+                preference, it's a dead end. */}
+            {contact ? (
               <>
                 <label className={f.label} htmlFor="cr-handle" style={{ marginTop: '0.7rem' }}>
-                  {contact.fieldLabel}
+                  {contact.fieldLabel} *
                 </label>
                 <input
-                  className={f.input}
+                  className={`${f.input} ${handleError ? f.invalid : ''}`}
                   type="text"
                   id="cr-handle"
+                  maxLength={50}
                   inputMode={contact.value === 'whatsapp' ? 'tel' : 'text'}
                   placeholder={contact.placeholder}
                   value={contactHandle}
                   onChange={(e) => setContactHandle(e.target.value)}
+                  onBlur={() =>
+                    setHandleError(
+                      isValidHandle(contact.value, contactHandle)
+                        ? ''
+                        : `That doesn't look like a valid ${(contact.fieldLabel ?? 'handle').toLowerCase()}`,
+                    )
+                  }
                 />
+                {handleError && <div className={f.error}>{handleError}</div>}
                 <div className={f.help}>{contact.help}</div>
               </>
             ) : (
-              <div className={f.help}>{contact.help}</div>
+              <div className={f.help}>Pick one to continue.</div>
             )}
           </div>
 
           <div className={w.priceNote}>
-            <span className={w.priceFrom}>A custom {priceLabel} starts at</span>
-            <span className={w.priceValue}>{baht(basePrice)}</span>
             <span className={w.priceCaveat}>
               Your final quote depends on yarn, size and detail. We confirm it with you before
               anything is cast on — nothing is charged now.
@@ -936,7 +1219,7 @@ export default function CustomRequestForm() {
             type="button"
             className={`${f.submit} ${w.next}`}
             onClick={handleSubmit}
-            disabled={sending}
+            disabled={sending || !canSubmit}
           >
             {sending ? 'Sending…' : 'Submit My Request ✨'}
           </button>

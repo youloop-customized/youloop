@@ -79,7 +79,7 @@ export default function HomePage() {
       </section>
 
       {/* CUSTOM REQUEST */}
-      <section id="custom-request" className={s.customRequest}>
+      <section id="createyourlook" className={s.customRequest}>
         <div className={s.customRequestInner}>
           <div className={s.sectionTag}>Something else in mind?</div>
           <h2 className={s.sectionTitle} style={{ marginBottom: '0.6rem' }}>

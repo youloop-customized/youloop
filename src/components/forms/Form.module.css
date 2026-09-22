@@ -84,6 +84,10 @@
 .success {
   text-align: center;
   padding: 1rem 0;
+  /* Matches the fixed nav's height (see src/app/about/about.module.css), so a
+     scrollIntoView lands the message clear of the nav bar rather than tucked
+     under it. */
+  scroll-margin-top: 90px;
 }
 
 .hidden {

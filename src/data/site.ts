@@ -10,6 +10,7 @@ export type NavLink = {
 export const NAV_LINKS: NavLink[] = [
   { key: 'how', label: 'How it works', href: '/#how' },
   { key: 'collection', label: 'Collection', href: '/#collection' },
+  { key: 'createyourlook', label: 'Create Your Look', href: '/#createyourlook' },
   { key: 'journal', label: 'Journal', href: '/journal' },
   { key: 'about', label: 'About', href: '/about' },
 ];

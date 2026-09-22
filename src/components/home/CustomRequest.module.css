@@ -129,6 +129,37 @@
   margin-bottom: 1.3rem;
 }
 
+/* A quiet price anchor under the two path cards — sets expectations before
+   either path is even opened, same purpose as .priceNote at the end of the
+   wizard, just earlier and lighter-weight since nothing has been chosen yet. */
+.chooserTeaser {
+  text-align: center;
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(170, 74, 48, 0.14);
+}
+
+/* Deliberately plain — sans, small, muted. The two path cards above (serif,
+   cream) and the "Where should we start?" heading are the things a customer
+   should look at first; this is a footnote answering a worry ("what will
+   this cost"), not a third thing competing for the same attention. */
+.chooserTeaserTitle {
+  font-family: var(--font-sans);
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--mgray);
+  line-height: 1.4;
+}
+
+.chooserTeaserSub {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--mgray);
+  opacity: 0.85;
+  margin-top: 0.25rem;
+  line-height: 1.5;
+}
+
 /* ── HEIGHT ── */
 .heightRow {
   display: flex;

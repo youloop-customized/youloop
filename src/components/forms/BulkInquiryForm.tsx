@@ -1,13 +1,21 @@
 'use client';
 
 import type { FormEvent } from 'react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { submitFormData } from '@/lib/netlify';
 import f from './Form.module.css';
 
 export default function BulkInquiryForm() {
   const [sending, setSending] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const successRef = useRef<HTMLDivElement>(null);
+
+  // The form is tall; the success message that replaces it is short. Without
+  // this, the page keeps whatever scroll position the customer was at, which
+  // after a long form lands them well past the now-shorter card.
+  useEffect(() => {
+    if (submitted) successRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [submitted]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -26,7 +34,7 @@ export default function BulkInquiryForm() {
 
   if (submitted) {
     return (
-      <div className={f.success}>
+      <div ref={successRef} className={f.success}>
         <p style={{ fontSize: '1.05rem', color: 'var(--cream)', marginBottom: '0.5rem' }}>
           ✦ Got it — thank you!
         </p>

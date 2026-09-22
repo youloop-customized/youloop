@@ -1,7 +1,7 @@
 'use client';
 
 import type { FormEvent } from 'react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { submitFormData } from '@/lib/netlify';
 import s from '@/app/b2b/b2b.module.css';
 
@@ -50,6 +50,14 @@ function RadioGroup({ name, options }: { name: string; options: string[] }) {
 export default function B2BInquiryForm() {
   const [sending, setSending] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const successRef = useRef<HTMLDivElement>(null);
+
+  // The form is tall; the success message that replaces it is short. Without
+  // this, the page keeps whatever scroll position the customer was at, which
+  // after a long form lands them well past the now-shorter card.
+  useEffect(() => {
+    if (submitted) successRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [submitted]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -68,7 +76,7 @@ export default function B2BInquiryForm() {
 
   if (submitted) {
     return (
-      <div className={s.success}>
+      <div ref={successRef} className={s.success}>
         <p className={s.successTitle}>Thank you — got it.</p>
         <p className={s.successBody}>
           We&apos;ll review your project and follow up by email within 24 hours.

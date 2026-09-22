@@ -507,6 +507,10 @@
 .success {
   text-align: center;
   padding: 1rem 0;
+  /* This page's own nav (.nav above) is not fixed, unlike the shared SiteNav,
+     so no scroll offset is needed here — a plain scrollIntoView lands
+     correctly. */
+  scroll-margin-top: 12px;
 }
 
 .successTitle {
