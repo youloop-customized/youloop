@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import type { MouseEvent as ReactMouseEvent } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import type { CollectionCard } from '@/data/collection';
@@ -41,8 +42,23 @@ export default function ProductCard({ card }: { card: CollectionCard }) {
         >
           {card.slides.map((slide) => (
             <div key={slide.img} className={s.carouselSlide}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={slide.img} alt={`${card.name} — ${slide.label}`} loading="lazy" />
+              {/* next/image rather than a plain <img>: these twelve source
+                  files are ~1MB of JPEG between them, and it serves a
+                  WebP/AVIF variant sized to the box instead of the original.
+                  `fill` works because .carouselSlide is already positioned;
+                  object-fit: contain still comes from .carouselSlide img in
+                  home.module.css, which next/image does not set inline.
+
+                  `sizes` has to match the real layout or it fetches the
+                  wrong variant: below 480px a card is 82vw, from there to
+                  the 768px breakpoint it is capped at 340px, and on desktop
+                  the 1180px grid gives three ~380px columns. */}
+              <Image
+                src={slide.img}
+                alt={`${card.name} — ${slide.label}`}
+                fill
+                sizes="(max-width: 480px) 82vw, (max-width: 768px) 340px, 380px"
+              />
             </div>
           ))}
         </div>
@@ -88,8 +104,10 @@ export default function ProductCard({ card }: { card: CollectionCard }) {
       <div className={s.productBody}>
         <div className={s.productCode}>{card.code}</div>
         <div className={s.productName}>{card.name}</div>
-        <div className={s.productDesc}>{card.description}</div>
 
+        {/* The prose description moved to each product's own configurator
+            page (ProductConfig.tagline). On the card the chips below say what
+            is in the set faster than a paragraph did. */}
         <div className={s.productIncludes}>
           {card.tags.map((tag) => (
             <span key={tag} className={s.productTag}>

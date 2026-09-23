@@ -69,7 +69,6 @@ export type ProductConfig = {
   tagline: string[];
   basePrice: number;
   priceNote: string;
-  heroBand: string[];
   navPill: { label: string; background: string; color: string };
   photoBadge: string;
   photoNote: string;
@@ -123,12 +122,10 @@ export const SR01: ProductConfig = {
   name: 'The Birthday Set',
   title: 'SR-01 — The Birthday Set | YOU LOOP',
   tagline: [
-    'Mini dress + arm warmers + leg warmers.',
-    "Your main character outfit for the moment you'll remember.",
+    'The original. A crochet mini dress with signature ruffle hem, arm warmers, and leg warmers. Suitable for birthdays and performances.',
   ],
   basePrice: 2690,
   priceNote: '3 pieces · Custom made · 10-14 days',
-  heroBand: ['SR-01', 'The Birthday Set', '4 Moods + 81 Yarn Colours', '3 Pieces', '10–14 Days'],
   navPill: NEW_DESIGN_PILL,
   photoBadge: '✦ Dress · Arm warmers · Leg warmers',
   photoNote: '10–14 day delivery',
@@ -204,18 +201,10 @@ export const SR02: ProductConfig = {
   name: 'The Soft Riot Crop Set',
   title: 'SR-02 — The Soft Riot Crop Set | YOU LOOP',
   tagline: [
-    'Long sleeve open-weave mesh top + high-waist mini skirt.',
-    'Soft on the surface. Sharp underneath.',
+    'Two pieces, one intention. Tie-front bralette with open-weave mesh overlay, and a high-waist mini skirt. Soft on the surface. Sharp underneath.',
   ],
   basePrice: 1990,
   priceNote: '2 pieces · Custom made · 10-14 days',
-  heroBand: [
-    'SR-02',
-    'The Soft Riot Crop Set',
-    '4 Moods + 81 Yarn Colours',
-    '2 Pieces',
-    '10–14 Days',
-  ],
   navPill: NEW_DESIGN_PILL,
   photoBadge: '✦ Long sleeve mesh top · Mini skirt',
   photoNote: '10–14 day delivery',
@@ -287,16 +276,11 @@ export const SRAC01: ProductConfig = {
   productLabel: 'SR-AC01 The Soft Riot Hood',
   name: 'The Soft Riot Hood',
   title: 'SR-AC01 — The Soft Riot Hood | YOU LOOP',
-  tagline: ['Crochet pixie hood · Open mesh · Braided tassel ties · Wear it your way'],
+  tagline: [
+    'The main character accessory. Open mesh crochet pixie hood with braided tassel ties. Wear it loose, tied, or wrapped. Unisex. 8 colourways.',
+  ],
   basePrice: 990,
   priceNote: 'Custom made · 7-10 days · Unisex',
-  heroBand: [
-    'SR-AC01',
-    'The Soft Riot Hood',
-    '8 Colourways + 81 Yarn Colours',
-    'Unisex · One Size',
-    '7–10 Days',
-  ],
   navPill: { label: 'Unisex', background: '#d49a37', color: '#f9f5ee' },
   photoBadge: '✦ Unisex Design',
   photoNote: '7–10 day delivery',

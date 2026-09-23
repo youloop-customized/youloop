@@ -70,7 +70,7 @@
   margin-bottom: 14px;
 }
 
-.page h1 {
+:where(.page) h1 {
   font-family: var(--font-display);
   font-size: 40px;
   font-weight: 500;
@@ -405,7 +405,7 @@
 }
 
 @media (max-width: 480px) {
-  .page h1 {
+  :where(.page) h1 {
     font-size: 32px;
   }
 

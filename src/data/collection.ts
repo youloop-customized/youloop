@@ -18,7 +18,6 @@ export type CollectionCard = {
   href: string;
   code: string;
   name: string;
-  description: string;
   tags: string[];
   price: string;
   currency: string;
@@ -34,9 +33,7 @@ export const COLLECTION_CARDS: CollectionCard[] = [
     href: '/collection/sr01',
     code: 'SR-01',
     name: 'The Birthday Set',
-    description:
-      'The original. A crochet mini dress with signature ruffle hem, arm warmers, and leg warmers. Made from the dress Yu wore to her performance.',
-    tags: ['Mini dress', 'Arm warmers', 'Leg warmers', '4 moods'],
+    tags: ['Mini dress', 'Arm warmers', 'Leg warmers', '4 colors'],
     price: '2,690',
     currency: 'THB',
     badge: { label: 'New Design', background: 'var(--rose)', color: 'white' },
@@ -53,9 +50,7 @@ export const COLLECTION_CARDS: CollectionCard[] = [
     href: '/collection/sr02',
     code: 'SR-02',
     name: 'The Soft Riot Crop Set',
-    description:
-      'Two pieces, one intention. Tie-front bralette with open-weave mesh overlay, and a high-waist mini skirt. Soft on the surface. Sharp underneath.',
-    tags: ['Bralette + overlay', 'Mini skirt', '2 pieces', '4 moods'],
+    tags: ['Bralette + overlay', 'Mini skirt', '2 pieces', '4 colors'],
     price: '1,990',
     currency: 'THB',
     badge: { label: 'New Design', background: 'var(--rose)', color: 'white' },
@@ -72,9 +67,7 @@ export const COLLECTION_CARDS: CollectionCard[] = [
     href: '/collection/srac01',
     code: 'SR-AC01',
     name: 'The Soft Riot Hood',
-    description:
-      'The main character accessory. Open mesh crochet pixie hood with braided tassel ties. Wear it loose, tied, or wrapped. Unisex. 8 colourways.',
-    tags: ['Crochet hood', 'Braided ties', '8 colours', 'Unisex'],
+    tags: ['Crochet hood', 'Braided ties', '8 colors', 'Unisex'],
     price: '990',
     currency: 'THB',
     badge: { label: 'Unisex', background: 'var(--gold)', color: '#f9f5ee' },

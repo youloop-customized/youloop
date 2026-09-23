@@ -150,14 +150,15 @@ export default function Configurator({ product }: { product: ProductConfig }) {
         </Link>
       </div>
 
-      {/* ── HERO BAND ── */}
+      {/* ── HERO BAND ──
+          Was a per-product spec strip (SKU · name · moods · pieces · days).
+          Every one of those facts is still on this page — the SKU in .skuRow,
+          the name in the h1, the rest in .priceNote and the detail cards — so
+          the band was repeating the page back at itself. It carries the brand
+          line instead, the same on all three products, which is why it reads
+          from BRAND rather than from product data. */}
       <div className={s.heroBand}>
-        {product.heroBand.map((item, i) => (
-          <span key={item}>
-            {i > 0 && <span className={s.sep}>·</span>}
-            <span>{item}</span>
-          </span>
-        ))}
+        <span>{BRAND.tagline}</span>
       </div>
 
       <div className={s.layout}>

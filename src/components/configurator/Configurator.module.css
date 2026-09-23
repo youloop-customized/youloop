@@ -162,10 +162,8 @@
   font-weight: 600;
 }
 
-.heroBand .sep {
-  color: var(--dgray);
-  margin: 0 10px;
-}
+/* .sep went with the spec strip this band used to hold — there is only one
+   phrase in it now, so there is nothing left to separate. */
 
 /* ── LAYOUT ── */
 .layout {
@@ -1085,6 +1083,47 @@
   color: var(--dgray);
   display: block;
   margin-bottom: 5px;
+}
+
+/* The "Preferred chat channel" chips.
+
+   Checkout.tsx has always asked for s.channelChips / s.channelChip, but
+   neither existed in any stylesheet — so they evaluated to undefined, React
+   wrote className="undefined", and the three buttons rendered as raw browser
+   controls: square, grey and touching each other. A CSS Module returns
+   undefined for a name it does not define, which is not a type error and not
+   a build error, so nothing ever flagged it.
+
+   Shaped after .modelBtn, this page's existing pill toggle. .active is only
+   ever used compounded here (.modelBtn.active, .swatch.active), never on its
+   own, so the selected state has to be .channelChip.active. */
+.channelChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.channelChip {
+  padding: 8px 14px;
+  border: 1px solid rgba(170, 74, 48, 0.3);
+  background: transparent;
+  color: var(--dgray);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  border-radius: 999px;
+  transition: all 0.2s;
+}
+
+.channelChip:hover {
+  border-color: var(--rose);
+  color: var(--rose);
+}
+
+.channelChip.active {
+  border-color: var(--rose);
+  color: var(--rose);
+  background: rgba(170, 74, 48, 0.1);
 }
 
 .detailsInput {

@@ -1,11 +1,11 @@
 /* Ported from youloop_about.html. Nav and footer now come from the shared
    components; element selectors are scoped under .page. */
 
-.page section {
+:where(.page) section {
   padding: 5rem 2rem;
 }
 
-.page section[id] {
+:where(.page) section[id] {
   scroll-margin-top: 90px;
 }
 
@@ -441,7 +441,7 @@
 
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
-  .page section {
+  :where(.page) section {
     padding: 3.5rem 1.25rem;
   }
 
@@ -484,7 +484,7 @@
 }
 
 @media (max-width: 480px) {
-  .page section {
+  :where(.page) section {
     padding: 3rem 1rem;
   }
 

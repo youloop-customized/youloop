@@ -29,18 +29,28 @@
   -webkit-font-smoothing: antialiased;
 }
 
-.page img {
+:where(.page) img {
   max-width: 100%;
   display: block;
 }
 
-.page a {
+/* :where() so this contributes ZERO specificity — it matches as if it were a
+   bare `a`, which any single class beats.
+
+   Written as `.page a` it scored (0,1,1) and silently outranked every
+   one-class component rule on the page: .ctaBtn rendered dark text on its own
+   dark background, and .navBack's maroon never applied at all. The trap is
+   that nothing errors — a component's own colour just quietly does nothing,
+   so it looks like a fresh bug each time a link-styled element is added.
+   With :where(), a class on the link always wins, which is the intent:
+   reset plain links, leave styled ones alone. */
+:where(.page) a {
   color: inherit;
 }
 
-.page h1,
-.page h2,
-.page h3 {
+:where(.page) h1,
+:where(.page) h2,
+:where(.page) h3 {
   font-family: var(--font-display);
   font-weight: 650;
   letter-spacing: -0.01em;
@@ -110,12 +120,10 @@
   margin: 0 auto 34px;
 }
 
-/* .page a { color: inherit } (one class + a type selector) is more specific
-   than a bare .ctaBtn (one class), so it was winning and rendering both the
-   hero and concept-card CTAs as dark text on their own dark background —
-   readable nowhere. .page .ctaBtn matches or beats every button variant on
-   this page (including .closing .ctaBtn) without needing !important. */
-.page .ctaBtn {
+/* Back to a plain single class: the link reset above no longer outranks it,
+   so the .page prefix that used to be needed here is gone. It also lets
+   .closing .ctaBtn win on specificity rather than on source order. */
+.ctaBtn {
   display: inline-block;
   background: var(--maroon-deep);
   color: #fff;
@@ -157,7 +165,7 @@
 }
 
 /* ── SECTION SHELLS ── */
-.page section {
+:where(.page) section {
   padding: 64px 24px;
 }
 
