@@ -510,8 +510,25 @@
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
   .hero {
-    padding-top: 5rem;
+    padding-top: 7rem;
     min-height: 85vh;
+  }
+
+  /* Two copies of the same mark sat ~20px apart here: the fixed nav logo
+     (SiteNav .logo, 30px) and this one directly under it. Raising .hero's
+     padding-top barely helped because .hero centres with justify-content and
+     on a phone its content is TALLER than the content box — an overflowing
+     centred flex column spills equally out of both ends, so half of every
+     rem added to the padding got eaten straight back by that spill.
+
+     Dropping the hero copy on small screens is the fix the duplication
+     actually calls for: the nav mark is on screen anyway, so nothing is lost,
+     the hero opens cleanly on "Keep it Soft Riot", and the ~60px it frees
+     lets the column fit its box again — which makes the padding above real
+     clearance instead of a suggestion. Desktop keeps the big logo, where it
+     sits far below the nav and reads as a brand moment, not a repeat. */
+  .heroLogo {
+    display: none;
   }
 
   .heroSub {

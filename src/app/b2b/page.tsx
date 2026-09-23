@@ -234,7 +234,9 @@ export default function B2BPage() {
 
       <div className={s.hero}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className={s.heroLogo} src={BRAND.logo} alt={BRAND.name} />
+        {/* YOU LOOP Creation's own mark, not the Fashion star logo — see the
+            comment on BRAND.creationLogo. */}
+        <img className={s.heroLogo} src={BRAND.creationLogo} alt="YOU LOOP Creation" />
         <div className={s.eyebrow} style={{ marginBottom: 16 }}>
           Responsible Handmade Merchandise Partner
         </div>

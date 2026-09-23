@@ -28,7 +28,10 @@ export default function HomePage() {
           <br />
           <em>era starts here.</em>
         </h1>
-        <p className={s.heroSub}>Custom fashion for your most intentional moment.</p>
+        <p className={s.heroSub}>
+          Custom fashion for your most intentional moment - birthday, graduation, first date, or
+          whenever it&apos;s your turn to be the main character..
+        </p>
         <div className={s.heroBtns}>
           <Link href="#collection" className={s.btnPrimary}>
             Shop the collection

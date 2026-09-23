@@ -21,23 +21,31 @@ export type Option = { value: string; label: string };
  */
 export type EntryPath = 'reference' | 'shape';
 
+/**
+ * The two ways into the wizard.
+ *
+ * Deliberately close to wordless: a customer deciding between two buttons is
+ * scanning, not reading, so each card carries one question-shaped title, one
+ * line of micro-copy and the cost in time — nothing else. Step counts are the
+ * real lengths of PATH_STEPS below; keep them in step if that array changes.
+ */
 export const ENTRY_PATHS: {
   value: EntryPath;
-  label: string;
-  quote: string;
-  hint: string;
+  title: string;
+  micro: string;
+  meta: string;
 }[] = [
   {
     value: 'reference',
-    label: 'I have a photo or idea',
-    quote: 'Start with your inspo',
-    hint: 'Send a photo or a TikTok link and we recreate it. Three quick questions, then done.',
+    title: 'Have a photo or video?',
+    micro: 'Drop a screenshot, a Pinterest pin or a TikTok link — we recreate it.',
+    meta: '2 min · 4 steps',
   },
   {
     value: 'shape',
-    label: 'Help me build it',
-    quote: 'Start from a shape',
-    hint: 'Pick a silhouette and choose the neckline, fit and yarn colours yourself.',
+    title: 'Build it from scratch',
+    micro: 'Pick a base shape, then the neckline, fit and yarn colour.',
+    meta: '4 min · 5 steps',
   },
 ];
 

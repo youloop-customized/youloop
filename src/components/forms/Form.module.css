@@ -139,19 +139,6 @@
   margin-top: 0.6rem;
 }
 
-.checkline {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.8rem;
-  color: var(--mgray);
-  cursor: pointer;
-}
-
-.checkline input {
-  accent-color: var(--rose);
-}
-
 /* ── FILE PREVIEW THUMBNAILS ── */
 .filePreview {
   display: flex;

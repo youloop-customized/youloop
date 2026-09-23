@@ -43,6 +43,43 @@ const MAX_FILE_BYTES = 10 * 1024 * 1024;
 /** A sane ceiling so nobody accidentally attaches fifty photos to an email. */
 const MAX_FILES = 10;
 
+/**
+ * The mark on each entry card. Line icons rather than emoji: emoji are
+ * rendered by the OS, so they arrive full-colour and differently shaped on
+ * every device — three sizes of cartoon next to serif type. These inherit
+ * the rose the rest of the wizard uses and stay on-brand everywhere.
+ */
+function PathIcon({ path }: { path: EntryPath }) {
+  const common = {
+    viewBox: '0 0 24 24',
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: 1.4,
+    strokeLinecap: 'round' as const,
+    strokeLinejoin: 'round' as const,
+  };
+
+  // A framed photo with a sparkle — "the picture you already have".
+  if (path === 'reference') {
+    return (
+      <svg {...common}>
+        <rect x="2.2" y="5.2" width="14.6" height="14.6" rx="2.6" />
+        <circle cx="7.1" cy="10.1" r="1.5" />
+        <path d="M2.2 16.4l4-3.4 3.6 3 2.9-2.3 4.1 3.3" />
+        <path d="M19.4 2.6l.85 2.15 2.15.85-2.15.85-.85 2.15-.85-2.15L16.4 5.6l2.15-.85z" />
+      </svg>
+    );
+  }
+
+  // A dress silhouette — "the shape we start from".
+  return (
+    <svg {...common}>
+      <path d="M9 3h6l-.6 2.4a1 1 0 00.2.9l2.5 3a1 1 0 01.2.9l-.7 3a1 1 0 01-1 .8h-.8l.5 6.2a.8.8 0 01-.8.8H9.5a.8.8 0 01-.8-.8l.5-6.2h-.8a1 1 0 01-1-.8l-.7-3a1 1 0 01.2-.9l2.5-3a1 1 0 00.2-.9z" />
+      <path d="M9 3c.9.9 2.1 1.4 3 1.4S14.1 3.9 15 3" />
+    </svg>
+  );
+}
+
 /** Rejects "asdf" and typos, accepts anything genuinely link-shaped. */
 function isValidUrl(value: string): boolean {
   try {
@@ -151,7 +188,6 @@ export default function CustomRequestForm() {
   // Shared
   const [size, setSize] = useState<string | null>(null);
   const [heightCm, setHeightCm] = useState('');
-  const [measureLater, setMeasureLater] = useState(false);
   const [uploads, setUploads] = useState<Upload[]>([]);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -280,13 +316,12 @@ export default function CustomRequestForm() {
       case 'shape':
         return Boolean(baseStyle);
       // Both size steps share one table (see renderSizeSection) and so share
-      // one rule: a standard size, valid exact measurements, or "I'll send
-      // them later" all satisfy it — plus a height in range either way.
+      // one rule: either a standard size, or the table's own Custom row with
+      // valid measurements under it — plus a height in range either way.
       case 'fit':
       case 'simpleFit':
         return (
           (Boolean(size) ||
-            measureLater ||
             (useMeasurements &&
               isInRange(cm.bust, MIN_MEASURE_CM, MAX_MEASURE_CM) &&
               isInRange(cm.waist, MIN_MEASURE_CM, MAX_MEASURE_CM) &&
@@ -328,11 +363,9 @@ export default function CustomRequestForm() {
     setStepIndex(0);
   }
 
-  const fitSummary = measureLater
-    ? 'Measurements to follow'
-    : useMeasurements
-      ? `${cm.bust} / ${cm.waist} / ${cm.hips} cm`
-      : (size ?? '');
+  const fitSummary = useMeasurements
+    ? `${cm.bust} / ${cm.waist} / ${cm.hips} cm`
+    : (size ?? '');
   const yarnSummary = yarnUnsure
     ? NOT_SURE.label
     : chosenYarns.map((y) => `#${y.id} ${y.name}`).join(', ');
@@ -377,11 +410,10 @@ export default function CustomRequestForm() {
               <tbody>
                 {SIZES.map((label) => {
                   const row = STANDARD_MEASUREMENTS[label];
-                  const checked = !useMeasurements && !measureLater && size === label;
+                  const checked = !useMeasurements && size === label;
                   const pick = () => {
                     setSize(label);
                     setUseMeasurements(false);
-                    setMeasureLater(false);
                   };
                   return (
                     <tr key={label} className={checked ? w.sizeRowActive : ''} onClick={pick}>
@@ -408,7 +440,6 @@ export default function CustomRequestForm() {
                   onClick={() => {
                     setUseMeasurements(true);
                     setSize(null);
-                    setMeasureLater(false);
                   }}
                 >
                   <th scope="row" className={w.sizeCell}>
@@ -421,7 +452,6 @@ export default function CustomRequestForm() {
                       onChange={() => {
                         setUseMeasurements(true);
                         setSize(null);
-                        setMeasureLater(false);
                       }}
                     />
                     <span>Custom</span>
@@ -469,21 +499,6 @@ export default function CustomRequestForm() {
             {measureError && <div className={f.error}>{measureError}</div>}
           </div>
         )}
-
-        <label className={f.checkline}>
-          <input
-            type="checkbox"
-            checked={measureLater}
-            onChange={(e) => {
-              setMeasureLater(e.target.checked);
-              if (e.target.checked) {
-                setSize(null);
-                setUseMeasurements(false);
-              }
-            }}
-          />{' '}
-          I&apos;ll send my exact measurements on chat later
-        </label>
 
         <div className={f.field} style={{ marginTop: '1rem' }}>
           <label className={f.label} htmlFor="cr-height">
@@ -544,7 +559,9 @@ export default function CustomRequestForm() {
     data.set('bot-field', '');
     data.set('request_id', requestId);
     data.set('request_status', 'Needs Review');
-    data.set('fit_status', measureLater ? 'Measurements To Follow' : 'Fit Check Required');
+    // Every custom piece gets its measurements confirmed on chat before we
+    // cast on, whether the size came from the table or the Custom row.
+    data.set('fit_status', 'Fit Check Required');
     data.set('submitted_at', new Date().toISOString());
 
     data.set('name', name.trim());
@@ -571,13 +588,9 @@ export default function CustomRequestForm() {
       labelOf(BASE_STYLES, baseStyle) || labelOf(REFERENCE_TARGETS, referenceTarget) || '—',
     );
 
-    data.set(
-      'sizing_method',
-      measureLater ? 'Sending measurements later' : useMeasurements ? 'Custom Measurements' : 'Standard Size',
-    );
+    data.set('sizing_method', useMeasurements ? 'Custom Measurements' : 'Standard Size');
     data.set('standard_size', size ?? '');
     data.set('height_cm', heightCm.trim());
-    data.set('measurements_later', measureLater ? 'Yes' : '');
     data.set('bust_cm', useMeasurements ? cm.bust : '');
     data.set('waist_cm', useMeasurements ? cm.waist : '');
     data.set('hips_cm', useMeasurements ? cm.hips : '');
@@ -679,10 +692,6 @@ export default function CustomRequestForm() {
     return (
       <div>
         <h3 className={w.stepTitle}>Where should we start?</h3>
-        <p className={w.chooseIntro}>
-          Either way takes a couple of minutes, and nothing is charged until we have agreed the
-          piece and the price with you.
-        </p>
         <div className={w.pathGrid}>
           {ENTRY_PATHS.map((path) => (
             <button
@@ -691,10 +700,13 @@ export default function CustomRequestForm() {
               className={w.pathCard}
               onClick={() => choosePath(path.value)}
             >
+              <span className={w.pathIcon} aria-hidden="true">
+                <PathIcon path={path.value} />
+              </span>
               <span className={w.pathBody}>
-                <span className={w.pathName}>{path.label}</span>
-                <span className={w.pathQuote}>{path.quote}</span>
-                <span className={w.pathHint}>{path.hint}</span>
+                <span className={w.pathTitle}>{path.title}</span>
+                <span className={w.pathMicro}>{path.micro}</span>
+                <span className={w.pathMeta}>{path.meta}</span>
               </span>
               <span className={w.pathArrow} aria-hidden="true">
                 &#8594;
@@ -703,18 +715,14 @@ export default function CustomRequestForm() {
           ))}
         </div>
 
-        <div className={w.chooserTeaser}>
-          {/* The only place this figure is shown on screen — it no longer
-              repeats at the end of the form, which just states that the
-              final quote depends on the piece. Still recorded in
-              starting_price for the record and the confirmation email. */}
-          <span className={w.chooserTeaserTitle}>
-            Custom top starts from {baht(CUSTOM_STARTING_PRICE)}.
-          </span>
-          <span className={w.chooserTeaserSub}>
-            Hand-crocheted to your exact measurements • Tailored color choice
-          </span>
-        </div>
+        {/* The only place this figure is shown on screen — it no longer
+            repeats at the end of the form, which just states that the final
+            quote depends on the piece. Still recorded in starting_price for
+            the record and the confirmation email. */}
+        <p className={w.chooserTeaser}>
+          Custom pieces start from {baht(CUSTOM_STARTING_PRICE)} · nothing is charged until we agree
+          the piece with you.
+        </p>
       </div>
     );
   }

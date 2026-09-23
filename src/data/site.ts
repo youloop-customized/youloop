@@ -25,7 +25,13 @@ export const SOCIAL_LINKS = [
 
 export const BRAND = {
   name: 'YOU LOOP',
-  logo: '/images/logo/youloop-logo.png',
+  // Two businesses share the domain: YOU LOOP Fashion (this logo, the star
+  // mark, used everywhere below) sells customised crochet fashion at
+  // youloop.co; YOU LOOP Creation is the B2B merchandise arm at /b2b and
+  // uses its own logo instead — see creationLogo, used only there.
+  logo: '/images/logo/youloop-logo-star.png',
+  /** YOU LOOP Creation's own mark: no star, the interlocking loop emphasised. */
+  creationLogo: '/images/logo/youloop-logo.png',
   tagline: 'Keep it Soft Riot. · Fast fashion fills wardrobes. Custom fashion fills moments.',
   copyright: '© 2026 YOU LOOP · Thailand',
   siteUrl: 'https://youloop.co',
