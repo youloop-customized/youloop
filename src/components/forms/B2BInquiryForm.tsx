@@ -5,55 +5,30 @@ import { useEffect, useRef, useState } from 'react';
 import { submitFormData } from '@/lib/netlify';
 import s from '@/app/b2b/b2b.module.css';
 
-const CONTACTING_AS = [
-  'Direct brand or company',
-  'Corporate-gifting company',
-  'Marketing or branding agency',
-  'Event organizer',
-  'NGO or community',
-  'Retail or distribution partner',
-  'Individual',
-  'Other',
-];
-
-const QUANTITIES = [
-  'Prototype only',
-  '3–10 pieces',
-  '11–30 pieces',
-  '31–100 pieces',
-  '101–300 pieces',
-  'More than 300 pieces',
-  'Quantity not confirmed',
-];
-
-const NEXT_STEPS = [
-  '15-minute introductory call',
-  'Indicative quotation',
-  'Paid prototype or sample',
-  'Product recommendations',
-  'Production-feasibility discussion',
-];
-
-/** Radio group — the b2b form uses three of these with identical markup. */
-function RadioGroup({ name, options }: { name: string; options: string[] }) {
-  return (
-    <div className={s.radioGroup}>
-      {options.map((option, i) => (
-        <label key={option} className={s.radio}>
-          <input type="radio" name={name} value={option} required={i === 0} /> {option}
-        </label>
-      ))}
-    </div>
-  );
-}
-
+/**
+ * YOU LOOP Creation's project inquiry.
+ *
+ * This replaced a sixteen-field questionnaire (contacting_as, project_for,
+ * delivery_location, next_step and so on) with the shorter /bulk-inquiry field
+ * set. A corporate enquiry only has to tell us who they are, what they want
+ * made, how many and by when — everything else is a conversation, not a form,
+ * and asking for it up front was the surest way to lose the lead.
+ *
+ * Company comes before the contact's name because that is what identifies a
+ * B2B enquiry, and email is the only channel asked for: this arm follows up by
+ * email, so offering WhatsApp here promised a channel nobody was watching.
+ *
+ * It keeps the b2b stylesheet rather than Form.module.css — this page is white
+ * and blush where the rest of the site is near-black, so the shared form
+ * styles would render unreadable here.
+ */
 export default function B2BInquiryForm() {
   const [sending, setSending] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const successRef = useRef<HTMLDivElement>(null);
 
   // The form is tall; the success message that replaces it is short. Without
-  // this, the page keeps whatever scroll position the customer was at, which
+  // this, the page keeps whatever scroll position the visitor was at, which
   // after a long form lands them well past the now-shorter card.
   useEffect(() => {
     if (submitted) successRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -95,152 +70,129 @@ export default function B2BInquiryForm() {
       </p>
 
       <div className={s.field}>
-        <label className={s.label} htmlFor="b2b-name">
+        <label className={s.label} htmlFor="bi-company">
+          Company / brand name *
+        </label>
+        <input
+          className={s.input}
+          type="text"
+          id="bi-company"
+          name="company"
+          required
+          placeholder="Your company or brand"
+        />
+      </div>
+
+      <div className={s.field}>
+        <label className={s.label} htmlFor="bi-email">
+          Email *
+        </label>
+        <input
+          className={s.input}
+          type="email"
+          id="bi-email"
+          name="email"
+          required
+          autoComplete="email"
+          placeholder="you@company.com"
+        />
+        <div className={s.help}>We reply to every project inquiry by email.</div>
+      </div>
+
+      <div className={s.field}>
+        <label className={s.label} htmlFor="bi-name">
           Your name *
         </label>
-        <input className={s.input} type="text" id="b2b-name" name="name" required />
+        <input
+          className={s.input}
+          type="text"
+          id="bi-name"
+          name="name"
+          required
+          autoComplete="name"
+          placeholder="Who we should address this to"
+        />
       </div>
 
       <div className={s.field}>
-        <label className={s.label} htmlFor="b2b-email">
-          Work email *
-        </label>
-        <input className={s.input} type="email" id="b2b-email" name="email" required />
-      </div>
-
-      <div className={s.field}>
-        <label className={s.label} htmlFor="b2b-phone">
-          Phone / WhatsApp *
-        </label>
-        <input className={s.input} type="tel" id="b2b-phone" name="phone" required />
-      </div>
-
-      <div className={s.field}>
-        <label className={s.label} htmlFor="b2b-company">
-          Company or organization *
-        </label>
-        <input className={s.input} type="text" id="b2b-company" name="company" required />
-      </div>
-
-      <div className={s.field}>
-        <label className={s.label} htmlFor="b2b-website">
-          Website or social profile *
-        </label>
-        <input className={s.input} type="text" id="b2b-website" name="website" required />
-      </div>
-
-      <div className={s.field}>
-        <label className={s.label}>You are contacting us as *</label>
-        <RadioGroup name="contacting_as" options={CONTACTING_AS} />
-      </div>
-
-      <div className={s.field}>
-        <label className={s.label} htmlFor="b2b-develop">
-          What would you like to develop? *
+        <label className={s.label} htmlFor="bi-product">
+          What would you like to produce? *
         </label>
         <input
           className={s.input}
           type="text"
-          id="b2b-develop"
-          name="develop"
+          id="bi-product"
+          name="product_interest"
           required
-          placeholder="e.g. branded laptop sleeves, event merch, a new product"
+          placeholder="e.g. branded crochet tote bags"
         />
       </div>
 
       <div className={s.field}>
-        <label className={s.label} htmlFor="b2b-project-for">
-          What is this project for? *
-        </label>
-        <textarea
-          className={`${s.input} ${s.textarea}`}
-          id="b2b-project-for"
-          name="project_for"
-          rows={3}
-          required
-        />
-      </div>
-
-      <div className={s.field}>
-        <label className={s.label}>Estimated quantity *</label>
-        <RadioGroup name="quantity" options={QUANTITIES} />
-      </div>
-
-      <div className={s.field}>
-        <label className={s.label} htmlFor="b2b-date">
-          Target delivery date *
-        </label>
-        <input className={s.input} type="date" id="b2b-date" name="delivery_date" required />
-      </div>
-
-      <div className={s.field}>
-        <label className={s.label} htmlFor="b2b-location">
-          Where should the order be delivered? *
+        <label className={s.label} htmlFor="bi-quantity">
+          Estimated quantity *
         </label>
         <input
           className={s.input}
           type="text"
-          id="b2b-location"
-          name="delivery_location"
+          id="bi-quantity"
+          name="quantity"
           required
+          placeholder="e.g. 25 pieces"
         />
       </div>
 
       <div className={s.field}>
-        <label className={s.label} htmlFor="b2b-customize">
-          What would you like to customize? *
+        <label className={s.label} htmlFor="bi-timeline">
+          Target timeline *
         </label>
-        <textarea
-          className={`${s.input} ${s.textarea}`}
-          id="b2b-customize"
-          name="customize"
-          rows={3}
+        <input
+          className={s.input}
+          type="text"
+          id="bi-timeline"
+          name="timeline"
           required
-          placeholder="Logos, brand colours, names, motifs…"
+          placeholder="e.g. needed by mid-October"
         />
       </div>
 
       <div className={s.field}>
-        <label className={s.label} htmlFor="b2b-brief">
-          Tell us about the brief *
+        <label className={s.label} htmlFor="bi-brief">
+          Project brief or anything else we should know?
         </label>
         <textarea
           className={`${s.input} ${s.textarea}`}
-          id="b2b-brief"
+          id="bi-brief"
           name="brief"
           rows={4}
-          required
+          placeholder="Colors, logo placement, the occasion, budget range — whatever you already know."
         />
       </div>
 
-      <div className={s.field}>
-        <label className={s.label} htmlFor="b2b-references">
-          Upload your references
+      {/* Directly under the brief on purpose: a reference image is the same
+          thought as the brief, just shown instead of written, and people who
+          have one reach for it while describing the project. Optional and
+          single-file — Netlify Forms maps one file per input, and anyone with
+          a whole deck can reply to our email with it. */}
+      <div className={s.field} style={{ marginBottom: '0.5rem' }}>
+        <label className={s.label} htmlFor="bi-inspo">
+          Inspiration or reference <span style={{ fontWeight: 400 }}>(optional)</span>
         </label>
         <input
           className={s.input}
           type="file"
-          id="b2b-references"
-          name="references"
+          id="bi-inspo"
+          name="inspo"
           accept="image/*,.pdf"
         />
-        <div className={s.help}>Max 10MB</div>
-      </div>
-
-      <div className={s.field}>
-        <label className={s.label}>What would you like from YOU LOOP next? *</label>
-        <RadioGroup name="next_step" options={NEXT_STEPS} />
-      </div>
-
-      <div className={s.field} style={{ marginBottom: '0.5rem' }}>
-        <label className={s.label} htmlFor="b2b-notes">
-          Anything else we should know?
-        </label>
-        <textarea className={`${s.input} ${s.textarea}`} id="b2b-notes" name="notes" rows={3} />
+        <div className={s.help}>
+          One image or PDF — a moodboard, a logo, a product you like. Got more? Send them with your
+          reply to our email.
+        </div>
       </div>
 
       <button type="submit" className={s.submit} disabled={sending}>
-        {sending ? 'Sending…' : 'Submit inquiry'}
+        {sending ? 'Sending…' : 'Send inquiry'}
       </button>
     </form>
   );

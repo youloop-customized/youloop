@@ -19,11 +19,16 @@ export type OrderEmailData = {
   orderNumber: string;
   sku: string;
   productName: string;
-  colour: string;
+  color: string;
   yarn: string | null;
   size: string | null;
   measurements: string;
-  /** Preformatted, e.g. "฿2,890". Empty for a quote, where nothing is owed yet. */
+  /** Full price before a promo, e.g. "฿1,990". Empty when no promo applies. */
+  subtotal: string;
+  /** e.g. "-฿299 (SOFTRIOT15 · 15% off)". Empty when no promo applies. */
+  discount: string;
+  /** Preformatted, e.g. "฿2,890", and already net of any discount. Empty for
+   *  a quote, where nothing is owed yet. */
   total: string;
   leadTime: string;
   customerName: string;
@@ -66,11 +71,15 @@ function row(label: string, value: string): string {
 function orderRows(data: OrderEmailData): string {
   const rows = [
     row('Piece', `${data.sku} ${data.productName}`),
-    row('Colour', data.colour),
+    row('Color', data.color),
     data.yarn ? row('Yarn', data.yarn) : '',
     data.size ? row('Size', data.size) : '',
     data.size && data.measurements !== '-' ? row('Measurements', data.measurements) : '',
     row('Lead time', data.leadTime),
+    // Subtotal only appears when something was taken off it, so an order with
+    // no promo still shows a single clean Total line.
+    data.subtotal ? row('Subtotal', data.subtotal) : '',
+    data.discount ? row('Discount', data.discount) : '',
     data.total ? row('Total', data.total) : '',
   ];
   return rows.filter(Boolean).join('');
@@ -151,11 +160,13 @@ function textBlock(lines: (string | false | null)[]): string {
 function orderTextLines(data: OrderEmailData): (string | false)[] {
   return [
     `Piece: ${data.sku} ${data.productName}`,
-    `Colour: ${data.colour}`,
+    `Color: ${data.color}`,
     Boolean(data.yarn) && `Yarn: ${data.yarn}`,
     Boolean(data.size) && `Size: ${data.size}`,
     Boolean(data.size && data.measurements !== '-') && `Measurements: ${data.measurements}`,
     `Lead time: ${data.leadTime}`,
+    Boolean(data.subtotal) && `Subtotal: ${data.subtotal}`,
+    Boolean(data.discount) && `Discount: ${data.discount}`,
     Boolean(data.total) && `Total: ${data.total}`,
   ];
 }
@@ -165,7 +176,7 @@ export type BuiltEmail = { subject: string; html: string; text: string };
 /** Sent to the customer once Stripe confirms a preset-size order is paid. */
 export function customerPaidEmail(data: OrderEmailData): BuiltEmail {
   const intro = `Thank you, ${data.customerName.split(' ')[0] || 'there'} — your payment came through and your piece is now in the making queue. Everything below is exactly what we will make.`;
-  const closing = `We will send you progress photos as it comes together, and let you know the moment it ships. Your lead time is ${data.leadTime} from today. Just reply to this email if anything needs changing.`;
+  const closing = `We will let you know the moment it ships. Your lead time is ${data.leadTime} from today. Just reply to this email if anything needs changing.`;
 
   return {
     subject: `Order confirmed — ${data.sku} ${data.productName} (${data.orderNumber})`,

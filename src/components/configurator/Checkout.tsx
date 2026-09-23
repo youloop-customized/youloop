@@ -14,7 +14,7 @@ import c from './Checkout.module.css';
 
 type SubmittedOrder = {
   orderNumber: string;
-  colour: string;
+  color: string;
   yarn: string | null;
   size: string | null;
   measurements: string;
@@ -56,16 +56,18 @@ function formatAddress(shipping: Shipping): string {
     .join(', ');
 }
 
-/** Loose on purpose — this page doesn't validate field-by-field like the
- * Create Your Look wizard does; a non-trivial value is enough to file. */
 function isUsableHandle(value: string): boolean {
   return value.trim().length >= 3;
 }
 
+/** Same shape the Create Your Look wizard enforces, so the two order paths
+ *  agree on what a usable email address looks like. */
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 /**
  * Step two of the order flow: the full summary, the customer's details and the
  * one button that actually sends the order. The configurator hands the chosen
- * colour and size over in the query string (see src/lib/order.ts).
+ * color and size over in the query string (see src/lib/order.ts).
  */
 export default function Checkout() {
   const params = useSearchParams();
@@ -85,6 +87,9 @@ export default function Checkout() {
   const [status, setStatus] = useState('');
   const [sending, setSending] = useState(false);
   const [submitted, setSubmitted] = useState<SubmittedOrder | null>(null);
+  // Which fields the customer has actually left, so an untouched form is not
+  // covered in red before anyone has typed anything.
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   // A truncated or hand-edited link, e.g. made-to-measure with no measurements
   // on it. Better to send the visitor back than to take half an order.
@@ -99,7 +104,7 @@ export default function Checkout() {
         <div className={c.emptyState}>
           <h1 className={c.emptyTitle}>We lost your order</h1>
           <p className={c.emptyText}>
-            This checkout link is missing part of the piece you configured. Choose your colour and
+            This checkout link is missing part of the piece you configured. Choose your color and
             size again and we will bring you straight back here.
           </p>
           <Link
@@ -121,6 +126,20 @@ export default function Checkout() {
   const isCustomSize = sizeLabel === 'Custom';
   const contact = CONTACT_METHODS.find((m) => m.value === contactMethod) ?? null;
 
+  const nameValid = name.trim().length > 0;
+  const emailValid = EMAIL_RE.test(email.trim());
+  const handleValid = Boolean(contact) && isUsableHandle(contactHandle);
+  const shippingInvalid = (key: keyof Shipping) => !shipping[key].trim();
+  const canSubmit =
+    nameValid && emailValid && handleValid && !REQUIRED_SHIPPING.some(shippingInvalid);
+
+  const touch = (key: string) => setTouched((prev) => ({ ...prev, [key]: true }));
+  /** An error only once the field has been left, never while still typing. */
+  const errorFor = (key: string, invalid: boolean, message: string) =>
+    touched[key] && invalid ? message : '';
+  const fieldClass = (key: string, invalid: boolean) =>
+    `${s.detailsInput} ${touched[key] && invalid ? s.detailsInputInvalid : ''}`;
+
   function applyPromo() {
     const code = promoInput.trim().toUpperCase();
     if (!code) return;
@@ -135,20 +154,24 @@ export default function Checkout() {
   }
 
   async function submitOrder() {
-    if (!name.trim() || !email.trim()) {
-      alert('Please fill in your name and email before submitting.');
+    // This page used to stop on three browser alert() popups while the Create
+    // Your Look wizard next door showed inline errors and kept its button
+    // disabled until the form was valid. Same errors, shown the same way, in
+    // both order paths — and an email typo is now caught here rather than
+    // coming back as a 400 from the API.
+    // `|| !contact` is redundant with canSubmit (handleValid requires one) but
+    // narrows the type for the payload below.
+    if (!canSubmit || !contact) {
+      setTouched({
+        name: true,
+        email: true,
+        contactHandle: true,
+        ...Object.fromEntries(REQUIRED_SHIPPING.map((key) => [key, true])),
+      });
+      setStatus('Please complete the highlighted fields.');
       return;
     }
-    if (!contact || !isUsableHandle(contactHandle)) {
-      alert(
-        'Please pick a chat channel and add your handle — that is how we confirm your order and arrange payment.',
-      );
-      return;
-    }
-    if (REQUIRED_SHIPPING.some((key) => !shipping[key].trim())) {
-      alert('Please complete your shipping address before submitting.');
-      return;
-    }
+    setStatus('');
 
     const orderNumber = generateOrderNumber();
     const yarnLabel = yarn ? `#${yarn.id} - ${yarn.name}` : null;
@@ -160,7 +183,7 @@ export default function Checkout() {
       'form-name': product.formName,
       orderNumber,
       product: product.productLabel,
-      colour: colourSummary,
+      color: colourSummary,
       yarn: yarnLabel ?? '',
       promo_code: promo ?? '',
       discount: discount ? bahtDiscount(discount) : '',
@@ -211,6 +234,10 @@ export default function Checkout() {
         body: JSON.stringify({
           draft: params.toString(),
           orderNumber,
+          // Only the code goes over the wire — the server re-reads the
+          // percentage from PROMO_CODES so the emails cannot be talked into
+          // quoting a discount that was never offered.
+          promoCode: promo ?? '',
           customer: {
             name: name.trim(),
             email: email.trim(),
@@ -226,7 +253,7 @@ export default function Checkout() {
       setStatus('');
       setSubmitted({
         orderNumber,
-        colour: colourSummary,
+        color: colourSummary,
         yarn: yarnLabel,
         size: product.sizing ? sizeLabel : null,
         measurements: measurementSummary,
@@ -282,7 +309,7 @@ export default function Checkout() {
               <span className={s.orderVal}>{product.name}</span>
             </div>
             <div className={s.orderRow}>
-              <span className={s.orderLabel}>Colour</span>
+              <span className={s.orderLabel}>Color</span>
               <span className={s.orderVal}>{colourSummary}</span>
             </div>
             {yarn && (
@@ -356,7 +383,7 @@ export default function Checkout() {
         </div>
 
         <Link href={`/collection/${product.slug}`} className={c.editLink}>
-          ← Change colour or size
+          ← Change color or size
         </Link>
 
         {/* PERSONAL DETAILS — who is ordering */}
@@ -367,21 +394,25 @@ export default function Checkout() {
               Full name
             </label>
             <input
-              className={s.detailsInput}
+              className={fieldClass('name', !nameValid)}
               id="cust-name"
               type="text"
               autoComplete="name"
               placeholder="Your name"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              onBlur={() => touch('name')}
             />
+            {errorFor('name', !nameValid, 'Please tell us your name.') && (
+              <p className={s.detailsError}>{errorFor('name', !nameValid, 'Please tell us your name.')}</p>
+            )}
           </div>
           <div className={s.detailsField}>
             <label className={s.detailsLabel} htmlFor="cust-email">
               Email
             </label>
             <input
-              className={s.detailsInput}
+              className={fieldClass('email', !emailValid)}
               id="cust-email"
               type="email"
               autoComplete="email"
@@ -389,10 +420,15 @@ export default function Checkout() {
               placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onBlur={() => touch('email')}
             />
-            <p className={s.detailsNote}>
-              We will send order updates and progress photos here.
-            </p>
+            {errorFor('email', !emailValid, 'Enter a valid email address, e.g. you@example.com.') ? (
+              <p className={s.detailsError}>
+                {errorFor('email', !emailValid, 'Enter a valid email address, e.g. you@example.com.')}
+              </p>
+            ) : (
+              <p className={s.detailsNote}>We will send order updates here.</p>
+            )}
           </div>
 
           <div className={s.detailsField}>
@@ -414,15 +450,22 @@ export default function Checkout() {
             </div>
             {contact && (
               <input
-                className={s.detailsInput}
+                className={fieldClass('contactHandle', !handleValid)}
                 type="text"
                 inputMode={contact.value === 'whatsapp' ? 'tel' : 'text'}
                 placeholder={contact.placeholder}
                 value={contactHandle}
                 onChange={(e) => setContactHandle(e.target.value)}
+                onBlur={() => touch('contactHandle')}
                 aria-label={contact.fieldLabel ?? 'Chat handle'}
                 style={{ marginTop: 8 }}
               />
+            )}
+            {touched.contactHandle && !handleValid && (
+              <p className={s.detailsError}>
+                Pick a channel and add your {(contact?.fieldLabel ?? 'handle').toLowerCase()} — this is how we
+                confirm your order and arrange payment.
+              </p>
             )}
             <p className={s.detailsNote}>
               Online payment is on its way — for now, we confirm your order and arrange payment
@@ -439,14 +482,18 @@ export default function Checkout() {
               Address
             </label>
             <input
-              className={s.detailsInput}
+              className={fieldClass('line1', shippingInvalid('line1'))}
               id="ship-line1"
               type="text"
               autoComplete="address-line1"
               placeholder="House number and street"
               value={shipping.line1}
               onChange={(e) => setShipping({ ...shipping, line1: e.target.value })}
+              onBlur={() => touch('line1')}
             />
+            {touched.line1 && shippingInvalid('line1') && (
+              <p className={s.detailsError}>Add your street address.</p>
+            )}
           </div>
           <div className={s.detailsField}>
             <label className={s.detailsLabel} htmlFor="ship-line2">
@@ -468,21 +515,25 @@ export default function Checkout() {
                 City / Province
               </label>
               <input
-                className={s.detailsInput}
+                className={fieldClass('city', shippingInvalid('city'))}
                 id="ship-city"
                 type="text"
                 autoComplete="address-level1"
                 placeholder="Bangkok"
                 value={shipping.city}
                 onChange={(e) => setShipping({ ...shipping, city: e.target.value })}
+                onBlur={() => touch('city')}
               />
+              {touched.city && shippingInvalid('city') && (
+                <p className={s.detailsError}>Add your city or province.</p>
+              )}
             </div>
             <div className={s.detailsField}>
               <label className={s.detailsLabel} htmlFor="ship-postcode">
                 Postcode
               </label>
               <input
-                className={s.detailsInput}
+                className={fieldClass('postcode', shippingInvalid('postcode'))}
                 id="ship-postcode"
                 type="text"
                 autoComplete="postal-code"
@@ -490,7 +541,11 @@ export default function Checkout() {
                 placeholder="10110"
                 value={shipping.postcode}
                 onChange={(e) => setShipping({ ...shipping, postcode: e.target.value })}
+                onBlur={() => touch('postcode')}
               />
+              {touched.postcode && shippingInvalid('postcode') && (
+                <p className={s.detailsError}>Add your postcode.</p>
+              )}
             </div>
           </div>
           <div className={s.detailsField}>
@@ -498,14 +553,18 @@ export default function Checkout() {
               Country
             </label>
             <input
-              className={s.detailsInput}
+              className={fieldClass('country', shippingInvalid('country'))}
               id="ship-country"
               type="text"
               autoComplete="country-name"
               placeholder="Thailand"
               value={shipping.country}
               onChange={(e) => setShipping({ ...shipping, country: e.target.value })}
+              onBlur={() => touch('country')}
             />
+            {touched.country && shippingInvalid('country') && (
+              <p className={s.detailsError}>Add your country.</p>
+            )}
           </div>
         </div>
 
@@ -513,7 +572,7 @@ export default function Checkout() {
           type="button"
           className={`${s.cta} ${s.ctaConfirm}`}
           onClick={submitOrder}
-          disabled={sending}
+          disabled={sending || !canSubmit}
         >
           {isCustomSize ? 'Request your quote' : 'Confirm My Order'}
         </button>
@@ -544,8 +603,8 @@ export default function Checkout() {
                 <span className={s.modalRowVal}>{product.name}</span>
               </div>
               <div className={s.modalRow}>
-                <span className={s.modalRowLabel}>Colour</span>
-                <span className={s.modalRowVal}>{submitted.colour}</span>
+                <span className={s.modalRowLabel}>Color</span>
+                <span className={s.modalRowVal}>{submitted.color}</span>
               </div>
               {submitted.yarn && (
                 <div className={s.modalRow}>

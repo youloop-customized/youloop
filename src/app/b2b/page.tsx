@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   alternates: { canonical: '/b2b' },
 };
 
-const CUSTOMISATION_LINE = 'Brand colours · Names · Motifs · Suitable logos';
+const CUSTOMISATION_LINE = 'Brand colors · Names · Motifs · Suitable logos';
 const LEAD_TIME = 'Confirmed per project';
 
 const PRODUCTS = [
@@ -159,7 +159,7 @@ const CUSTOMISATION = [
     ),
   },
   {
-    label: 'Brand Colours',
+    label: 'Brand Colors',
     svg: (
       <svg viewBox="0 0 24 24" fill="none">
         <circle cx="9" cy="9" r="4" fill="#aa4a30" />

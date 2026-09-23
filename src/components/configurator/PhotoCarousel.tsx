@@ -8,7 +8,7 @@ type Props = {
   slides: { src: string; alt: string }[];
   index: number;
   onIndexChange: (index: number) => void;
-  /** The colour-name overlay, which the original rendered inside .photo-wrap. */
+  /** The color-name overlay, which the original rendered inside .photo-wrap. */
   children?: ReactNode;
 };
 
@@ -91,7 +91,7 @@ export default function PhotoCarousel({ slides, index, onIndexChange, children }
         type="button"
         className={`${s.photoNavBtn} ${s.photoPrev}`}
         onClick={() => goTo(index - 1)}
-        aria-label="Previous colour"
+        aria-label="Previous color"
       >
         &#8592;
       </button>
@@ -99,7 +99,7 @@ export default function PhotoCarousel({ slides, index, onIndexChange, children }
         type="button"
         className={`${s.photoNavBtn} ${s.photoNext}`}
         onClick={() => goTo(index + 1)}
-        aria-label="Next colour"
+        aria-label="Next color"
       >
         &#8594;
       </button>
@@ -113,7 +113,7 @@ export default function PhotoCarousel({ slides, index, onIndexChange, children }
             type="button"
             className={`${s.photoDot} ${i === index ? s.active : ''}`}
             onClick={() => goTo(i)}
-            aria-label={`View colour ${i + 1}`}
+            aria-label={`View color ${i + 1}`}
           />
         ))}
       </div>

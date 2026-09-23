@@ -9,7 +9,7 @@ import type { CollectionCard } from '@/data/collection';
 import s from '@/app/home.module.css';
 
 /**
- * One product card on the home page, with its own auto-rotating colourway
+ * One product card on the home page, with its own auto-rotating colorway
  * carousel. The original built all three of these imperatively from a shared
  * CAROUSELS object and a pile of getElementById calls.
  */
@@ -74,7 +74,7 @@ export default function ProductCard({ card }: { card: CollectionCard }) {
           type="button"
           className={s.carouselPrev}
           onClick={(e) => control(e, () => goTo(index - 1))}
-          aria-label="Previous colourway"
+          aria-label="Previous colorway"
         >
           &#8592;
         </button>
@@ -82,7 +82,7 @@ export default function ProductCard({ card }: { card: CollectionCard }) {
           type="button"
           className={s.carouselNext}
           onClick={(e) => control(e, () => goTo(index + 1))}
-          aria-label="Next colourway"
+          aria-label="Next colorway"
         >
           &#8594;
         </button>

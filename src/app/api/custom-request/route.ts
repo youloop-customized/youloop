@@ -13,8 +13,8 @@
  */
 
 import { NextResponse } from 'next/server';
-import { sendCustomerEmail } from '@/lib/email';
-import { customerRequestEmail } from '@/lib/custom-request-email';
+import { internalRecipient, sendCustomerEmail, sendEmail } from '@/lib/email';
+import { customerRequestEmail, internalRequestFallbackEmail } from '@/lib/custom-request-email';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -32,8 +32,7 @@ export async function POST(request: Request) {
 
   const str = (key: string) => String(body[key] ?? '').trim();
 
-  const sent = await sendCustomerEmail({
-    ...customerRequestEmail({
+  const data = {
       requestId: str('requestId') || '—',
       customerName: name,
       making: str('making') || 'Your custom piece',
@@ -48,11 +47,32 @@ export async function POST(request: Request) {
       notes: str('notes'),
       startingPrice: str('startingPrice'),
       contactMethod: str('contactMethod'),
-      contactHandle: str('contactHandle'),
-      address: str('address'),
-    }),
-    to: email,
-  });
+    contactHandle: str('contactHandle'),
+    address: str('address'),
+  };
 
-  return NextResponse.json({ emailed: sent });
+  // The studio's normal notice comes from the Netlify Forms hook
+  // (netlify/functions/submission-created.js), which has the uploaded images
+  // and so makes the better order card. The browser tells us whether that
+  // record actually filed; only when it did not do we send our own copy, so a
+  // healthy submission never produces two emails.
+  const recorded = body.netlifyRecorded !== false;
+
+  const [sent, internalSent] = await Promise.all([
+    sendCustomerEmail({ ...customerRequestEmail(data), to: email }),
+    recorded
+      ? Promise.resolve(true)
+      : sendEmail({ ...internalRequestFallbackEmail(data), to: internalRecipient() }),
+  ]);
+
+  if (!recorded && !internalSent) {
+    // Both records failed. Log loudly — this is the only trace left that the
+    // request existed at all.
+    console.error(
+      'CUSTOM REQUEST NOT RECORDED ANYWHERE — Netlify Forms failed and the fallback email did not send.',
+      JSON.stringify({ requestId: data.requestId, name, email, making: data.making }),
+    );
+  }
+
+  return NextResponse.json({ emailed: sent, internalNotified: recorded || internalSent });
 }

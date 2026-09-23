@@ -71,7 +71,7 @@ export default function HomePage() {
         <div className={s.sectionTag}>The collection</div>
         <h2 className={s.sectionTitle}>SR Series — Launch Edition</h2>
         <p className={s.sectionSub}>
-          Three designs. Four moods. Made to order — nothing exists until you ask for it.
+          Three designs. Four colors. Made to order — nothing exists until you ask for it.
         </p>
 
         <div className={s.productsGrid}>
@@ -96,9 +96,14 @@ export default function HomePage() {
             <CustomRequestForm />
           </div>
 
+          {/* Points at /b2b rather than /bulk-inquiry: the B2B arm is its own
+              business (YOU LOOP Creation) with its own page and its own, much
+              fuller inquiry form, and until now nothing on the site linked to
+              it at all. Naming the business rather than the task also tells a
+              corporate visitor they are in the right place. */}
           <p className={s.bulkNote}>
             Ordering for your brand or team?{' '}
-            <Link href="/bulk-inquiry">Bulk &amp; partnership inquiries →</Link>
+            <Link href="/b2b">Visit YOU LOOP Creation →</Link>
           </p>
         </div>
       </section>

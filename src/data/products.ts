@@ -13,15 +13,15 @@ export type Swatch = {
   name: string;
   /** Sub-line shown over the photo, e.g. "Dusty Rose - Deep Plum - Golden ruffles". */
   sub: string;
-  /** Colour of the little square swatch. */
+  /** Color of the little square swatch. */
   dot: string;
   /** Optional border, used where the dot is nearly white or nearly black. */
   dotBorder?: string;
   /**
    * The id of the real yarn (src/data/yarns.ts) whose photo best matches this
-   * mood's colour. Chosen by hue/saturation/lightness distance against the
+   * colorway's color. Chosen by hue/saturation/lightness distance against the
    * full 81-shade palette, with a couple of near-black/white cases picked by
-   * hand where hue is meaningless and the nearest named colour (e.g. "Black")
+   * hand where hue is meaningless and the nearest named color (e.g. "Black")
    * is the obviously right call over whatever wins on raw distance.
    */
   yarnId: string;
@@ -72,7 +72,7 @@ export type ProductConfig = {
   navPill: { label: string; background: string; color: string };
   photoBadge: string;
   photoNote: string;
-  /** "Choose a mood" for the sets, "Choose a colourway" for the hood. */
+  /** "Choose a color" for the sets, "Choose a colorway" for the hood. */
   groupedModeLabel: string;
   swatchGroups: SwatchGroup[];
   /** Hood only: swaps the photo set between the female and male model. */
@@ -129,7 +129,7 @@ export const SR01: ProductConfig = {
   navPill: NEW_DESIGN_PILL,
   photoBadge: '✦ Dress · Arm warmers · Leg warmers',
   photoNote: '10–14 day delivery',
-  groupedModeLabel: 'Choose a mood',
+  groupedModeLabel: 'Choose a color',
   swatchGroups: [
     {
       swatches: [
@@ -179,9 +179,9 @@ export const SR01: ProductConfig = {
     note: 'L + XL reflect extra yarn and stitching time.',
     measurements: STANDARD_MEASUREMENTS,
   },
-  yarnDefaultNote: 'No yarn selected - we will confirm your colour via LINE before starting.',
+  yarnDefaultNote: 'No yarn selected - we will confirm your color via LINE before starting.',
   leadTime: '10-14 days',
-  trust: ['3 pieces included', '100% Cotton', 'Fairly made', 'Photo approval'],
+  trust: ['3 pieces included', '100% Cotton', 'Fairly made'],
   details: [
     { label: 'Includes', lines: ['Mini dress', 'Arm warmers', 'Leg warmers'] },
     {
@@ -189,7 +189,7 @@ export const SR01: ProductConfig = {
       lines: ['3-tier gradient hem', 'YOU LOOP signature', 'Gold always present'],
     },
     { label: 'Material', lines: ['100% Cotton DK', 'Open mesh body', 'Ribbed warmers'] },
-    { label: 'Delivery', lines: ['10-14 days', 'Express delivery', 'Progress photos'] },
+    { label: 'Delivery', lines: ['10-14 days', 'Express delivery'] },
   ],
 };
 
@@ -208,7 +208,7 @@ export const SR02: ProductConfig = {
   navPill: NEW_DESIGN_PILL,
   photoBadge: '✦ Long sleeve mesh top · Mini skirt',
   photoNote: '10–14 day delivery',
-  groupedModeLabel: 'Choose a mood',
+  groupedModeLabel: 'Choose a color',
   swatchGroups: [
     {
       swatches: [
@@ -260,12 +260,12 @@ export const SR02: ProductConfig = {
   },
   yarnDefaultNote: 'No yarn selected - we will confirm via Instagram before starting.',
   leadTime: '10-14 days',
-  trust: ['2 pieces included', '100% Cotton', 'Fairly made', 'Photo approval'],
+  trust: ['2 pieces included', '100% Cotton', 'Fairly made'],
   details: [
     { label: 'Includes', lines: ['Mesh crop top', 'Mini skirt'] },
     { label: 'Top detail', lines: ['Open mesh weave', 'Tie-front detail', 'Long sleeves'] },
     { label: 'Material', lines: ['100% Cotton DK', 'Open weave', 'Lined skirt'] },
-    { label: 'Delivery', lines: ['10-14 days', 'Express delivery', 'Progress photos'] },
+    { label: 'Delivery', lines: ['10-14 days', 'Express delivery'] },
   ],
 };
 
@@ -277,14 +277,14 @@ export const SRAC01: ProductConfig = {
   name: 'The Soft Riot Hood',
   title: 'SR-AC01 — The Soft Riot Hood | YOU LOOP',
   tagline: [
-    'The main character accessory. Open mesh crochet pixie hood with braided tassel ties. Wear it loose, tied, or wrapped. Unisex. 8 colourways.',
+    'The main character accessory. Open mesh crochet pixie hood with braided tassel ties. Wear it loose, tied, or wrapped. Unisex. 8 colorways.',
   ],
   basePrice: 990,
   priceNote: 'Custom made · 7-10 days · Unisex',
   navPill: { label: 'Unisex', background: '#d49a37', color: '#f9f5ee' },
   photoBadge: '✦ Unisex Design',
   photoNote: '7–10 day delivery',
-  groupedModeLabel: 'Choose a colourway',
+  groupedModeLabel: 'Choose a colorway',
   modelToggle: { female: 'Her ✦', male: 'Him ✦' },
   showPairingHint: true,
   swatchGroups: [
@@ -294,7 +294,7 @@ export const SRAC01: ProductConfig = {
         {
           key: 'dusty_rose',
           name: 'Dusty Rose',
-          sub: 'Soft Riot colourway',
+          sub: 'Soft Riot colorway',
           dot: '#C4708A',
           yarnId: '50',
           photo: '/images/srac01/dusty_rose.jpg',
@@ -304,7 +304,7 @@ export const SRAC01: ProductConfig = {
         {
           key: 'deep_plum',
           name: 'Deep Plum',
-          sub: 'Midnight colourway',
+          sub: 'Midnight colorway',
           dot: '#6B2D8B',
           yarnId: '62',
           photo: '/images/srac01/deep_plum.jpg',
@@ -314,7 +314,7 @@ export const SRAC01: ProductConfig = {
         {
           key: 'celery',
           name: 'Celery Green',
-          sub: 'Garden colourway',
+          sub: 'Garden colorway',
           dot: '#8FBC5A',
           yarnId: '48',
           photo: '/images/srac01/celery.jpg',
@@ -324,7 +324,7 @@ export const SRAC01: ProductConfig = {
         {
           key: 'cream',
           name: 'Cream',
-          sub: 'Golden Hour colourway',
+          sub: 'Golden Hour colorway',
           dot: '#EDE0C8',
           yarnId: '07',
           dotBorder: '1px solid rgba(255,255,255,0.15)',
@@ -335,12 +335,12 @@ export const SRAC01: ProductConfig = {
       ],
     },
     {
-      label: 'Standalone colourways',
+      label: 'Standalone colorways',
       swatches: [
         {
           key: 'golden',
           name: 'Golden Caramel',
-          sub: 'Honey colourway',
+          sub: 'Honey colorway',
           dot: '#C4903A',
           yarnId: '40',
           photo: '/images/srac01/golden.jpg',
@@ -350,7 +350,7 @@ export const SRAC01: ProductConfig = {
         {
           key: 'cherry_red',
           name: 'Cherry Red',
-          sub: 'Riot Red colourway',
+          sub: 'Riot Red colorway',
           dot: '#9B1C2E',
           yarnId: '35',
           photo: '/images/srac01/cherry_red.jpg',
@@ -360,7 +360,7 @@ export const SRAC01: ProductConfig = {
         {
           key: 'cocoa',
           name: 'Cocoa',
-          sub: 'Cocoa colourway',
+          sub: 'Cocoa colorway',
           dot: '#6B3A1F',
           yarnId: '26',
           photo: '/images/srac01/cocoa.jpg',
@@ -370,7 +370,7 @@ export const SRAC01: ProductConfig = {
         {
           key: 'charcoal',
           name: 'Charcoal Black',
-          sub: 'Charcoal Black colourway',
+          sub: 'Charcoal Black colorway',
           dot: '#111111',
           yarnId: '21',
           dotBorder: '2px solid rgba(255,255,255,0.35)',
@@ -384,12 +384,12 @@ export const SRAC01: ProductConfig = {
   wearPills: { label: '02 - 3 ways to wear it', pills: ['Loose', 'Tied chin', 'Wrapped'] },
   yarnDefaultNote: 'No yarn selected - we will confirm via Instagram before starting.',
   leadTime: '7-10 days',
-  trust: ['Handmade to order', '100% Cotton', 'Unisex fit', 'Photo approval'],
+  trust: ['Handmade to order', '100% Cotton', 'Unisex fit'],
   details: [
     { label: 'Material', lines: ['100% Cotton DK', 'Open mesh weave', 'Mid-weight'] },
     { label: 'Fit', lines: ['One size fits most', 'Close-to-head', 'Unisex'] },
     { label: 'Details', lines: ['Braided tassel ties', '40-45 cm each', 'Seamless build'] },
-    { label: 'Delivery', lines: ['7-10 days', 'Express delivery', 'Progress photos'] },
+    { label: 'Delivery', lines: ['7-10 days', 'Express delivery'] },
   ],
 };
 

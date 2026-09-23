@@ -3,7 +3,7 @@
  *
  * The order is never trusted from the client: the checkout page posts the same
  * query string that /checkout itself renders from, and resolveOrder() turns it
- * back into a product, colour, size and price here on the server. Those details
+ * back into a product, color, size and price here on the server. Those details
  * ride along as session metadata, so the Stripe dashboard and the webhook both
  * see exactly what was configured — the webhook rebuilds the whole order from
  * metadata.draft when it sends the confirmation email.
@@ -28,7 +28,13 @@ export async function POST(request: Request) {
   if (!parsed.ok) {
     return NextResponse.json({ error: parsed.error }, { status: 400 });
   }
-  const { draft, order, customer } = parsed.value;
+  const { draft, order, customer, promo } = parsed.value;
+
+  // The amount actually charged. Resolved from PROMO_CODES server-side, never
+  // from a figure the browser sent, and applied to line_items rather than via
+  // allow_promotion_codes so the customer is charged exactly what the checkout
+  // page and the confirmation email both show.
+  const payable = promo ? order.price - promo.amount : order.price;
 
   // Made-to-measure pieces are quoted, not priced: resolveOrder() falls back to
   // the base price, and the checkout page tells the customer we confirm the
@@ -67,10 +73,12 @@ export async function POST(request: Request) {
           price_data: {
             currency: 'thb',
             // Stripe charges in the smallest currency unit — satang, so baht × 100.
-            unit_amount: order.price * 100,
+            unit_amount: payable * 100,
             product_data: {
               name: `${order.product.sku} ${order.product.name}`,
-              description: [order.colourSummary, order.sizeLabel].filter(Boolean).join(' · '),
+              description: [order.colourSummary, order.sizeLabel, promo ? promo.label : '']
+                .filter(Boolean)
+                .join(' · '),
             },
           },
           quantity: 1,
@@ -83,12 +91,15 @@ export async function POST(request: Request) {
         draft,
         sku: order.product.sku,
         product: order.product.productLabel,
-        colour: order.colourSummary,
+        color: order.colourSummary,
         yarn: order.yarn ? `#${order.yarn.id} ${order.yarn.name}` : '',
         size: order.sizeLabel ?? '',
         measurements: order.measurementSummary,
         // Baht, resolved server-side — the same figure line_items charges.
-        price_thb: String(order.price),
+        price_thb: String(payable),
+        list_price_thb: String(order.price),
+        promo_code: promo ? promo.code : '',
+        promo_discount_thb: promo ? String(promo.amount) : '',
         customer_name: customer.name,
         customer_email: customer.email,
         shipping_address: customer.address,

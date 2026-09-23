@@ -91,10 +91,10 @@ export const BLOG_POSTS: BlogPost[] = [
 <li>A custom crochet piece lasts because it was made to fit <em>you</em> — not a size average</li>
 </ul>
 <h3>Y2K energy + slow fashion values = the aesthetic that holds up.</h3>
-<p>The ruffle hem mini dress. The leg warmers. The fingerless gloves. The colour sets. It's nostalgic <em>and</em> intentional. Bold <em>and</em> considered.</p>
+<p>The ruffle hem mini dress. The leg warmers. The fingerless gloves. The color sets. It's nostalgic <em>and</em> intentional. Bold <em>and</em> considered.</p>
 <p>That's the YOU LOOP signature. <strong>Fast fashion fills wardrobes. Custom fashion fills moments.</strong></p>`,
     reelHook:"Y2K crochet is back — but this time it's sustainable. Here's why this trend actually means something. #Y2K #CrochetFashion #SlowFashion #YOULOOP",
-    reelCta:"Which mood is yours? Soft Riot / Golden Hour / Midnight / Garden 👇"
+    reelCta:"Which color is yours? Soft Riot / Golden Hour / Midnight / Garden 👇"
   },
   {
     id:"04", slug:"custom-birthday-outfit-thailand",
@@ -107,8 +107,8 @@ export const BLOG_POSTS: BlogPost[] = [
     body:`<p>Google's Spring 2026 trending searches show statement jewellery and co-ord sets at all-time highs. But the search nobody is tracking? <strong>Custom-made birthday outfits.</strong> Because once you've worn one, you understand why the mass-produced version never felt the same.</p><p>Your birthday is the one day a year the entire room already has a reason to look at you.</p>
 <p>So why wear something a thousand other women also own?</p>
 <h3>The YOU LOOP Birthday Set (SR-01):</h3>
-<p>A custom crochet mini dress, hand warmers, and leg warmers — made in your chosen colour, your chosen size, for your specific moment. Nothing exists until you order it. Everything is made for you.</p>
-<p>Four colour moods to choose from:</p>
+<p>A custom crochet mini dress, hand warmers, and leg warmers — made in your chosen color, your chosen size, for your specific moment. Nothing exists until you order it. Everything is made for you.</p>
+<p>Four colors to choose from:</p>
 <ul>
 <li>🌸 <strong>Soft Riot</strong> — dusty rose with deep plum and gold ruffles</li>
 <li>☀️ <strong>Golden Hour</strong> — warm cream with camel and mustard ruffles</li>
@@ -156,7 +156,7 @@ export const BLOG_POSTS: BlogPost[] = [
 <p>85% of all textiles go to dumps each year. A garment truck, to landfill, every single second.</p>
 <p>Slow fashion is the response. But here's what people get wrong:</p>
 <p><strong>Slow fashion is not boring. It's not beige linen and minimalism.</strong></p>
-<p>Slow fashion is a ruffle hem mini dress in deep plum with gold accents. It's a three-piece crop set in lime green that arrives 14 days after you ordered it, made by a real woman who chose her craft. It's Y2K energy and bold colour and the silhouette you wanted — <em>built differently.</em></p>
+<p>Slow fashion is a ruffle hem mini dress in deep plum with gold accents. It's a three-piece crop set in lime green that arrives 14 days after you ordered it, made by a real woman who chose her craft. It's Y2K energy and bold color and the silhouette you wanted — <em>built differently.</em></p>
 <h3>What makes something slow fashion:</h3>
 <ul>
 <li>Made when asked, not before → zero overproduction</li>

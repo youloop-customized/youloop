@@ -44,7 +44,7 @@ const MAX_FILES = 10;
 
 /**
  * The mark on each entry card. Line icons rather than emoji: emoji are
- * rendered by the OS, so they arrive full-colour and differently shaped on
+ * rendered by the OS, so they arrive full-color and differently shaped on
  * every device — three sizes of cartoon next to serif type. These inherit
  * the rose the rest of the wizard uses and stay on-brand everywhere.
  */
@@ -625,18 +625,22 @@ export default function CustomRequestForm() {
       // a hiccup there must not cost the customer their confirmation email —
       // that's the more important side effect and does not depend on this
       // succeeding.
+      let recorded = true;
       await submitFormData(data).catch((err) => {
+        recorded = false;
         console.warn('Netlify Forms record failed — continuing anyway.', err);
       });
       setSubmitted(true);
 
-      // The studio's internal notice fires separately, from
-      // netlify/functions/submission-created.js — a Netlify Forms hook, so it
-      // only runs once deployed and only if the submission above succeeded.
+      // The studio's internal notice normally fires from
+      // netlify/functions/submission-created.js, a Netlify Forms hook — so it
+      // only runs if the submission above succeeded. Reporting that outcome
+      // lets the API send its own fallback notice when it did not, instead of
+      // the request reaching the customer's inbox and nobody else's.
       fetch('/api/custom-request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(emailPayload),
+        body: JSON.stringify({ ...emailPayload, netlifyRecorded: recorded }),
       }).catch((err) => console.warn('Request confirmation email failed to send.', err));
     } catch {
       setSending(false);
@@ -871,7 +875,7 @@ export default function CustomRequestForm() {
               maxLength={600}
               value={tweakNote}
               onChange={(e) => setTweakNote(e.target.value)}
-              placeholder="e.g., Make the skirt longer, change colour to cream…"
+              placeholder="e.g., Make the skirt longer, change color to cream…"
             />
           </div>
         </>
@@ -1000,7 +1004,7 @@ export default function CustomRequestForm() {
 
           <div className={f.field}>
             <label className={f.label}>
-              Yarn colours *{' '}
+              Yarn colors *{' '}
               <span style={{ color: 'var(--mgray)', fontWeight: 400 }}>(up to {MAX_YARNS})</span>
             </label>
             <div className={w.yarnGrid}>
@@ -1106,7 +1110,7 @@ export default function CustomRequestForm() {
           </div>
           {uploads.length === 0 && (
             <div className={f.example}>
-              No photos? That&apos;s fine — you&apos;ve already told us the shape, fit and colours.
+              No photos? That&apos;s fine — you&apos;ve already told us the shape, fit and colors.
               Skip straight on.
             </div>
           )}

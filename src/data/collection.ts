@@ -9,7 +9,7 @@
 export type CarouselSlide = {
   img: string;
   label: string;
-  /** Colour of the active dot, picked to match the photo. */
+  /** Color of the active dot, picked to match the photo. */
   dot: string;
 };
 
@@ -84,7 +84,7 @@ export const COLLECTION_CARDS: CollectionCard[] = [
 /** The four "How it works" steps on the home page. */
 export const HOW_IT_WORKS = [
   {
-    title: 'Choose your mood',
+    title: 'Choose your color',
     body: 'Pick a set from our collection that matches how you want to feel — or start with your own inspiration.',
   },
   {

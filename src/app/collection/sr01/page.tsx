@@ -4,7 +4,7 @@ import { SR01 } from '@/data/products';
 
 export const metadata: Metadata = {
   title: { absolute: SR01.title },
-  description: 'SR-01 The Birthday Set — a custom crochet mini dress with signature ruffle hem, arm warmers and leg warmers. Four moods, 81 yarn colours, made to order in 10-14 days.',
+  description: 'SR-01 The Birthday Set — a custom crochet mini dress with signature ruffle hem, arm warmers and leg warmers. Four colorways, 81 yarn colors, made to order in 10-14 days.',
   alternates: { canonical: '/collection/sr01' },
 };
 

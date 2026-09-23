@@ -28,7 +28,7 @@ const MEASUREMENT_FIELDS: { key: keyof Measurements; label: string }[] = [
 ];
 
 /**
- * The product page: pick a colour, pick a size, proceed.
+ * The product page: pick a color, pick a size, proceed.
  *
  * Everything past the choices — summary, promo code, customer details and the
  * submission itself — now lives on /checkout. This page's only job is to build
@@ -67,7 +67,7 @@ export default function Configurator({ product }: { product: ProductConfig }) {
     alt: `${product.name} — ${item.name}`,
   }));
 
-  /** Picking a named colourway leaves the custom palette and drops the yarn. */
+  /** Picking a named colorway leaves the custom palette and drops the yarn. */
   function selectSwatch(index: number) {
     setSwatchIndex(index);
     setColourChoice('preset');
@@ -84,7 +84,7 @@ export default function Configurator({ product }: { product: ProductConfig }) {
   /** Non-null while the draft is not yet complete enough to hand to checkout. */
   const blocker =
     colourChoice === 'custom' && !yarn
-      ? 'Pick a yarn colour to continue.'
+      ? 'Pick a yarn color to continue.'
       : product.sizing && sizeChoice === 'custom' && !isCompleteMeasurements(cm)
         ? 'Fill in all four measurements to continue.'
         : null;
@@ -151,7 +151,7 @@ export default function Configurator({ product }: { product: ProductConfig }) {
       </div>
 
       {/* ── HERO BAND ──
-          Was a per-product spec strip (SKU · name · moods · pieces · days).
+          Was a per-product spec strip (SKU · name · colors · pieces · days).
           Every one of those facts is still on this page — the SKU in .skuRow,
           the name in the h1, the rest in .priceNote and the detail cards — so
           the band was repeating the page back at itself. It carries the brand
@@ -222,8 +222,8 @@ export default function Configurator({ product }: { product: ProductConfig }) {
             <span className={s.priceNote}>{product.priceNote}</span>
           </div>
 
-          {/* 01 COLOUR — the named colourways, then one tile for the palette */}
-          <span className={s.secLabel}>01 - Colour</span>
+          {/* 01 COLOUR — the named colorways, then one tile for the palette */}
+          <span className={s.secLabel}>01 - Color</span>
           {product.swatchGroups.map((group, groupIndex) => {
             const offset = product.swatchGroups
               .slice(0, groupIndex)
@@ -261,7 +261,7 @@ export default function Configurator({ product }: { product: ProductConfig }) {
                     );
                   })}
 
-                  {/* One click straight into the 81-colour palette. */}
+                  {/* One click straight into the 81-color palette. */}
                   {isLastGroup && (
                     <button
                       type="button"

@@ -29,7 +29,7 @@ export async function POST(request: Request) {
   if (!parsed.ok) {
     return NextResponse.json({ error: parsed.error }, { status: 400 });
   }
-  const { order, customer } = parsed.value;
+  const { order, customer, promo } = parsed.value;
 
   // The checkout page has already filed this order number with Netlify Forms.
   // Reusing it keeps the record, the customer's email and our copy on one
@@ -39,6 +39,7 @@ export async function POST(request: Request) {
 
   const data = orderEmailData(order, customer, orderNumber, {
     priced: order.sizeLabel !== 'Custom',
+    promo,
   });
 
   // The customer's acknowledgement matters more than our own copy, but neither

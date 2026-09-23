@@ -7,9 +7,34 @@
  * the paid path and the quote path can never drift apart on what they record.
  */
 
-import { baht } from '@/lib/format';
+import { baht, bahtDiscount } from '@/lib/format';
 import { resolveOrder, type ResolvedOrder } from '@/lib/order';
+import { PROMO_CODES } from '@/data/products';
 import type { OrderEmailData } from '@/lib/order-emails';
+
+/**
+ * A promo the server has re-checked for itself.
+ *
+ * The checkout page applies the code client-side to show a live total, but
+ * that figure never used to leave the browser — the emails were built from
+ * order.price and quoted the full amount, so a customer who used SOFTRIOT15
+ * saw one price on screen and a higher one in their confirmation.
+ *
+ * Only the code travels; the amount is recomputed here from PROMO_CODES. A
+ * hand-edited request can therefore name a different code, but it cannot
+ * invent a discount, and the studio's own order card can be trusted.
+ */
+export type AppliedPromo = { code: string; label: string; amount: number };
+
+export function resolvePromo(rawCode: unknown, price: number): AppliedPromo | null {
+  const code = String(rawCode ?? '')
+    .trim()
+    .toUpperCase();
+  if (!code) return null;
+  const found = PROMO_CODES[code];
+  if (!found) return null;
+  return { code, label: found.label, amount: Math.round(price * found.percent) };
+}
 
 export type CustomerDetails = {
   name: string;
@@ -25,6 +50,8 @@ export type OrderRequest = {
   draft: string;
   order: ResolvedOrder;
   customer: CustomerDetails;
+  /** Null unless the request named a real code — see resolvePromo. */
+  promo: AppliedPromo | null;
 };
 
 /** Deliberately loose — the real check is whether Stripe and Resend accept it. */
@@ -56,7 +83,12 @@ export function parseOrderRequest(
 
   return {
     ok: true,
-    value: { draft, order, customer: { name, email, address, contactMethod, contactHandle } },
+    value: {
+      draft,
+      order,
+      customer: { name, email, address, contactMethod, contactHandle },
+      promo: resolvePromo(input.promoCode, order.price),
+    },
   };
 }
 
@@ -69,17 +101,27 @@ export function orderEmailData(
   order: ResolvedOrder,
   customer: CustomerDetails,
   orderNumber: string,
-  options: { priced: boolean },
+  options: { priced: boolean; promo?: AppliedPromo | null },
 ): OrderEmailData {
+  // A discount is only meaningful next to a price. On a made-to-measure order
+  // nothing is priced yet, so the promo is carried as a note instead of being
+  // subtracted from a total that does not exist — it gets applied by hand when
+  // the quote is agreed on chat.
+  const promo = options.promo ?? null;
+  const showMoney = options.priced;
+  const payable = promo ? order.price - promo.amount : order.price;
+
   return {
     orderNumber,
     sku: order.product.sku,
     productName: order.product.name,
-    colour: order.colourSummary,
+    color: order.colourSummary,
     yarn: order.yarn ? `#${order.yarn.id} ${order.yarn.name}` : null,
     size: order.sizeLabel,
     measurements: order.measurementSummary,
-    total: options.priced ? baht(order.price) : '',
+    subtotal: showMoney && promo ? baht(order.price) : '',
+    discount: promo ? `${bahtDiscount(promo.amount)} (${promo.code} · ${promo.label})` : '',
+    total: showMoney ? baht(payable) : '',
     leadTime: order.product.leadTime,
     customerName: customer.name,
     customerEmail: customer.email,

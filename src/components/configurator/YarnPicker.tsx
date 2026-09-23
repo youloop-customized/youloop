@@ -15,15 +15,15 @@ type Props = {
  * component reading one data module (src/data/yarns.ts).
  *
  * The palette has no controls of its own — no search, no count, no open/close.
- * The colour section mounts it when "Custom" is picked and unmounts it when a
- * named colourway is picked, so the whole grid is simply on screen or not.
+ * The color section mounts it when "Custom" is picked and unmounts it when a
+ * named colorway is picked, so the whole grid is simply on screen or not.
  */
 export default function YarnPicker({ defaultNote, selected, onSelect }: Props) {
   return (
     <div className={s.yarnSection}>
       <div className={s.yarnHeader}>
         <div className={s.yarnHeaderText}>
-          <h3>Choose your yarn colour</h3>
+          <h3>Choose your yarn color</h3>
         </div>
       </div>
 

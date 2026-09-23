@@ -5,7 +5,7 @@
  * catalogue order (SKU, price, size) that Stripe already trusts. A custom
  * request has no such fixed shape — its fields differ by path (reference vs.
  * guided) and nothing is charged yet — so this gets its own template rather
- * than being forced into OrderEmailData. The visual language (colours, table
+ * than being forced into OrderEmailData. The visual language (colors, table
  * layout, esc/row helpers) is kept identical to order-emails.ts on purpose,
  * so every YOU LOOP email reads as one system.
  */
@@ -69,7 +69,7 @@ function requestRows(d: CustomRequestEmailData): string {
     d.keepAsShown ? row('Keep exactly as shown', d.keepAsShown) : '',
     d.silhouette ? row('Silhouette', d.silhouette) : '',
     d.details ? row('Details', d.details) : '',
-    d.yarns ? row('Yarn colours', d.yarns) : '',
+    d.yarns ? row('Yarn colors', d.yarns) : '',
     d.size ? row('Size', d.size) : '',
     d.height ? row('Height', d.height) : '',
     d.notes && d.notes !== '(no extra notes)' ? row('Notes', d.notes) : '',
@@ -150,7 +150,7 @@ export function customerRequestEmail(d: CustomRequestEmailData): BuiltEmail {
     d.keepAsShown && `Keep exactly as shown: ${d.keepAsShown}`,
     d.silhouette && `Silhouette: ${d.silhouette}`,
     d.details && `Details: ${d.details}`,
-    d.yarns && `Yarn colours: ${d.yarns}`,
+    d.yarns && `Yarn colors: ${d.yarns}`,
     d.size && `Size: ${d.size}`,
     d.height && `Height: ${d.height}`,
     d.notes && d.notes !== '(no extra notes)' && `Notes: ${d.notes}`,
@@ -169,6 +169,104 @@ export function customerRequestEmail(d: CustomRequestEmailData): BuiltEmail {
 
   return {
     subject: `We have your idea — ${d.making} (${d.requestId})`,
+    html,
+    text,
+  };
+}
+
+/**
+ * The studio's copy of a Create Your Look request — a fallback, not the norm.
+ *
+ * Normally the internal notice comes from netlify/functions/submission-created.js,
+ * which fires off the Netlify Forms record and can therefore include the
+ * customer's uploaded inspiration images. That submission is filed
+ * best-effort (a failure must not cost the customer their confirmation), which
+ * left a hole: if it failed, the customer was told "we have your idea" and the
+ * studio was never told anything at all.
+ *
+ * This is sent only when the browser reports that the Netlify record did not
+ * file, so the request still reaches someone. It carries every field except
+ * the uploads, which only exist inside the submission that failed — hence the
+ * warning banner telling whoever reads it to ask the customer for the photos.
+ */
+export function internalRequestFallbackEmail(d: CustomRequestEmailData): BuiltEmail {
+  const contact = d.contactHandle
+    ? `${d.contactMethod}: ${d.contactHandle}`
+    : d.contactMethod || 'not given';
+
+  const html = `<!doctype html>
+<html>
+<body style="margin:0;padding:0;background:${C.page};font-family:'Helvetica Neue',Arial,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${C.page};padding:24px 12px;">
+    <tr><td align="center">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:${C.card};border-radius:16px;overflow:hidden;border:1px solid ${C.border};">
+        <tr><td style="background:${C.header};padding:22px 24px;">
+          <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:${C.accent};font-weight:700;">YOU LOOP · Custom request</div>
+          <div style="font-size:22px;color:#ffffff;margin-top:4px;font-weight:700;">New request — action needed</div>
+          <div style="font-size:13px;color:${C.headerSub};margin-top:2px;">${esc(d.making)} · ${esc(d.requestId)}</div>
+        </td></tr>
+
+        <tr><td style="padding:18px 24px 0;">
+          <div style="background:#fdf3e7;border:1px solid #e8c89a;border-radius:10px;padding:12px 14px;font-size:13px;color:#7a4a12;line-height:1.6;">
+            <strong>This did not reach Netlify Forms.</strong> It is not in your dashboard and any
+            inspiration photos the customer uploaded were not saved — ask them to resend the
+            images on ${esc(d.contactMethod || 'chat')}. The customer has already had their
+            confirmation, so they are expecting a reply.
+          </div>
+        </td></tr>
+
+        <tr><td style="padding:18px 24px 4px;">
+          <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:${C.accent};font-weight:700;margin-bottom:6px;">Customer</div>
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+            ${row('Name', d.customerName)}
+            ${row('Contact', contact)}
+            ${d.address ? row('Ships to', d.address) : ''}
+          </table>
+        </td></tr>
+
+        <tr><td style="padding:18px 24px 22px;">
+          <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:${C.accent};font-weight:700;margin-bottom:6px;">The request</div>
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+            ${requestRows(d)}
+            ${row('Starting quote', d.startingPrice)}
+            ${row('Entered via', d.enteredVia)}
+          </table>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
+  const text = [
+    `NEW CUSTOM REQUEST — ${d.requestId}`,
+    '',
+    'WARNING: this did not reach Netlify Forms. It is not in your dashboard and any',
+    'uploaded inspiration photos were not saved — ask the customer to resend them.',
+    'The customer has already had their confirmation and is expecting a reply.',
+    '',
+    `Name: ${d.customerName}`,
+    `Contact: ${contact}`,
+    d.address && `Ships to: ${d.address}`,
+    '',
+    `Making: ${d.making}`,
+    `Entered via: ${d.enteredVia}`,
+    d.referenceUrl && `Reference link: ${d.referenceUrl}`,
+    d.keepAsShown && `Keep exactly as shown: ${d.keepAsShown}`,
+    d.silhouette && `Silhouette: ${d.silhouette}`,
+    d.details && `Details: ${d.details}`,
+    d.yarns && `Yarn colors: ${d.yarns}`,
+    d.size && `Size: ${d.size}`,
+    d.height && `Height: ${d.height}`,
+    d.notes && d.notes !== '(no extra notes)' && `Notes: ${d.notes}`,
+    '',
+    `Starting quote: ${d.startingPrice}`,
+  ]
+    .filter((line): line is string => Boolean(line) || line === '')
+    .join('\n');
+
+  return {
+    subject: `[Action needed] Custom request ${d.requestId} — ${d.making}`,
     html,
     text,
   };

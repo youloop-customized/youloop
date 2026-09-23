@@ -390,7 +390,7 @@ export default function AboutPage() {
         <p className={s.ctaSub}>
           Custom crochet, made to order, delivered in 10–14 days.
           <br />
-          Four mood palettes. Your size. Your intention.
+          Four color palettes. Your size. Your intention.
         </p>
         <div className={s.ctaBtns}>
           <Link href="/#collection" className={s.btnPrimary}>

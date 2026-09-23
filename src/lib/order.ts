@@ -2,7 +2,7 @@
  * The order draft that travels from the configurator to /checkout.
  *
  * The configurator no longer collects the customer's details or shows a
- * summary — it ends at "Proceed", which hands the chosen colour and size to
+ * summary — it ends at "Proceed", which hands the chosen color and size to
  * the checkout page. That handoff goes through the URL so the link is
  * shareable and survives a reload; the draft is small enough to encode as
  * plain query params.
@@ -11,7 +11,7 @@
 import { PRODUCTS, type Measurements, type ProductConfig, type Swatch } from '@/data/products';
 import { YARNS, type Yarn } from '@/data/yarns';
 
-/** A named colourway, or a single yarn picked from the 81-colour palette. */
+/** A named colorway, or a single yarn picked from the 81-color palette. */
 export type ColourChoice = 'preset' | 'custom';
 /** One of the product's size options, or measurements typed in by hand. */
 export type SizeChoice = 'preset' | 'custom';
@@ -19,7 +19,7 @@ export type SizeChoice = 'preset' | 'custom';
 export type OrderDraft = {
   productSlug: string;
   colourChoice: ColourChoice;
-  /** Swatch key — kept even for a custom colour, since it drives the photo. */
+  /** Swatch key — kept even for a custom color, since it drives the photo. */
   swatchKey: string;
   yarnId: string | null;
   sizeChoice: SizeChoice;

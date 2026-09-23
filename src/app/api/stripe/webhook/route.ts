@@ -21,7 +21,7 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { internalRecipient, sendCustomerEmail, sendEmail } from '@/lib/email';
 import { customerPaidEmail, internalOrderEmail } from '@/lib/order-emails';
-import { orderEmailData } from '@/lib/order-request';
+import { orderEmailData, resolvePromo } from '@/lib/order-request';
 import { resolveOrder } from '@/lib/order';
 
 const secretKey = process.env.STRIPE_SECRET_KEY;
@@ -84,6 +84,10 @@ function readSession(session: Stripe.Checkout.Session) {
 
   return {
     order,
+    // The session was created with the discount already applied to line_items,
+    // so the confirmation must show the same figures. Re-resolved from the code
+    // in metadata rather than trusting the stored amount.
+    promo: resolvePromo(metadata.promo_code, order.price),
     orderNumber: metadata.order_number || session.client_reference_id || session.id,
     customer: {
       name: metadata.customer_name || session.customer_details?.name || 'there',
@@ -114,10 +118,10 @@ async function onPaid(session: Stripe.Checkout.Session) {
     return;
   }
 
-  const { order, orderNumber, customer } = context;
+  const { order, orderNumber, customer, promo } = context;
   if (!customer.email) console.error('Paid session has no customer email:', session.id);
 
-  const data = orderEmailData(order, customer, orderNumber, { priced: true });
+  const data = orderEmailData(order, customer, orderNumber, { priced: true, promo });
 
   const results = await Promise.allSettled([
     customer.email
@@ -156,8 +160,8 @@ async function onPaymentFailed(session: Stripe.Checkout.Session) {
     return;
   }
 
-  const { order, orderNumber, customer } = context;
-  const data = orderEmailData(order, customer, orderNumber, { priced: true });
+  const { order, orderNumber, customer, promo } = context;
+  const data = orderEmailData(order, customer, orderNumber, { priced: true, promo });
 
   await sendEmail({
     ...internalOrderEmail(data, 'failed'),

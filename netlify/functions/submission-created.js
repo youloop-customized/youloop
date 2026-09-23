@@ -198,15 +198,116 @@ function buildHtml(f) {
 </html>`;
 }
 
+/* ── YOU LOOP Creation (b2b-inquiry) ──────────────────────────────────────
+   The corporate arm's project inquiries had no internal notification at all:
+   this function only ever answered to custom-request, so a B2B lead landed in
+   the Netlify dashboard and nowhere else unless dashboard notifications
+   happened to be switched on. Same treatment as a custom request now — a card
+   that can be forwarded to whoever quotes the job. */
+
+function buildB2bFields(data) {
+  return {
+    company: val(data.company),
+    email: val(data.email),
+    name: val(data.name),
+    product: val(data.product_interest),
+    quantity: val(data.quantity),
+    timeline: val(data.timeline),
+    brief: val(data.brief),
+    files: fileLinks(data.inspo),
+  };
+}
+
+function buildB2bText(f) {
+  return [
+    'NEW PROJECT INQUIRY — YOU LOOP Creation',
+    '',
+    `Company: ${f.company}`,
+    `Contact: ${f.name}`,
+    `Email:   ${f.email}`,
+    '',
+    `Wants to produce: ${f.product}`,
+    `Quantity:         ${f.quantity}`,
+    `Timeline:         ${f.timeline}`,
+    f.brief ? '' : null,
+    f.brief ? `Brief: ${f.brief}` : null,
+    f.files.length ? '' : null,
+    f.files.length ? `Reference: ${f.files.join(', ')}` : null,
+    '',
+    `Reply to: ${f.email}`,
+  ]
+    .filter((line) => line !== null)
+    .join('\n');
+}
+
+function buildB2bHtml(f) {
+  const filesBlock = f.files.length
+    ? `<tr><td style="padding:0 24px 18px;">
+        <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#c4708a;font-weight:700;margin-bottom:8px;">Reference</div>
+        ${f.files
+          .map(
+            (url) =>
+              `<a href="${esc(url)}" style="font-size:13px;color:#8f4a63;word-break:break-all;">${esc(url)}</a>`,
+          )
+          .join('<br>')}
+      </td></tr>`
+    : '';
+
+  return `<!doctype html>
+<html>
+<body style="margin:0;padding:0;background:#f7f0eb;font-family:'Helvetica Neue',Arial,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f7f0eb;padding:24px 12px;">
+    <tr><td align="center">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #eadde2;">
+        <tr><td style="background:#2a1a2e;padding:22px 24px;">
+          <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#c4708a;font-weight:700;">YOU LOOP Creation · Project inquiry</div>
+          <div style="font-size:22px;color:#ffffff;margin-top:4px;font-weight:700;">${esc(f.company || 'New inquiry')}</div>
+          <div style="font-size:13px;color:#d9c2cc;margin-top:2px;">${esc(f.product)}</div>
+        </td></tr>
+
+        <tr><td style="padding:20px 24px 4px;">
+          <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#c4708a;font-weight:700;margin-bottom:6px;">Contact</div>
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+            ${row('Company', esc(f.company))}
+            ${row('Name', esc(f.name))}
+            ${row('Email', `<a href="mailto:${esc(f.email)}" style="color:#8f4a63;">${esc(f.email)}</a>`)}
+          </table>
+        </td></tr>
+
+        <tr><td style="padding:18px 24px 4px;">
+          <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#c4708a;font-weight:700;margin-bottom:6px;">The project</div>
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+            ${row('Produce', esc(f.product))}
+            ${row('Quantity', esc(f.quantity))}
+            ${row('Timeline', esc(f.timeline))}
+            ${f.brief ? row('Brief', esc(f.brief)) : ''}
+          </table>
+        </td></tr>
+
+        ${filesBlock}
+
+        <tr><td style="padding:6px 24px 22px;">
+          <div style="font-size:11px;color:#a3899a;">Reply straight to this email to reach ${esc(f.name || 'them')}.</div>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+}
+
 exports.handler = async (event) => {
   try {
     const body = JSON.parse(event.body || '{}');
     const payload = body.payload || {};
     const data = payload.data || {};
 
-    // Only handle the YOU LOOP custom-order/request form — other forms on the site are ignored.
-    if (payload.form_name !== 'custom-request') {
-      return { statusCode: 200, body: 'skipped (not custom-request form)' };
+    // Two forms get an internal notification: the Create Your Look wizard and
+    // YOU LOOP Creation's project inquiry. Everything else on the site is
+    // recorded by Netlify Forms and ignored here.
+    const formName = payload.form_name;
+    if (formName !== 'custom-request' && formName !== 'b2b-inquiry') {
+      return { statusCode: 200, body: `skipped (${formName} is not a notified form)` };
     }
 
     const apiKey = process.env.RESEND_API_KEY;
@@ -218,8 +319,11 @@ exports.handler = async (event) => {
     const notifyTo = process.env.NOTIFY_EMAIL || 'hello.youloop@gmail.com';
     const from = process.env.RESEND_FROM || 'YOU LOOP <onboarding@resend.dev>';
 
-    const f = buildFields(data);
-    const subject = `✨ New Custom Look — ${f.name} — ${f.outfitType}`;
+    const isB2b = formName === 'b2b-inquiry';
+    const f = isB2b ? buildB2bFields(data) : buildFields(data);
+    const subject = isB2b
+      ? `New project inquiry — ${f.company || f.name} — ${f.product}`
+      : `✨ New Custom Look — ${f.name} — ${f.outfitType}`;
 
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -231,8 +335,8 @@ exports.handler = async (event) => {
         from,
         to: [notifyTo],
         subject,
-        html: buildHtml(f),
-        text: buildText(f),
+        html: isB2b ? buildB2bHtml(f) : buildHtml(f),
+        text: isB2b ? buildB2bText(f) : buildText(f),
       }),
     });
 

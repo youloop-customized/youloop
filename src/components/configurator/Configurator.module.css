@@ -1542,3 +1542,17 @@
     font-size: 9px;
   }
 }
+
+/* Inline field validation on the checkout page. Added when that page moved off
+   three browser alert() popups onto the same inline-error pattern the Create
+   Your Look wizard already used — see Checkout.tsx submitOrder(). */
+.detailsInputInvalid {
+  border-color: #c2452f;
+}
+
+.detailsError {
+  font-size: 11.5px;
+  color: #c2452f;
+  line-height: 1.5;
+  margin-top: 5px;
+}

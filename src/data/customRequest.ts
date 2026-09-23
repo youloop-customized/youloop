@@ -44,7 +44,7 @@ export const ENTRY_PATHS: {
   {
     value: 'shape',
     title: 'Build it from scratch',
-    micro: 'Pick a base shape, then the neckline, fit and yarn colour.',
+    micro: 'Pick a base shape, then the neckline, fit and yarn color.',
     meta: '4 min · 5 steps',
   },
 ];
@@ -63,7 +63,7 @@ export const REFERENCE_TARGETS: Option[] = [
 /** What must not change. Cheaper to tick than to describe in a paragraph. */
 export const LOVED_ELEMENTS: Option[] = [
   { value: 'silhouette', label: 'The overall shape' },
-  { value: 'colour', label: 'The colour' },
+  { value: 'color', label: 'The color' },
   { value: 'texture', label: 'The knit / texture' },
   { value: 'cutouts', label: 'The open back / cut-outs' },
   { value: 'everything', label: 'Everything — exactly as shown' },
@@ -164,7 +164,7 @@ export const DETAILS: Option[] = [
   { value: 'fringe', label: 'Fringe' },
 ];
 
-/** How many yarn colours one custom piece can be built from. */
+/** How many yarn colors one custom piece can be built from. */
 export const MAX_YARNS = 3;
 
 /**

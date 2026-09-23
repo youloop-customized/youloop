@@ -4,7 +4,7 @@ import { SR02 } from '@/data/products';
 
 export const metadata: Metadata = {
   title: { absolute: SR02.title },
-  description: 'SR-02 The Soft Riot Crop Set — long sleeve open-weave mesh top and high-waist mini skirt. Four moods, 81 yarn colours, made to order in 10-14 days.',
+  description: 'SR-02 The Soft Riot Crop Set — long sleeve open-weave mesh top and high-waist mini skirt. Four colorways, 81 yarn colors, made to order in 10-14 days.',
   alternates: { canonical: '/collection/sr02' },
 };
 

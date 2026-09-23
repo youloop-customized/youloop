@@ -1,5 +1,5 @@
 /**
- * The full YOU LOOP yarn palette — 81 colours.
+ * The full YOU LOOP yarn palette — 81 colors.
  *
  * In the original static site this array was inlined three times (once per
  * configurator page) with every swatch embedded as a base64 data URI, which

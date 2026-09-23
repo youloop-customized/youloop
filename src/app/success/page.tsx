@@ -56,7 +56,7 @@ export default async function Page({
 
   const rows = [
     { label: 'Piece', value: [meta.sku, meta.product].filter(Boolean).join(' ') },
-    { label: 'Colour', value: meta.colour ?? '' },
+    { label: 'Color', value: meta.color ?? '' },
     { label: 'Yarn', value: meta.yarn ?? '' },
     { label: 'Size', value: meta.size ?? '' },
     { label: 'Measurements', value: meta.measurements === '-' ? '' : (meta.measurements ?? '') },
@@ -91,8 +91,8 @@ export default async function Page({
           {state === 'paid' && (
             <>
               Thank you — your payment came through and your order is in the making queue.
-              {email ? ` We have sent the confirmation to ${email}.` : ''} We will send progress
-              photos as it comes together.
+              {email ? ` We have sent the confirmation to ${email}.` : ''} We will let you know the
+              moment it ships.
             </>
           )}
           {state === 'pending' && (
