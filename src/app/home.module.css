@@ -4,7 +4,7 @@
  * .page so a CSS Module cannot leak them to other routes.
  */
 
-.page section {
+:where(.page) section {
   padding: 6rem 2rem;
 }
 
@@ -186,10 +186,12 @@
 }
 
 /* ── HOW IT WORKS ── */
+/* The !important on these two was only ever there to out-shout
+   .page section; with that rule :where()-ed, a plain class wins normally. */
 .how {
   background: rgba(255, 255, 255, 0.02);
-  padding-top: 3.5rem !important;
-  padding-bottom: 3.5rem !important;
+  padding-top: 3.5rem;
+  padding-bottom: 3.5rem;
 }
 
 .steps {
@@ -388,13 +390,8 @@
   margin-bottom: 0.4rem;
 }
 
-.productDesc {
-  font-size: 0.82rem;
-  color: var(--mgray);
-  line-height: 1.6;
-  margin-bottom: 1rem;
-}
-
+/* .productDesc went with the card's prose description, which now lives on
+   each configurator page instead (ProductConfig.tagline). */
 .productIncludes {
   display: flex;
   flex-wrap: wrap;
@@ -450,7 +447,7 @@
 /* ── CUSTOM REQUEST ── */
 .customRequest {
   background: rgba(255, 255, 255, 0.01);
-  padding: 5rem 2rem !important;
+  padding: 5rem 2rem;
 }
 
 .customRequestInner {
@@ -517,21 +514,18 @@
 
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
-  /* The hero IS a .page section, and `.page section` (one class + one type =
-     0,1,1) out-specifies a bare `.hero` (0,1,0) — so the responsive
-     `.page section` padding below was silently winning and the hero's own
-     padding-top never applied at all. Measured on a 390px viewport: the nav
-     is 69px tall, the hero's top padding resolved to 48px, and so the
-     "Keep it Soft Riot" tag landed at y=48–62 — completely behind the nav.
-
-     `.page .hero` (0,2,0) beats it, in this and the 480px block below, since
-     specificity decides before source order. Everything else stays on .hero;
-     only the padding needs to out-rank the section rule. */
-  .page .hero {
-    padding-top: 7rem;
-  }
-
   .hero {
+    /* 7rem clears the 69px fixed nav with ~40px to spare, measured at 390px.
+       The section rule is :where()'d now, so a plain .hero wins here and the
+       `.page .hero` workaround this used to need is gone.
+
+       padding-inline is restated because the hero's own base rule
+       (8rem 2rem 4rem) now applies on phones too, and 2rem of side padding
+       squeezes the headline noticeably at 360–390px. 1.25rem matches what
+       :where(.page) section gave before, so mobile line-wrapping is
+       unchanged. */
+    padding-top: 7rem;
+    padding-inline: 1.25rem;
     min-height: 85vh;
     /* Anchor the column under that padding instead of centring it, so the
        clearance above is fixed no matter how many lines the headline wraps
@@ -574,7 +568,7 @@
     text-align: center;
   }
 
-  .page section {
+  :where(.page) section {
     padding: 3.5rem 1.25rem;
   }
 
@@ -587,13 +581,49 @@
     gap: 1.5rem;
   }
 
+  /* Portrait card images made each stacked card about a screen tall, so the
+     collection read as one product per scroll with no sign of the others.
+     On phones the row becomes a snapping horizontal strip instead: cards sit
+     at 82% width so the next one always peeks in from the right, which is
+     the affordance that says "there is more here" without a label.
+
+     Native scroll-snap, no JS: the cards stay in the DOM and in source order,
+     so nothing changes for crawlers, keyboard users or the colourway
+     carousel inside each card (that one is driven by taps on its arrows and
+     dots, not by dragging, so the two gestures do not compete). */
   .productsGrid {
-    grid-template-columns: 1fr;
-    gap: 1.2rem;
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    /* 82% gives the peek on a phone; the cap stops a large tablet at this
+       same breakpoint from blowing one card up to ~600x1020. */
+    grid-auto-columns: min(82%, 340px);
+    gap: 0.9rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    /* Bleed past the section's own padding so cards can scroll off the edge
+       of the screen, while padding puts the first card back in line with the
+       heading above it. scroll-padding keeps snapping to that same line. */
+    margin-inline: -1.25rem;
+    padding-inline: 1.25rem;
+    scroll-padding-inline: 1.25rem;
+    scrollbar-width: none;
+  }
+
+  .productsGrid::-webkit-scrollbar {
+    display: none;
   }
 
   .productCard {
     border-radius: 16px;
+    scroll-snap-align: start;
+  }
+
+  /* The lift is a pointer affordance; on a touch strip it just leaves cards
+     stuck in a raised state after a tap. */
+  .productCard:hover {
+    transform: none;
+    box-shadow: none;
   }
 
   .productBody {
@@ -602,15 +632,27 @@
 }
 
 @media (max-width: 480px) {
-  .page section {
+  :where(.page) section {
     padding: 3rem 1rem;
+  }
+
+  /* Same reason as the 1.25rem above: match what the section rule used to
+     give at this width so the hero's own 2rem does not narrow the headline. */
+  .hero {
+    padding-inline: 1rem;
   }
 
   .heroBtns {
     gap: 0.6rem;
   }
 
+  /* .page section drops to 1rem here, so the strip's bleed and inner padding
+     have to follow it or the first card stops lining up with the heading.
+     (The old `padding: 0 0.25rem` shorthand would also have wiped out the
+     padding-inline set for the strip above.) */
   .productsGrid {
-    padding: 0 0.25rem;
+    margin-inline: -1rem;
+    padding-inline: 1rem;
+    scroll-padding-inline: 1rem;
   }
 }
