@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { CSSProperties } from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import B2BInquiryForm from '@/components/forms/B2BInquiryForm';
@@ -7,9 +7,11 @@ import { BRAND } from '@/data/site';
 import s from './b2b.module.css';
 
 export const metadata: Metadata = {
-  title: { absolute: 'Custom Crochet Corporate Gifts — YOU LOOP' },
+  // Kept in step with the hero: both used to carry the old "Custom Crochet
+  // Corporate Gifts" wording, which no longer appears anywhere on the page.
+  title: { absolute: 'Corporate Gifting & Merchandise — YOU LOOP Creation' },
   description:
-    'Thoughtful handmade merchandise for brands, teams, events, and communities — responsibly crafted through artisan partners in Thailand and Myanmar.',
+    'Premium handmade corporate gifting and merchandise. We help brands turn meaningful moments into handmade objects, crafted by artisan partners in Thailand and Myanmar.',
   alternates: { canonical: '/b2b' },
 };
 
@@ -65,155 +67,81 @@ const PRODUCTS = [
   },
 ];
 
-const WHY_PARTNER = [
+/**
+ * Who corporate gifting is actually for, from YOU LOOP Creation's company
+ * profile. Replaced two sections that listed occasions and customisation
+ * options as loose icon grids: a buyer does not shop by "event merchandise",
+ * they arrive knowing which of these four people they need to reach.
+ *
+ * The four accents are the four brand colours, one per card — the deck used
+ * distinct hues to tell the columns apart and that is worth keeping, but they
+ * are the palette's own now rather than borrowed ones. Each appears only as
+ * the card's top rule and a 4% background wash: gold reads at 2.28:1 on white,
+ * so no accent is trusted with text.
+ */
+const FOR_BRANDS = [
   {
-    title: 'Flexible custom development',
-    body: "From ready-made products to new concepts, we bring your client's ideas to life through handmade crochet.",
+    num: '01',
+    title: 'VIP customers',
+    tags: 'Loyalty · Anniversary · Retail',
+    accent: '#d49a37',
+    items: [
+      'Customer rewards',
+      'Travel & retail souvenirs',
+      'Campaign keepsakes',
+      'Anniversary gifts',
+    ],
   },
   {
-    title: 'Flexible MOQ',
-    body: 'Small runs, prototypes, and larger corporate orders are supported according to project requirements.',
+    num: '02',
+    title: 'Partners',
+    tags: 'Relationship · VIP · Events',
+    accent: '#3b4a3f',
+    items: [
+      'Partner appreciation',
+      'Launch & event gifting',
+      'Relationship gifts',
+      'Collaborative branded objects',
+    ],
   },
   {
-    title: 'Prototype & sampling',
-    body: 'Validate ideas before production with custom-developed samples.',
+    num: '03',
+    title: 'Executives',
+    tags: 'Recognition · Milestones',
+    accent: '#aa4a30',
+    items: [
+      'Premium handmade gifts',
+      'Milestone recognition',
+      'Cultural keepsakes',
+      'Limited-edition pieces',
+    ],
   },
   {
-    title: 'Handmade craftsmanship',
-    body: 'Carefully handmade products create a premium, memorable gifting experience.',
-  },
-  {
-    title: 'Responsible sourcing',
-    body: 'Support artisan craftsmanship through responsible production in Thailand and Myanmar.',
-  },
-  {
-    title: 'Product development support',
-    body: "Need something that doesn't exist yet? We'll work with you to develop it.",
-  },
-];
-
-const STROKE = { fill: 'none', stroke: '#aa4a30', strokeWidth: 1.8 };
-
-const PERFECT_FOR = [
-  {
-    label: 'Corporate Gifts',
-    svg: (
-      <svg viewBox="0 0 24 24" {...STROKE}>
-        <rect x="3" y="7" width="18" height="13" rx="1.5" />
-        <path d="M3 11h18M8 7V5.5A1.5 1.5 0 0 1 9.5 4h5A1.5 1.5 0 0 1 16 5.5V7" />
-      </svg>
-    ),
-  },
-  {
-    label: 'Marketing Campaigns',
-    svg: (
-      <svg viewBox="0 0 24 24" {...STROKE}>
-        <path d="M3 11l18-7-7 18-2-8-9-3z" />
-      </svg>
-    ),
-  },
-  {
-    label: 'Employee Recognition',
-    svg: (
-      <svg viewBox="0 0 24 24" {...STROKE}>
-        <path d="M12 3l2.6 5.6 6.1.6-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6-4.5-4.2 6.1-.6z" />
-      </svg>
-    ),
-  },
-  {
-    label: 'Event Merchandise',
-    svg: (
-      <svg viewBox="0 0 24 24" {...STROKE}>
-        <rect x="2.5" y="6" width="19" height="12" rx="2" />
-        <path d="M2.5 10h19" />
-      </svg>
-    ),
-  },
-  {
-    label: 'Client Appreciation',
-    svg: (
-      <svg viewBox="0 0 24 24" {...STROKE}>
-        <path d="M12 21s-7.5-4.6-10-9.3C.5 8 2.3 4.8 5.6 4.3c2-.3 3.9.7 4.4 2.3.5-1.6 2.4-2.6 4.4-2.3 3.3.5 5.1 3.7 3.6 7.4C19.5 16.4 12 21 12 21z" />
-      </svg>
-    ),
-  },
-  {
-    label: 'Brand Collaborations',
-    svg: (
-      <svg viewBox="0 0 24 24" {...STROKE}>
-        <circle cx="8.5" cy="12" r="5" />
-        <circle cx="15.5" cy="12" r="5" />
-      </svg>
-    ),
+    num: '04',
+    title: 'Teams',
+    tags: 'Welcome · Appreciation · Festivals',
+    accent: '#2a1e1b',
+    items: ['Employee onboarding', 'Staff appreciation', 'Festival gifting', 'Event merchandise'],
   },
 ];
 
-const CUSTOMISATION = [
-  {
-    label: 'Company Logos',
-    svg: (
-      <svg viewBox="0 0 24 24" {...STROKE}>
-        <rect x="3" y="3" width="18" height="18" rx="2" />
-        <path d="M9 3v18M15 3v18M3 9h18M3 15h18" />
-      </svg>
-    ),
-  },
-  {
-    label: 'Brand Colors',
-    svg: (
-      <svg viewBox="0 0 24 24" fill="none">
-        <circle cx="9" cy="9" r="4" fill="#aa4a30" />
-        <circle cx="15" cy="9" r="4" fill="#aa4a30" />
-        <circle cx="12" cy="15" r="4" fill="#dfb6a6" />
-      </svg>
-    ),
-  },
-  {
-    label: 'Employee Names',
-    svg: (
-      <svg viewBox="0 0 24 24" {...STROKE}>
-        <rect x="2.5" y="5" width="19" height="14" rx="2" />
-        <path d="M6.5 9.5h4M6.5 12.5h6" />
-      </svg>
-    ),
-  },
-  {
-    label: 'Event Graphics',
-    svg: (
-      <svg viewBox="0 0 24 24" {...STROKE}>
-        <path d="M4 12h13M17 8l4 4-4 4" />
-      </svg>
-    ),
-  },
-  {
-    label: 'Product Dimensions',
-    svg: (
-      <svg viewBox="0 0 24 24" {...STROKE}>
-        <rect x="4" y="4" width="16" height="16" rx="2" />
-        <path d="M4 15l4-4 3 3 5-6 4 5" />
-      </svg>
-    ),
-  },
-  {
-    label: 'Gift-Ready Packaging',
-    svg: (
-      <svg viewBox="0 0 24 24" {...STROKE}>
-        <path d="M3 8h18v13H3zM3 8l3-5h12l3 5M12 8v13M8 3l-1 5M16 3l1 5" />
-      </svg>
-    ),
-  },
-];
-
-function IconRow({ items }: { items: { label: string; svg: ReactNode }[] }) {
+/**
+ * The cue that carries one section into the next: a label plus a chevron, so
+ * the page reads as a guided sequence rather than something you have to
+ * remember to keep scrolling. The chevron nudges downward on loop, which is
+ * the convention people already recognise for "there is more below" — and it
+ * is disabled under prefers-reduced-motion in the stylesheet.
+ */
+function SectionNext({ href, label }: { href: string; label: string }) {
   return (
-    <div className={s.iconRow}>
-      {items.map((item) => (
-        <div key={item.label} className={s.iconItem}>
-          <div className={s.iconCircle}>{item.svg}</div>
-          <span>{item.label}</span>
-        </div>
-      ))}
-    </div>
+    <a className={s.sectionNext} href={href}>
+      <span>{label}</span>
+      <span className={s.sectionNextChevron} aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </span>
+    </a>
   );
 }
 
@@ -232,34 +160,34 @@ export default function B2BPage() {
         </div>
       </nav>
 
-      <div className={s.hero}>
+      <div className={`${s.hero} ${s.flowSection}`}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         {/* YOU LOOP Creation's own mark, not the Fashion star logo — see the
             comment on BRAND.creationLogo. */}
         <img className={s.heroLogo} src={BRAND.creationLogo} alt="YOU LOOP Creation" />
-        <div className={s.eyebrow} style={{ marginBottom: 16 }}>
-          Responsible Handmade Merchandise Partner
-        </div>
-        <h1>Custom Crochet Corporate Gifts</h1>
+        {/* Non-breaking space binds "& Merchandise": without it the ampersand
+            is left dangling at the end of a line at most widths. */}
+        <h1>Premium Handmade Corporate Gifting &amp;&nbsp;Merchandise</h1>
         <p className={s.heroSub}>
-          Thoughtful handmade merchandise for brands, teams, events, and communities — responsibly
-          crafted through artisan partners in Thailand and Myanmar.
+          We help brands turn meaningful moments into handmade objects — while creating real market
+          opportunities for local artisans.
         </p>
-        <a className={s.ctaBtn} href="#inquiry">
-          Bulk Inquiry
+        {/* Sends people to the catalogue rather than straight to the form: a
+            corporate buyer wants to see what can actually be made before
+            committing to an inquiry, and the form is one scroll past it. */}
+        <a className={s.ctaBtn} href="#catalogue">
+          See the catalogue
         </a>
-        <div className={s.ctaSub}>Get partner pricing, samples, and a custom quotation</div>
       </div>
 
       <div className={s.scallopBand} />
       <div className={s.scallop} />
 
-      {/* SAMPLE PRODUCTS */}
-      <section>
+      {/* SAMPLE PRODUCTS — the hero's "See the catalogue" lands here. */}
+      <section id="catalogue" className={s.flowSection}>
         <div className={s.sectionInner}>
           <div className={s.sectionTitle}>
-            <span className={s.eyebrow}>What can You Loop make?</span>
-            <h2>Sample B2B products</h2>
+            <h2>What YOU LOOP Creates</h2>
           </div>
 
           <div className={s.products}>
@@ -274,14 +202,20 @@ export default function B2BPage() {
                     {product.name}
                     {product.note && <span className={s.pnameNote}> {product.note}</span>}
                   </div>
-                  <div className={s.pprice}>{CUSTOMISATION_LINE}</div>
+                  {/* Every card carries the same customisation line and lead
+                      time on purpose: these are product specs, and a spec
+                      sheet that repeats is a spec sheet that is consistent.
+                      A buyer reads one card, not the page — so leaving them
+                      off the card to avoid "duplication" just meant the card
+                      answered fewer of their questions. */}
+                  <div className={s.pspec}>{CUSTOMISATION_LINE}</div>
                   <div className={s.productMeta}>
                     <div>
-                      <span className={s.eyebrow}>MOQ</span>
+                      <span className={s.metaLabel}>MOQ</span>
                       <div className={s.productMetaVal}>{product.moq}</div>
                     </div>
                     <div>
-                      <span className={s.eyebrow}>Lead time</span>
+                      <span className={s.metaLabel}>Lead time</span>
                       <div className={s.productMetaVal}>{LEAD_TIME}</div>
                     </div>
                   </div>
@@ -303,62 +237,62 @@ export default function B2BPage() {
               </div>
               <div className={s.productInfo}>
                 <div className={s.pname}>Develop a Custom Product</div>
-                <div className={s.pprice}>Ideation · Mock-ups · Prototypes · Production</div>
+                <div className={s.pspec}>Ideation · Mock-ups · Prototypes · Production</div>
                 <a className={`${s.ctaBtn} ${s.conceptCta}`} href="#inquiry">
-                  Discuss Your Project
+                  Discuss your project
                 </a>
               </div>
             </div>
           </div>
+
+          <SectionNext href="#for-brands" label="Who it's for" />
         </div>
       </section>
 
-      {/* WHY PARTNER */}
-      <section className={s.tintedSection}>
+      {/* FOR BRANDS — who the gifting is for, and what it looks like for each. */}
+      <section id="for-brands" className={`${s.tintedSection} ${s.flowSection}`}>
         <div className={s.sectionInner}>
           <div className={s.sectionTitle}>
-            <span className={s.eyebrow}>Why partner with us</span>
-            <h2>Built for teams who want more than a logo on a mug</h2>
+            <h2>Create meaningful moments for the people who matter to your brand.</h2>
+            <p className={s.sectionSub}>
+              Co-create something people can use, keep and remember, with a human story behind how
+              it was made.
+            </p>
           </div>
 
-          <div className={s.whyGrid}>
-            {WHY_PARTNER.map((item) => (
-              <div key={item.title} className={s.whyItem}>
-                <span className={s.eyebrow}>{item.title}</span>
-                <p>{item.body}</p>
-              </div>
+          <div className={s.audienceGrid}>
+            {FOR_BRANDS.map((group) => (
+              // The accent rides in as a custom property so one rule set covers
+              // all four cards instead of four near-identical classes.
+              <article
+                key={group.title}
+                className={s.audienceCard}
+                style={{ '--accent': group.accent } as CSSProperties}
+              >
+                <span className={s.audienceNum}>{group.num}</span>
+                <h3 className={s.audienceTitle}>{group.title}</h3>
+                <span className={s.audienceTags}>{group.tags}</span>
+                <ul className={s.audienceList}>
+                  {group.items.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </article>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* PERFECT FOR */}
-      <section>
-        <div className={s.sectionInner}>
-          <div className={s.sectionTitle}>
-            <span className={s.eyebrow}>Perfect for</span>
-            <h2>Where our clients use us</h2>
-          </div>
-          <IconRow items={PERFECT_FOR} />
-        </div>
-      </section>
+          <p className={s.audienceClosing}>
+            From a simple gesture of appreciation to a meaningful artisan-made gift.
+          </p>
 
-      {/* CUSTOMIZATION */}
-      <section className={s.tintedSection} style={{ paddingTop: 56 }}>
-        <div className={s.sectionInner}>
-          <div className={s.sectionTitle}>
-            <span className={s.eyebrow}>Customization</span>
-            <h2>Made to feel like yours, not off the shelf</h2>
-          </div>
-          <IconRow items={CUSTOMISATION} />
+          <SectionNext href="#inquiry" label="Start your project" />
         </div>
       </section>
 
       {/* INQUIRY */}
-      <section id="inquiry" className={s.tintedSection}>
+      <section id="inquiry" className={`${s.tintedSection} ${s.flowSection}`}>
         <div className={s.sectionInner}>
           <div className={s.sectionTitle}>
-            <span className={s.eyebrow}>Let&apos;s talk</span>
             <h2>Tell us about your project</h2>
           </div>
 
@@ -372,19 +306,26 @@ export default function B2BPage() {
       <section>
         <div className={s.sectionInner}>
           <div className={s.closing}>
-            <span className={s.eyebrow}>
-              Let&apos;s create something your clients can&apos;t buy off the shelf
-            </span>
+            {/* The heading names the same four audiences as the For brands
+                section directly above, rather than repeating the hero's
+                "Premium Handmade Corporate Gifting & Merchandise" — that
+                wording now belongs to the footer line under this box. The
+                paragraph is the parent-brand mission, which is what a closing
+                band is for: who you are, not another feature list. */}
+            <span className={s.eyebrow}>YOU LOOP Creation</span>
             <h2>
-              List our ready-to-customize crochet products in your catalogue, or bring us your
-              client&apos;s next idea.
+              We create distinctive handmade gifts for executives, partners, VIP customers,
+              selected teams and special brand moments.
             </h2>
             <p>
-              We&apos;ll help turn it into handmade merchandise — samples, partner pricing,
-              prototype development, custom quotations, and product consultation, all included.
+              YOU LOOP connects modern brands and customers with skilled local artisans, turning
+              craftsmanship into meaningful products and sustainable income opportunities.
             </p>
+            {/* One form, one name: every CTA that lands on #inquiry says the
+                same thing, so a buyer never wonders whether "Bulk Inquiry"
+                and "Discuss your project" led somewhere different. */}
             <a className={s.ctaBtn} href="#inquiry">
-              Bulk Inquiry
+              Discuss your project
             </a>
             <div className={s.closingContact}>
               <a href={`mailto:${BRAND.email}`}>{BRAND.email}</a>
@@ -396,8 +337,11 @@ export default function B2BPage() {
         </div>
       </section>
 
+      {/* Was "YOU LOOP · Custom Crochet Corporate Gifts & Merchandise" — the
+          old positioning, and it named the parent brand rather than the arm
+          this page belongs to. */}
       <footer className={s.footer}>
-        YOU LOOP · Custom Crochet Corporate Gifts &amp; Merchandise
+        YOU LOOP Creation — Premium Handmade Corporate Gifting &amp; Limited-Edition Brand Creation
       </footer>
     </div>
   );
