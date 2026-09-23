@@ -261,12 +261,20 @@
   box-shadow: 0 16px 48px rgba(170, 74, 48, 0.12);
 }
 
+/* The frame was landscape (7/6), which is why the cards showed half a look:
+   the only images that fitted it were pre-cropped 420x360 versions that cut
+   the model off at the thigh — SR-01's leg warmers were missing from its own
+   card. The cards now point at the full-length originals, so the frame is
+   portrait to match them: 3/4 sits between SR-02 (0.80) and SR-01 (0.67) and
+   is exactly SRAC-01's ratio, so with object-fit: contain below every look is
+   shown whole with only a sliver of margin. White, not the rose tint, because
+   that margin sits against the photos' own white studio backdrop. */
 .carouselWrap {
   position: relative;
   overflow: hidden;
-  aspect-ratio: 7 / 6;
+  aspect-ratio: 3 / 4;
   width: 100%;
-  background: rgba(170, 74, 48, 0.08);
+  background: #fff;
 }
 
 .carouselTrack {
@@ -509,9 +517,26 @@
 
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
-  .hero {
+  /* The hero IS a .page section, and `.page section` (one class + one type =
+     0,1,1) out-specifies a bare `.hero` (0,1,0) — so the responsive
+     `.page section` padding below was silently winning and the hero's own
+     padding-top never applied at all. Measured on a 390px viewport: the nav
+     is 69px tall, the hero's top padding resolved to 48px, and so the
+     "Keep it Soft Riot" tag landed at y=48–62 — completely behind the nav.
+
+     `.page .hero` (0,2,0) beats it, in this and the 480px block below, since
+     specificity decides before source order. Everything else stays on .hero;
+     only the padding needs to out-rank the section rule. */
+  .page .hero {
     padding-top: 7rem;
+  }
+
+  .hero {
     min-height: 85vh;
+    /* Anchor the column under that padding instead of centring it, so the
+       clearance above is fixed no matter how many lines the headline wraps
+       to. min-height still keeps the hero full-height when content is short. */
+    justify-content: flex-start;
   }
 
   /* Two copies of the same mark sat ~20px apart here: the fixed nav logo

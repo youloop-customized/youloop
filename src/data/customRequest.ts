@@ -250,9 +250,15 @@ export type StepKey =
   | 'inspo'
   | 'contact';
 
+/**
+ * The guided path designs the piece before it sizes it: shape, then all the
+ * choices that make it yours, and only then the fit. Asking for measurements
+ * in the middle of a design conversation breaks the momentum — sizing is
+ * admin, and admin belongs after the fun part.
+ */
 export const PATH_STEPS: Record<EntryPath, StepKey[]> = {
   reference: ['reference', 'refine', 'simpleFit', 'contact'],
-  shape: ['shape', 'fit', 'tweaks', 'inspo', 'contact'],
+  shape: ['shape', 'tweaks', 'fit', 'inspo', 'contact'],
 };
 
 export const STEP_COPY: Record<StepKey, { title: string; intro: string }> = {

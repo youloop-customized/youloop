@@ -11,7 +11,6 @@ import {
   LOVED_ELEMENTS,
   MAX_YARNS,
   NECKLINES,
-  NOT_SURE,
   PATH_STEPS,
   REFERENCE_TARGETS,
   SILHOUETTES,
@@ -180,7 +179,6 @@ export default function CustomRequestForm() {
   const [silhouette, setSilhouette] = useState<string | null>(null);
   const [details, setDetails] = useState<string[]>([]);
   const [yarnIds, setYarnIds] = useState<string[]>([]);
-  const [yarnUnsure, setYarnUnsure] = useState(false);
   const [length, setLength] = useState<string | null>(null);
   const [useMeasurements, setUseMeasurements] = useState(false);
   const [cm, setCm] = useState<Measurements>({ bust: '', waist: '', hips: '' });
@@ -287,20 +285,10 @@ export default function CustomRequestForm() {
   }
 
   function toggleYarn(id: string) {
-    // Picking a real colour is a change of mind away from "not sure" — the
-    // two states are mutually exclusive by construction, not just by copy.
-    setYarnUnsure(false);
     setYarnIds((c) => {
       if (c.includes(id)) return c.filter((v) => v !== id);
       if (c.length >= MAX_YARNS) return c;
       return [...c, id];
-    });
-  }
-
-  function toggleYarnUnsure() {
-    setYarnUnsure((v) => {
-      if (!v) setYarnIds([]);
-      return !v;
     });
   }
 
@@ -340,7 +328,7 @@ export default function CustomRequestForm() {
           (!shows.neckline || Boolean(neckline)) &&
           (!shows.sleeves || Boolean(sleeves)) &&
           Boolean(silhouette) &&
-          (yarnIds.length > 0 || yarnUnsure) &&
+          yarnIds.length > 0 &&
           tweakNote.trim().length >= 10
         );
       default:
@@ -366,9 +354,7 @@ export default function CustomRequestForm() {
   const fitSummary = useMeasurements
     ? `${cm.bust} / ${cm.waist} / ${cm.hips} cm`
     : (size ?? '');
-  const yarnSummary = yarnUnsure
-    ? NOT_SURE.label
-    : chosenYarns.map((y) => `#${y.id} ${y.name}`).join(', ');
+  const yarnSummary = chosenYarns.map((y) => `#${y.id} ${y.name}`).join(', ');
 
   // Every other step disables Continue until it's satisfied; Submit was the
   // one place that instead let the click through and interrupted it with an
@@ -1017,15 +1003,6 @@ export default function CustomRequestForm() {
               Yarn colours *{' '}
               <span style={{ color: 'var(--mgray)', fontWeight: 400 }}>(up to {MAX_YARNS})</span>
             </label>
-            <div className={f.chips} style={{ marginBottom: '10px' }}>
-              <button
-                type="button"
-                className={`${f.chip} ${yarnUnsure ? f.active : ''}`}
-                onClick={toggleYarnUnsure}
-              >
-                {NOT_SURE.label}
-              </button>
-            </div>
             <div className={w.yarnGrid}>
               {YARNS.map((yarn) => {
                 const picked = yarnIds.includes(yarn.id);
@@ -1064,9 +1041,7 @@ export default function CustomRequestForm() {
               </div>
             )}
             <div className={f.help}>
-              Our full palette — {YARNS.length} shades of 100% cotton. Pick up to {MAX_YARNS}, or
-              choose &ldquo;{NOT_SURE.label}&rdquo; and we&apos;ll suggest a combination that suits
-              the piece.
+              Our full palette — {YARNS.length} shades of 100% cotton. Pick up to {MAX_YARNS}.
             </div>
           </div>
 

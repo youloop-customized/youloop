@@ -32,7 +32,7 @@ export const BRAND = {
   logo: '/images/logo/youloop-logo-star.png',
   /** YOU LOOP Creation's own mark: no star, the interlocking loop emphasised. */
   creationLogo: '/images/logo/youloop-logo.png',
-  tagline: 'Keep it Soft Riot. · Fast fashion fills wardrobes. Custom fashion fills moments.',
+  tagline: 'Keep it Soft Riot.',
   copyright: '© 2026 YOU LOOP · Thailand',
   siteUrl: 'https://youloop.co',
   email: 'hello.youloop@gmail.com',
