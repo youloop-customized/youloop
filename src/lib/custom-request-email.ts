@@ -133,7 +133,7 @@ export function customerRequestEmail(d: CustomRequestEmailData): BuiltEmail {
           </div>
           <div style="font-size:11px;color:${C.muted};margin-top:18px;border-top:1px solid ${C.border};padding-top:14px;">
             ${esc(BRAND.name)} · <a href="${esc(BRAND.siteUrl)}" style="color:${C.label};">youloop.co</a>
-            · <a href="mailto:hello@youloop.co" style="color:${C.label};">hello@youloop.co</a>
+            · <a href="mailto:${BRAND.email}" style="color:${C.label};">${BRAND.email}</a>
           </div>
         </td></tr>
       </table>
@@ -162,7 +162,7 @@ export function customerRequestEmail(d: CustomRequestEmailData): BuiltEmail {
     'Your final price depends on yarn, size and detail — we confirm it with you before anything is cast on.',
     reachOut,
     '',
-    `${BRAND.name} · ${BRAND.siteUrl} · hello@youloop.co`,
+    `${BRAND.name} · ${BRAND.siteUrl} · ${BRAND.email}`,
   ]
     .filter((line): line is string => Boolean(line))
     .join('\n');

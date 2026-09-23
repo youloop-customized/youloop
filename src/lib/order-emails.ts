@@ -143,7 +143,7 @@ function shell(opts: {
           <div style="font-size:13px;color:${C.text};line-height:1.65;margin-top:16px;">${esc(closing)}</div>
           <div style="font-size:11px;color:${C.muted};margin-top:18px;border-top:1px solid ${C.border};padding-top:14px;">
             ${esc(BRAND.name)} · <a href="${esc(BRAND.siteUrl)}" style="color:${C.label};">youloop.co</a>
-            · <a href="mailto:hello@youloop.co" style="color:${C.label};">hello@youloop.co</a>
+            · <a href="mailto:${BRAND.email}" style="color:${C.label};">${BRAND.email}</a>
           </div>
         </td></tr>
       </table>
@@ -199,7 +199,7 @@ export function customerPaidEmail(data: OrderEmailData): BuiltEmail {
       '',
       closing,
       '',
-      `${BRAND.name} · ${BRAND.siteUrl} · hello@youloop.co`,
+      `${BRAND.name} · ${BRAND.siteUrl} · ${BRAND.email}`,
     ]),
   };
 }
@@ -252,7 +252,7 @@ export function customerQuoteEmail(data: OrderEmailData): BuiltEmail {
       '',
       closing,
       '',
-      `${BRAND.name} · ${BRAND.siteUrl} · hello@youloop.co`,
+      `${BRAND.name} · ${BRAND.siteUrl} · ${BRAND.email}`,
     ]),
   };
 }

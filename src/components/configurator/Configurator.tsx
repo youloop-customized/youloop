@@ -474,7 +474,7 @@ export default function Configurator({ product }: { product: ProductConfig }) {
             @hello.youloop
           </a>
           &nbsp;·&nbsp;
-          <a href="mailto:hello@youloop.co">hello@youloop.co</a>
+          <a href={`mailto:${BRAND.email}`}>{BRAND.email}</a>
         </p>
       </footer>
     </div>

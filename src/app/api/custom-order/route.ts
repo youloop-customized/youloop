@@ -46,7 +46,11 @@ export async function POST(request: Request) {
   // failing should lose the order — the Netlify Forms record already exists.
   const [customerSent, internalSent] = await Promise.all([
     sendCustomerEmail({ ...customerQuoteEmail(data), to: customer.email }),
-    sendEmail({ ...internalOrderEmail(data, 'quote'), to: internalRecipient() }),
+    sendEmail({
+      ...internalOrderEmail(data, 'quote'),
+      to: internalRecipient(),
+      replyTo: customer.email,
+    }),
   ]);
 
   if (!internalSent) {

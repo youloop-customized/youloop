@@ -11,6 +11,8 @@
  * — the payment has already succeeded by the time most of these are sent.
  */
 
+import { BRAND } from '@/data/site';
+
 const RESEND_ENDPOINT = 'https://api.resend.com/emails';
 
 /** Resend's sandbox sender, which can only deliver to your own account email. */
@@ -27,6 +29,13 @@ export type Email = {
    * single delivery rather than mailing the customer twice.
    */
   idempotencyKey?: string;
+  /**
+   * Where a reply should go. Without it a reply lands on RESEND_FROM, which is
+   * a send-only address — so every 'just reply to this email' in these
+   * templates was a dead end. Customer mail points at the studio inbox;
+   * internal notices point at the customer, so answering a lead is one tap.
+   */
+  replyTo?: string;
 };
 
 /** Where the internal "new order" notices go. */
@@ -67,6 +76,7 @@ export async function sendEmail(email: Email): Promise<boolean> {
         subject: email.subject,
         html: email.html,
         text: email.text,
+        ...(email.replyTo ? { reply_to: email.replyTo } : {}),
       }),
     });
 
@@ -93,5 +103,8 @@ export async function sendCustomerEmail(email: Email): Promise<boolean> {
     );
     return false;
   }
-  return sendEmail(email);
+  // Default rather than require: the one thing a customer email must never do
+  // is invite a reply that goes nowhere, so this cannot be forgotten at a
+  // call site. BRAND.email is the published, monitored address.
+  return sendEmail({ replyTo: BRAND.email, ...email });
 }

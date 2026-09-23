@@ -337,6 +337,11 @@ exports.handler = async (event) => {
         subject,
         html: isB2b ? buildB2bHtml(f) : buildHtml(f),
         text: isB2b ? buildB2bText(f) : buildText(f),
+        // Both cards tell whoever reads them to reply to reach the customer.
+        // Without this the reply goes to the send-only from-address instead.
+        // buildFields falls back to an em dash when there is no address, so
+        // check for a real one rather than truthiness.
+        ...(f.email && f.email.includes('@') ? { reply_to: f.email } : {}),
       }),
     });
 

@@ -106,7 +106,7 @@ export default async function Page({
           {state === 'unknown' && (
             <>
               If you were charged, nothing is lost — message us at{' '}
-              <a href="mailto:hello@youloop.co">hello@youloop.co</a> or on Instagram and we will
+              <a href={`mailto:${BRAND.email}`}>{BRAND.email}</a> or on Instagram and we will
               track it down straight away.
             </>
           )}
@@ -155,7 +155,7 @@ export default async function Page({
             @hello.youloop
           </a>
           &nbsp;·&nbsp;
-          <a href="mailto:hello@youloop.co">hello@youloop.co</a>
+          <a href={`mailto:${BRAND.email}`}>{BRAND.email}</a>
         </p>
       </footer>
     </div>

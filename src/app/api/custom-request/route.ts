@@ -62,7 +62,11 @@ export async function POST(request: Request) {
     sendCustomerEmail({ ...customerRequestEmail(data), to: email }),
     recorded
       ? Promise.resolve(true)
-      : sendEmail({ ...internalRequestFallbackEmail(data), to: internalRecipient() }),
+      : sendEmail({
+          ...internalRequestFallbackEmail(data),
+          to: internalRecipient(),
+          replyTo: email,
+        }),
   ]);
 
   if (!recorded && !internalSent) {
