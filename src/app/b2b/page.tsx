@@ -18,51 +18,43 @@ export const metadata: Metadata = {
 const CUSTOMISATION_LINE = 'Brand colors · Names · Motifs · Suitable logos';
 const LEAD_TIME = 'Confirmed per project';
 
+/* Ordered so the finished, photographed pieces lead and the concept
+   mock-ups follow — a buyer scanning the grid should meet real products
+   first. 'Your Idea' and the hydration loop were dropped on request. */
+/* Only the finished, photographed pieces remain — the bottle holder, card
+   holder and the two Coinfest concept mock-ups were dropped on request. Five
+   products plus the custom-project card fill two rows of three exactly. */
 const PRODUCTS = [
   {
     img: '/images/b2b/laptop-sleeve.png',
-    alt: 'Custom crochet laptop sleeve',
+    alt: 'Custom crochet laptop sleeve in maroon and cream',
     name: 'Custom Crochet Laptop Sleeve',
     moq: '3+',
   },
   {
-    img: '/images/b2b/bottle-holder.png',
-    alt: 'Custom crochet bottle holder',
-    name: 'Custom Crochet Bottle Holder',
+    img: '/images/b2b/necktie.png',
+    alt: 'Handmade crochet necktie in cream with a maroon stripe',
+    name: 'Custom Crochet Necktie',
+    note: '— Executive gifting',
     moq: '3+',
   },
   {
-    img: '/images/b2b/card-holder.png',
-    alt: 'Custom crochet card holder',
-    name: 'Custom Crochet Card Holder',
+    img: '/images/b2b/coaster-set.png',
+    alt: 'Crochet coaster set in a branded gift box',
+    name: 'Custom Crochet Coaster Set',
+    note: '— Gift-boxed',
     moq: '3+',
   },
   {
-    img: '/images/b2b/custom-idea.png',
-    alt: 'Custom crochet product concept',
-    name: 'Your Idea',
-    note: '— Concept Mock-up',
-    moq: 'Prototype available',
-  },
-  {
-    img: '/images/b2b/coinfest_hydration_loop.png',
-    alt: 'Custom crochet hydration loop',
-    name: 'Custom crochet hydration loop',
-    note: '— Concept Mock-up',
+    img: '/images/b2b/scarf.png',
+    alt: 'Custom crochet scarf in maroon with cream and gold ends',
+    name: 'Custom Crochet Scarf',
     moq: '3+',
   },
   {
-    img: '/images/b2b/coinfest_identity_loops.png',
-    alt: 'Custom crochet identity loop',
-    name: 'Custom crochet identity loop',
-    note: '— Concept Mock-up',
-    moq: '3+',
-  },
-  {
-    img: '/images/b2b/coinfest_standing_bull.png',
-    alt: 'Custom crochet brand mascot',
-    name: 'Custom crochet brand mascot',
-    note: '— Concept Mock-up',
+    img: '/images/b2b/basket.png',
+    alt: 'Custom crochet storage basket in maroon with a cream trim',
+    name: 'Custom Crochet Storage Basket',
     moq: '3+',
   },
 ];
@@ -306,27 +298,15 @@ export default function B2BPage() {
       <section>
         <div className={s.sectionInner}>
           <div className={s.closing}>
-            {/* The heading names the same four audiences as the For brands
-                section directly above, rather than repeating the hero's
-                "Premium Handmade Corporate Gifting & Merchandise" — that
-                wording now belongs to the footer line under this box. The
-                paragraph is the parent-brand mission, which is what a closing
-                band is for: who you are, not another feature list. */}
+            {/* A brand sign-off rather than a final pitch: the heading and the
+                repeat CTA both came out, so this is the parent-brand mission
+                and how to reach us, nothing else. The form is still one tap
+                away from the catalogue's own "Discuss your project" card. */}
             <span className={s.eyebrow}>YOU LOOP Creation</span>
-            <h2>
-              We create distinctive handmade gifts for executives, partners, VIP customers,
-              selected teams and special brand moments.
-            </h2>
             <p>
               YOU LOOP connects modern brands and customers with skilled local artisans, turning
               craftsmanship into meaningful products and sustainable income opportunities.
             </p>
-            {/* One form, one name: every CTA that lands on #inquiry says the
-                same thing, so a buyer never wonders whether "Bulk Inquiry"
-                and "Discuss your project" led somewhere different. */}
-            <a className={s.ctaBtn} href="#inquiry">
-              Discuss your project
-            </a>
             <div className={s.closingContact}>
               <a href={`mailto:${BRAND.email}`}>{BRAND.email}</a>
               <a href={BRAND.instagram} target="_blank" rel="noopener noreferrer">
